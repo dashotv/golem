@@ -37,6 +37,7 @@ web requests and routing.
 This assumes you have a working go installation
 
 > go get -u github.com/dashotv/golem
+
 > golem new <name> <repo>
 
 * \<name\> is the application name
