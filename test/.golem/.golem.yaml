@@ -1,0 +1,16 @@
+models:
+  enabled: true
+  package: models
+  output: ./models
+  definitions: ./models/definitions
+routes:
+  enabled: true
+  name: Blarg
+  definition: ./server/routes/routes.yaml
+  output: ./server
+  repo: github.com/dashotv/blarg
+jobs:
+  enabled: true
+  package: jobs
+  definitions: ./jobs/jobs.yaml
+  output: ./jobs

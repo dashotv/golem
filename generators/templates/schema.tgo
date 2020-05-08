@@ -1,0 +1,32 @@
+package {{.Package}}
+
+type GolemSchema struct {
+    {{range .Models -}}
+        {{.Camel}} *{{.Camel}}Schema
+    {{end}}
+}
+
+{{range .Models -}}
+type {{.Camel}}Schema struct {
+    {{range .Fields -}}
+        {{.Camel}} *FieldSchema
+    {{end}}
+}
+{{end}}
+type FieldSchema struct {
+    Name string
+    Type string
+}
+
+var Schema = &GolemSchema {
+    {{range .Models -}}
+    {{.Camel}}: &{{.Camel}}Schema {
+        {{range .Fields -}}
+        {{.Camel}}: &FieldSchema{
+            Name: "{{.Name}}",
+            Type: "{{.Type}}",
+        },
+        {{end}}
+    },
+    {{end}}
+}

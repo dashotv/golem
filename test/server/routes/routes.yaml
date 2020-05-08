@@ -1,0 +1,24 @@
+routes:
+  - path: /nzbs
+    routes:
+      - path: /
+      - path: /add
+        params:
+          - {name: url, type: string}
+          - {name: category, type: string}
+          - {name: name, type: string}
+      - path: /remove
+        params:
+          - {name: id, type: int}
+      - path: /destroy
+        params:
+          - {name: id, type: int}
+      - path: /pause
+        params:
+          - {name: id, type: int}
+      - path: /resume
+        params:
+          - {name: id, type: int}
+      - path: /history
+        params:
+          - {name: hidden, type: bool}
