@@ -1,13 +1,6 @@
 package app
 
 import (
-	"io/ioutil"
-	"os"
-	"os/exec"
-
-	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
-
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
 	"github.com/dashotv/golem/tasks"
@@ -87,88 +80,4 @@ func (g *Generator) Execute() error {
 	// TODO: run golem generate
 
 	return nil
-}
-
-func makeDirectory(dir string) error {
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		err := os.Mkdir(dir, 0755)
-		if err != nil {
-			return errors.Wrap(err, "mkdir")
-		}
-	}
-	return nil
-}
-
-func executeCommand(name string, arg ...string) error {
-	cmd := exec.Command(name, arg...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	return cmd.Run()
-}
-
-func writeDefaultConfig(dir string) error {
-	cfg := defaultConfig()
-
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		err := os.Mkdir(dir, 0755)
-		if err != nil {
-			return errors.Wrap(err, "mkdir")
-		}
-	}
-
-	b, err := yaml.Marshal(cfg)
-	if err != nil {
-		return errors.Wrap(err, "could not marshal config")
-	}
-
-	err = ioutil.WriteFile(dir+"/.golem.yaml", b, 0644)
-	if err != nil {
-		return errors.Wrap(err, "could not write config")
-	}
-
-	return nil
-}
-
-type defaultAppConfig struct {
-	Mode string
-	Port int
-}
-
-func writeAppConfig(name string) error {
-	cfg := &defaultAppConfig{Mode: "dev", Port: 3000}
-
-	b, err := yaml.Marshal(cfg)
-	if err != nil {
-		return errors.Wrap(err, "could not marshal config")
-	}
-
-	err = ioutil.WriteFile(name+"/."+name+".yaml", b, 0644)
-	if err != nil {
-		return errors.Wrap(err, "could not write config")
-	}
-
-	return nil
-}
-
-func defaultConfig() *config.Config {
-	cfg := &config.Config{}
-	cfg.Models.Enabled = true
-	cfg.Models.Package = "models"
-	cfg.Models.Output = "./models"
-	cfg.Models.Definitions = "./.golem/models"
-
-	cfg.Routes.Enabled = true
-	cfg.Routes.Output = "./server"
-	cfg.Routes.Definition = "./.golem/routes.yaml"
-	cfg.Routes.Name = "Blarg"
-	cfg.Routes.Repo = "github.com/dashotv/blarg"
-
-	cfg.Jobs.Enabled = true
-	cfg.Jobs.Package = "jobs"
-	cfg.Jobs.Output = "./jobs"
-	cfg.Jobs.Definitions = "./.golem/jobs.yaml"
-
-	return cfg
 }
