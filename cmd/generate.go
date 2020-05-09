@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"os"
-
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
@@ -30,29 +28,12 @@ var generateCmd = &cobra.Command{
 	Short: "generate mongo database models based on MDM library",
 	Long:  "generate mongo database models based on MDM library",
 	Run: func(cmd *cobra.Command, args []string) {
-		source := cfg.Models.Definitions
-		if !exists(source) {
-			logrus.Fatalf("definitions directory doesn't exist: %s", source)
-		}
-
-		dest := cfg.Models.Output
-		if !exists(dest) {
-			logrus.Fatalf("output directory doesn't exist: %s", dest)
-		}
-
 		g := &generators.Generator{Config: cfg}
-		err := g.Process()
+		err := g.Execute()
 		if err != nil {
-			logrus.Fatalf("error occured during process: %s", err)
+			logrus.Fatalf("generation error: %s", err)
 		}
 	},
-}
-
-func exists(path string) bool {
-	if _, err := os.Stat(path); !os.IsNotExist(err) {
-		return true
-	}
-	return false
 }
 
 func init() {

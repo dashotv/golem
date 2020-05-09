@@ -67,6 +67,13 @@ func (g *Generator) Execute() error {
 		g := base.NewFileGenerator(g.Config, "app_server_main", g.Name+"/server/main.go", d)
 		return g.Execute()
 	})
+	runner.Add("make models directory", func() error {
+		return makeDirectory(g.Name + "/models")
+	})
+	runner.Add("make models directory keep file", func() error {
+		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})
+		return g.Execute()
+	})
 
 	err := runner.Run()
 	if err != nil {

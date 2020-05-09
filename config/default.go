@@ -7,13 +7,13 @@ func DefaultConfig() *Config {
 	cfg.Models.Output = "./models"
 	cfg.Models.Definitions = "./.golem/models"
 
-	cfg.Routes.Enabled = true
+	cfg.Routes.Enabled = false
 	cfg.Routes.Output = "./server"
 	cfg.Routes.Definition = "./.golem/routes.yaml"
 	cfg.Routes.Name = "Blarg"
 	cfg.Routes.Repo = "github.com/dashotv/blarg"
 
-	cfg.Jobs.Enabled = true
+	cfg.Jobs.Enabled = false
 	cfg.Jobs.Package = "jobs"
 	cfg.Jobs.Output = "./jobs"
 	cfg.Jobs.Definitions = "./.golem/jobs.yaml"
