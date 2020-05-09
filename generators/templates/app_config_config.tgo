@@ -4,3 +4,9 @@ type Config struct {
     Mode string
     Port int
 }
+
+func (c *Config) Validate() error {
+    // Add validations for your configuration
+
+    return nil
+}

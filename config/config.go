@@ -41,7 +41,7 @@ func (c *Config) Validate() error {
 
 func (c *Config) validateDefaultConnection() error {
 	if len(c.Connections) == 0 {
-		return errors.New("configuration validation failed: you must specify a default connection")
+		return errors.New("you must specify a default connection")
 	}
 
 	var def *Connection
@@ -53,13 +53,13 @@ func (c *Config) validateDefaultConnection() error {
 	}
 
 	if def == nil {
-		return errors.New("configuration validation failed: no 'default' found in connections list")
+		return errors.New("no 'default' found in connections list")
 	}
 	if def.Database == "" {
-		return errors.New("configuration validation failed: default connection must specify database")
+		return errors.New("default connection must specify database")
 	}
 	if def.URI == "" {
-		return errors.New("configuration validation failed: default connection must specify URI")
+		return errors.New("default connection must specify URI")
 	}
 
 	return nil

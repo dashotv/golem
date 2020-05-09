@@ -97,4 +97,8 @@ func initConfig() {
     if err := viper.Unmarshal(cfg); err != nil {
         logrus.Fatalf("failed to unmarshal configuration file: %s", err)
     }
+
+    if err := cfg.Validate(); err != nil {
+        logrus.Fatalf("failed to validate config: %s", err)
+    }
 }
