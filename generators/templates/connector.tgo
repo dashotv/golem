@@ -1,0 +1,23 @@
+package {{.Package}}
+
+type Connector struct {
+    {{range .Models -}}
+    {{.Camel}} *{{.Camel}}Store
+    {{end}}
+}
+
+func NewConnector() (*Connector, error) {
+    {{range .Models -}}
+    {{.Name}}, err := New{{.Camel}}Store("{{.URI}}", "{{.Database}}", "{{.Collection}}")
+    if err != nil {
+        return nil, err
+    }
+    {{end}}
+    c := &Connector{
+        {{range .Models -}}
+        {{.Camel}}: {{.Name}},
+        {{end}}
+    }
+
+    return c, nil
+}

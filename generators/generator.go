@@ -22,7 +22,7 @@ func (g *Generator) Process() error {
 		r := runner.Group("database")
 		r.Add("generate models", g.processModels)
 		r.Add("generate schema", g.processSchema)
-		// TODO: generate connector
+		r.Add("generate connector", g.processConnector)
 		// TODO: decide on using document and null decoder
 	}
 
@@ -78,4 +78,9 @@ func (g *Generator) processSchema() error {
 	}
 
 	return sg.Execute()
+}
+
+func (g *Generator) processConnector() error {
+	cg := database.NewConnectorGenerator(g.Config, g.Models)
+	return cg.Execute()
 }

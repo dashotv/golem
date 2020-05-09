@@ -5,8 +5,6 @@ import (
 
 	"github.com/iancoleman/strcase"
 
-	"github.com/dashotv/golem/generators/templates"
-
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
 )
@@ -59,21 +57,6 @@ func NewGenerator(cfg *config.Config) (*Generator, error) {
 
 func (g *Generator) Execute() error {
 	err := g.prepare()
-	if err != nil {
-		return err
-	}
-
-	err = templates.New("server").Execute(g.Buffer, g.data)
-	if err != nil {
-		return err
-	}
-
-	err = g.Write()
-	if err != nil {
-		return err
-	}
-
-	err = g.Format()
 	if err != nil {
 		return err
 	}

@@ -63,7 +63,3 @@ func (g *SchemaGenerator) prepare() error {
 	}
 	return nil
 }
-
-func (g *SchemaGenerator) Filename() string {
-	return g.Config.Models.Output + "/schema.go"
-}

@@ -14,3 +14,7 @@ jobs:
   package: jobs
   definitions: ./jobs/jobs.yaml
   output: ./jobs
+connections:
+  default:
+    URI: mongodb://localhost:27017
+    database: database
