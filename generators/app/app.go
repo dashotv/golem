@@ -20,7 +20,7 @@ func NewAppGenerator(cfg *config.Config, name, repo string) *Generator {
 func (g *Generator) Execute() error {
 	runner := tasks.NewTaskRunner("generator:app")
 	runner.Add("make app directory", func() error {
-		return makeDirectory(g.Name)
+		return MakeDirectory(g.Name)
 	})
 	runner.Add("create default config", func() error {
 		return writeDefaultConfig(g.Name + "/.golem")
@@ -39,7 +39,7 @@ func (g *Generator) Execute() error {
 		return g.Execute()
 	})
 	runner.Add("make config directory", func() error {
-		return makeDirectory(g.Name + "/config")
+		return MakeDirectory(g.Name + "/config")
 	})
 	runner.Add("create application config", func() error {
 		d := map[string]string{}
@@ -47,7 +47,7 @@ func (g *Generator) Execute() error {
 		return g.Execute()
 	})
 	runner.Add("make command directory", func() error {
-		return makeDirectory(g.Name + "/cmd")
+		return MakeDirectory(g.Name + "/cmd")
 	})
 	runner.Add("create application root command", func() error {
 		d := map[string]string{"Name": g.Name, "Repo": g.Repo}
@@ -60,7 +60,7 @@ func (g *Generator) Execute() error {
 		return g.Execute()
 	})
 	runner.Add("make server directory", func() error {
-		return makeDirectory(g.Name + "/server")
+		return MakeDirectory(g.Name + "/server")
 	})
 	runner.Add("create server main", func() error {
 		d := map[string]string{"Name": g.Name, "Repo": g.Repo}
@@ -68,7 +68,7 @@ func (g *Generator) Execute() error {
 		return g.Execute()
 	})
 	runner.Add("make models directory", func() error {
-		return makeDirectory(g.Name + "/models")
+		return MakeDirectory(g.Name + "/models")
 	})
 	runner.Add("make models directory keep file", func() error {
 		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})

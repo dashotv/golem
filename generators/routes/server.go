@@ -18,23 +18,15 @@ type ServerGenerator struct {
 	data       map[string]string
 }
 
-//type ServerGeneratorData struct {
-//	Name   string
-//	Camel  string
-//	Repo   string
-//	Routes []*RouteGeneratorData
-//}
-
 type ServerDefinition struct {
-	Package string
-	Name    string
-	Repo    string
-	Routes  []*RouteDefinition
+	Package string             `json:"package" yaml:"package"`
+	Name    string             `json:"name" yaml:"name"`
+	Repo    string             `json:"repo" yaml:"repo"`
+	Routes  []*RouteDefinition `json:"routes" yaml:"routes"`
 }
 
-func NewServerGenerator(cfg *config.Config) (*ServerGenerator, error) {
-	d := &ServerDefinition{Name: cfg.Name, Package: "server", Repo: cfg.Repo}
-	g := &ServerGenerator{
+func NewServerGenerator(cfg *config.Config, d *ServerDefinition) *ServerGenerator {
+	return &ServerGenerator{
 		Config:     cfg,
 		Output:     cfg.Routes.Output,
 		Definition: d,
@@ -44,13 +36,6 @@ func NewServerGenerator(cfg *config.Config) (*ServerGenerator, error) {
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}
-
-	err := base.ReadYaml(cfg.Routes.Definition, d)
-	if err != nil {
-		return nil, err
-	}
-
-	return g, nil
 }
 
 func (g *ServerGenerator) Execute() error {

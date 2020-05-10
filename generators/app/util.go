@@ -18,7 +18,8 @@ func exists(path string) bool {
 	return true
 }
 
-func makeDirectory(dir string) error {
+// TODO: move this
+func MakeDirectory(dir string) error {
 	if !exists(dir) {
 		err := os.Mkdir(dir, 0755)
 		if err != nil {

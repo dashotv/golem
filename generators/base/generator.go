@@ -38,5 +38,9 @@ func ReadYaml(path string, object interface{}) error {
 		return err
 	}
 
-	return yaml.Unmarshal(b, object)
+	err = yaml.Unmarshal(b, object)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -1,0 +1,27 @@
+package {{.Name}}
+
+import (
+    "github.com/gin-gonic/gin"
+
+    "{{.Repo}}/server"
+)
+
+var serv *server.Server
+
+func Routes(s *server.Server) {
+    serv = s
+    r := s.Router.Group("{{.Path}}")
+    {{range .Routes -}}
+        r.{{.GetMethod}}("{{.Path}}", {{.Name}}Handler)
+    {{end}}
+}
+
+{{range .Routes -}}
+func {{.Name}}Handler(c *gin.Context) {
+    {{range .Params -}}
+        {{.Name}} := web.Query{{.GetType}}(c, "{{.Name}}")
+    {{end}}
+    {{.Name}}({{range .Params -}}{{.Name}},{{- end}})
+}
+
+{{end}}

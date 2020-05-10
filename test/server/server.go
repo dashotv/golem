@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
+	"github.com/dashotv/golem/test/server/nzbs"
 	"github.com/dashotv/test/config"
 )
 

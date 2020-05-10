@@ -51,7 +51,7 @@ func (g *ModelDefinitionGenerator) Execute() error {
 
 	runner := tasks.NewTaskRunner("generator:model")
 	runner.Add("ensure models directory exists", func() error {
-		return makeDirectory(".golem/models")
+		return MakeDirectory(".golem/models")
 	})
 	runner.Add("generate model definition", func() error {
 		err := templates.New("app_model_yaml").Execute(g.Buffer, g.Definition)
