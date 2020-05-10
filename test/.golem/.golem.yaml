@@ -2,19 +2,28 @@ models:
   enabled: true
   package: models
   output: ./models
-  definitions: ./models/definitions
+  definitions: ./.golem/models
 routes:
   enabled: true
   name: Blarg
-  definition: ./server/routes/routes.yaml
+  definition: ./.golem/routes.yaml
   output: ./server
   repo: github.com/dashotv/blarg
 jobs:
   enabled: true
   package: jobs
-  definitions: ./jobs/jobs.yaml
+  definitions: ./.golem/jobs.yaml
   output: ./jobs
 connections:
   default:
     URI: mongodb://localhost:27017
     database: database
+  download:
+    database: seer_production
+    collection: downloads
+  medium:
+    database: seer_production
+    collection: media
+  release:
+    database: torch_production
+    collection: torrents
