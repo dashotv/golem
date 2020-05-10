@@ -2,6 +2,9 @@ package config
 
 func DefaultConfig() *Config {
 	cfg := &Config{}
+	cfg.Name = "test"
+	cfg.Repo = "github.com/dashotv/test"
+
 	cfg.Models.Enabled = true
 	cfg.Models.Package = "models"
 	cfg.Models.Output = "./models"

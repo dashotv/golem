@@ -3,6 +3,8 @@ package config
 import "github.com/pkg/errors"
 
 type Config struct {
+	Name   string
+	Repo   string
 	Models struct {
 		Enabled     bool
 		Package     string

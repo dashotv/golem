@@ -1,5 +1,6 @@
 routes:
-  - path: /nzbs
+  - name: nzbs
+    path: /nzbs
     routes:
       - path: /
       - path: /add

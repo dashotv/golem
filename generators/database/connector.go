@@ -52,6 +52,11 @@ func (g *ConnectorGenerator) Execute() error {
 		return err
 	}
 
+	err = g.Format()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

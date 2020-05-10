@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"github.com/dashotv/blarg/config"
+	"github.com/dashotv/test/config"
 )
 
 type Server struct {
@@ -34,7 +34,7 @@ func New(cfg *config.Config) (*Server, error) {
 }
 
 func (s *Server) Start() error {
-	s.Log.Info("starting Blarg...")
+	s.Log.Info("starting test...")
 
 	s.Router = gin.Default()
 	s.Routes()
@@ -51,6 +51,8 @@ func (s *Server) Start() error {
 
 func (s *Server) Routes() {
 	s.Router.GET("/", homeIndex)
+
+	nzbs.Routes(s)
 
 }
 

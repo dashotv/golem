@@ -23,11 +23,7 @@ func (g *Generator) Execute() error {
 
 	if g.Config.Routes.Enabled {
 		runner.Add("routes", func() error {
-			rg, err := routes.NewGenerator(g.Config)
-			if err != nil {
-				return err
-			}
-
+			rg := routes.NewGenerator(g.Config)
 			return rg.Execute()
 		})
 		// TODO: Add Route generator

@@ -1,3 +1,5 @@
+name: test
+repo: github.com/dashotv/test
 models:
   enabled: true
   package: models
