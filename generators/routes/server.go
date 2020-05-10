@@ -14,18 +14,18 @@ type ServerGenerator struct {
 	*base.Generator
 	Config     *config.Config
 	Output     string
-	Definition *ServerDefinition
+	Definition *Definition
 	data       map[string]string
 }
 
-type ServerDefinition struct {
-	Package string             `json:"package" yaml:"package"`
-	Name    string             `json:"name" yaml:"name"`
-	Repo    string             `json:"repo" yaml:"repo"`
-	Routes  []*RouteDefinition `json:"routes" yaml:"routes"`
-}
+//type ServerDefinition struct {
+//	Package string             `json:"package" yaml:"package"`
+//	Name    string             `json:"name" yaml:"name"`
+//	Repo    string             `json:"repo" yaml:"repo"`
+//	Routes  []*RouteDefinition `json:"routes" yaml:"routes"`
+//}
 
-func NewServerGenerator(cfg *config.Config, d *ServerDefinition) *ServerGenerator {
+func NewServerGenerator(cfg *config.Config, d *Definition) *ServerGenerator {
 	return &ServerGenerator{
 		Config:     cfg,
 		Output:     cfg.Routes.Output,

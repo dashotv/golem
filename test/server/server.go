@@ -9,7 +9,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"github.com/dashotv/golem/test/server/nzbs"
 	"github.com/dashotv/test/config"
 )
 
@@ -52,8 +51,6 @@ func (s *Server) Start() error {
 
 func (s *Server) Routes() {
 	s.Router.GET("/", homeIndex)
-
-	nzbs.Routes(s)
 
 }
 

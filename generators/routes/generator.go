@@ -8,15 +8,22 @@ import (
 
 type Generator struct {
 	Config     *config.Config
-	Definition *ServerDefinition
-	Routes     []*RouteGenerator
+	Definition *Definition
+	Groups     []*GroupGenerator
+}
+
+type Definition struct {
+	Name   string
+	Repo   string
+	Groups map[string]*GroupDefinition `json:"groups" yaml:"groups"`
+	Routes map[string]*RouteDefinition `json:"routes" yaml:"routes"`
 }
 
 func NewGenerator(cfg *config.Config) *Generator {
 	return &Generator{
 		Config:     cfg,
-		Routes:     make([]*RouteGenerator, 0),
-		Definition: &ServerDefinition{},
+		Groups:     make([]*GroupGenerator, 0),
+		Definition: &Definition{},
 		//	Name:    cfg.Name,
 		//	Package: "server",
 		//	Repo:    cfg.Repo,
@@ -46,10 +53,10 @@ func (g *Generator) Execute() error {
 			sg := NewServerGenerator(g.Config, g.Definition)
 			return sg.Execute()
 		})
-		for _, route := range g.Definition.Routes {
-			r.Add("generate routes "+route.Name, func() error {
-				rg := NewRouteGenerator(g.Config, route)
-				g.Routes = append(g.Routes, rg)
+		for name, group := range g.Definition.Groups {
+			r.Add("generate groups "+name, func() error {
+				rg := NewGroupGenerator(g.Config, name, group)
+				g.Groups = append(g.Groups, rg)
 				return rg.Execute()
 			})
 		}

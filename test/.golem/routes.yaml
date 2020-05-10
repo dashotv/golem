@@ -1,35 +1,34 @@
 name: test
-package: server
 repo: github.com/dashotv/test
-routes:
-  - name: nzbs
+groups:
+  nzbs:
     path: /nzbs
     routes:
-      - name: index
+      index:
         path: /
-      - name: add
+      add:
         path: /add
         params:
           - {name: url, type: string}
           - {name: category, type: string}
           - {name: name, type: string}
-      - name: remove
+      remove:
         path: /remove
         params:
           - {name: id, type: int}
-      - name: destroy
+      destroy:
         path: /destroy
         params:
           - {name: id, type: int}
-      - name: pause
+      pause:
         path: /pause
         params:
           - {name: id, type: int}
-      - name: resume
+      resume:
         path: /resume
         params:
           - {name: id, type: int}
-      - name: history
+      history:
         path: /history
         params:
           - {name: hidden, type: bool}

@@ -4,20 +4,27 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/app"
-
+	"github.com/dashotv/golem/generators/base"
 	"github.com/dashotv/golem/generators/templates"
 	"github.com/dashotv/golem/tasks"
-
-	"github.com/dashotv/golem/config"
-	"github.com/dashotv/golem/generators/base"
 )
 
-type RouteGenerator struct {
+type GroupGenerator struct {
 	*base.Generator
 	Config     *config.Config
 	Output     string
-	Definition *RouteDefinition
+	Name       string
+	Definition *GroupDefinition
+}
+
+type GroupDefinition struct {
+	Repo   string
+	Name   string                      `json:"name" yaml:"name"`
+	Path   string                      `json:"path" yaml:"path"`
+	Method string                      `json:"method" yaml:"method"`
+	Routes map[string]*RouteDefinition `json:"routes" yaml:"routes"`
 }
 
 type RouteDefinition struct {
@@ -25,7 +32,6 @@ type RouteDefinition struct {
 	Name   string             `json:"name" yaml:"name"`
 	Path   string             `json:"path" yaml:"path"`
 	Method string             `json:"method" yaml:"method"`
-	Routes []*RouteDefinition `json:"routes" yaml:"routes"`
 	Params []*ParamDefinition `json:"params" yaml:"params"`
 }
 
@@ -49,11 +55,13 @@ func (d *ParamDefinition) GetType() string {
 	return "String"
 }
 
-func NewRouteGenerator(cfg *config.Config, d *RouteDefinition) *RouteGenerator {
+func NewGroupGenerator(cfg *config.Config, name string, d *GroupDefinition) *GroupGenerator {
+	d.Name = name
 	d.Repo = cfg.Repo
-	return &RouteGenerator{
+	return &GroupGenerator{
 		Config:     cfg,
 		Output:     cfg.Routes.Output,
+		Name:       name,
 		Definition: d,
 		Generator: &base.Generator{
 			Filename: cfg.Routes.Output + "/" + d.Name + "/routes.go",
@@ -62,15 +70,15 @@ func NewRouteGenerator(cfg *config.Config, d *RouteDefinition) *RouteGenerator {
 	}
 }
 
-func (g *RouteGenerator) Execute() error {
-	r := tasks.NewTaskRunner("generator:routes:route")
+func (g *GroupGenerator) Execute() error {
+	r := tasks.NewTaskRunner("generator:groups:group")
 
 	r.Add("prepare", g.prepare)
 	r.Add("make directory", func() error {
 		return app.MakeDirectory(g.Config.Routes.Output + "/" + g.Definition.Name)
 	})
 	r.Add("template", func() error {
-		return templates.New("routes").Execute(g.Buffer, g.Definition)
+		return templates.New("routes_group").Execute(g.Buffer, g.Definition)
 	})
 	r.Add("write", g.Write)
 	r.Add("format", g.Format)
@@ -78,6 +86,6 @@ func (g *RouteGenerator) Execute() error {
 	return r.Run()
 }
 
-func (g *RouteGenerator) prepare() error {
+func (g *GroupGenerator) prepare() error {
 	return nil
 }
