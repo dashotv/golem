@@ -16,7 +16,7 @@ type Generator struct {
 }
 
 func (g *Generator) Execute() error {
-	runner := tasks.NewTaskRunner()
+	runner := tasks.NewTaskRunner("generator")
 	r := runner.Group("database")
 
 	source := g.Config.Models.Definitions

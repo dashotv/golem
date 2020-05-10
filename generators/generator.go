@@ -12,7 +12,7 @@ type Generator struct {
 }
 
 func (g *Generator) Execute() error {
-	runner := tasks.NewTaskRunner()
+	runner := tasks.NewTaskRunner("generator")
 
 	if g.Config.Models.Enabled {
 		runner.Add("database", func() error {

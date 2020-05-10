@@ -49,7 +49,7 @@ func (g *ModelDefinitionGenerator) Execute() error {
 
 	g.prepare()
 
-	runner := tasks.NewTaskRunner()
+	runner := tasks.NewTaskRunner("generator:model")
 	runner.Add("ensure models directory exists", func() error {
 		return makeDirectory(".golem/models")
 	})

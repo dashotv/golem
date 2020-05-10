@@ -18,7 +18,7 @@ func NewAppGenerator(cfg *config.Config, name, repo string) *Generator {
 }
 
 func (g *Generator) Execute() error {
-	runner := tasks.NewTaskRunner()
+	runner := tasks.NewTaskRunner("generator:app")
 	runner.Add("make app directory", func() error {
 		return makeDirectory(g.Name)
 	})
