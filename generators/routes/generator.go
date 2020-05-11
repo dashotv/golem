@@ -54,8 +54,8 @@ func (g *Generator) Execute() error {
 	r := runner.Group("routes")
 
 	if g.Config.Routes.Enabled {
-		r.Add("generate server", func() error {
-			sg := NewServerGenerator(g.Config, g.Definition)
+		r.Add("server routes", func() error {
+			sg := NewServerRoutesGenerator(g.Config, g.Definition)
 			return sg.Execute()
 		})
 		//for name, group := range g.Definition.Groups {
