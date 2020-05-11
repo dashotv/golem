@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/dashotv/golem/config"
-	"github.com/dashotv/golem/generators/app"
 	"github.com/dashotv/golem/generators/base"
 	"github.com/dashotv/golem/generators/templates"
 	"github.com/dashotv/golem/tasks"
@@ -71,12 +70,10 @@ func NewGroupGenerator(cfg *config.Config, name string, d *GroupDefinition) *Gro
 }
 
 func (g *GroupGenerator) Execute() error {
-	r := tasks.NewTaskRunner("generator:groups:group")
+	r := tasks.NewRunner("generator:routes:group")
 
 	r.Add("prepare", g.prepare)
-	r.Add("make directory", func() error {
-		return app.MakeDirectory(g.Config.Routes.Output + "/" + g.Definition.Name)
-	})
+	r.Add("make directory", tasks.NewMakeDirectoryTask(g.Config.Routes.Output+"/"+g.Definition.Name))
 	r.Add("template", func() error {
 		return templates.New("routes_group").Execute(g.Buffer, g.Definition)
 	})

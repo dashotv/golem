@@ -39,7 +39,7 @@ func NewServerGenerator(cfg *config.Config, d *Definition) *ServerGenerator {
 }
 
 func (g *ServerGenerator) Execute() error {
-	r := tasks.NewTaskRunner("generator:routes:server")
+	r := tasks.NewRunner("generator:routes:server")
 
 	r.Add("prepare", g.prepare)
 	r.Add("template", func() error {

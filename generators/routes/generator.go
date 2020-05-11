@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"strings"
+
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
 	"github.com/dashotv/golem/tasks"
@@ -19,6 +21,26 @@ type Definition struct {
 	Routes map[string]*RouteDefinition `json:"routes" yaml:"routes"`
 }
 
+func (d *Definition) FindRoute(name string) *RouteDefinition {
+	parts := strings.Split(name, "/")
+	if len(parts) > 2 {
+		return nil
+	}
+	if len(parts) == 1 {
+		if d.Routes[parts[0]] == nil {
+			return nil
+		}
+		return d.Routes[parts[0]]
+	}
+	if d.Groups[parts[0]] == nil {
+		return nil
+	}
+	if d.Groups[parts[0]].Routes[parts[1]] == nil {
+		return nil
+	}
+	return d.Groups[parts[0]].Routes[parts[1]]
+}
+
 func NewGenerator(cfg *config.Config) *Generator {
 	return &Generator{
 		Config:     cfg,
@@ -35,7 +57,7 @@ func (g *Generator) Execute() error {
 	if err := g.prepare(); err != nil {
 		return err
 	}
-	runner := tasks.NewTaskRunner("generator")
+	runner := tasks.NewRunner("generator")
 	r := runner.Group("routes")
 
 	//source := g.Config.Models.Definitions

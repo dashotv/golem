@@ -40,19 +40,17 @@ func NewModelDefinitionGenerator(cfg *config.Config, name string, fields ...stri
 }
 
 func (g *ModelDefinitionGenerator) Execute() error {
-	if !exists(".golem") {
+	if !tasks.Exists(".golem") {
 		return errors.New(".golem directory does not exist, run from inside app directory")
 	}
-	if exists(g.Filename) {
+	if tasks.Exists(g.Filename) {
 		return errors.New("model definition already exists: " + g.Filename)
 	}
 
 	g.prepare()
 
-	runner := tasks.NewTaskRunner("generator:model")
-	runner.Add("ensure models directory exists", func() error {
-		return MakeDirectory(".golem/models")
-	})
+	runner := tasks.NewRunner("generator:model")
+	runner.Add("ensure models directory exists", tasks.NewMakeDirectoryTask(".golem/models"))
 	runner.Add("generate model definition", func() error {
 		err := templates.New("app_model_yaml").Execute(g.Buffer, g.Definition)
 		if err != nil {

@@ -10,7 +10,7 @@ func DefaultConfig() *Config {
 	cfg.Models.Output = "./models"
 	cfg.Models.Definitions = "./.golem/models"
 
-	cfg.Routes.Enabled = false
+	cfg.Routes.Enabled = true
 	cfg.Routes.Output = "./server"
 	cfg.Routes.Definition = "./.golem/routes.yaml"
 	cfg.Routes.Name = "Blarg"
