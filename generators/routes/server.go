@@ -16,7 +16,6 @@ type ServerGenerator struct {
 	Config     *config.Config
 	Output     string
 	Definition *Definition
-	data       map[string]string
 }
 
 // NewServerGenerator creates and returns an instance of ServerGenerator
@@ -25,7 +24,6 @@ func NewServerGenerator(cfg *config.Config, d *Definition) *ServerGenerator {
 		Config:     cfg,
 		Output:     cfg.Routes.Output,
 		Definition: d,
-		data:       make(map[string]string),
 		Generator: &base.Generator{
 			Filename: cfg.Routes.Output + "/server.go",
 			Buffer:   bytes.NewBufferString(""),
@@ -44,11 +42,55 @@ func (g *ServerGenerator) Execute() error {
 	})
 	r.Add("write", g.Write)
 	r.Add("format", g.Format)
+	r.Add("server routes", func() error {
+		srg := NewServerRoutesGenerator(g.Config, g.Definition)
+		return srg.Execute()
+	})
 
 	return r.Run()
 }
 
 // prepare the configuration for the template
 func (g *ServerGenerator) prepare() error {
+	return nil
+}
+
+// ServerRoutesGenerator manages the creation of the server routes file
+type ServerRoutesGenerator struct {
+	*base.Generator
+	Config     *config.Config
+	Output     string
+	Definition *Definition
+}
+
+// NewServerRoutesGenerator creates and returns an instance of ServerRoutesGenerator
+func NewServerRoutesGenerator(cfg *config.Config, d *Definition) *ServerRoutesGenerator {
+	return &ServerRoutesGenerator{
+		Config:     cfg,
+		Output:     cfg.Routes.Output,
+		Definition: d,
+		Generator: &base.Generator{
+			Filename: cfg.Routes.Output + "/routes.go",
+			Buffer:   bytes.NewBufferString(""),
+		},
+	}
+}
+
+// Execute creates the server routes file from the template
+func (g *ServerRoutesGenerator) Execute() error {
+	r := tasks.NewRunner("generator:routes:server routes")
+
+	r.Add("prepare", g.prepare)
+	r.Add("template", func() error {
+		return templates.New("routes_routes").Execute(g.Buffer, g.Definition)
+	})
+	r.Add("write", g.Write)
+	r.Add("format", g.Format)
+
+	return r.Run()
+}
+
+// prepare the configuration for the template
+func (g *ServerRoutesGenerator) prepare() error {
 	return nil
 }

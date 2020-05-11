@@ -34,7 +34,7 @@ func NewGroupGenerator(cfg *config.Config, name string, d *Group) *GroupGenerato
 
 // Execute manages creation of group routes files with the template
 func (g *GroupGenerator) Execute() error {
-	r := tasks.NewRunner("generator:routes:group")
+	r := tasks.NewRunner("generator:routes:" + g.Name)
 	dir := g.Config.Routes.Output + "/" + g.Definition.Name
 	r.Add("prepare", g.prepare)
 	r.Add("make directory: "+dir, tasks.NewMakeDirectoryTask(dir))

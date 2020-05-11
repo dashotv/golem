@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -10,9 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/dashotv/test/config"
-	"github.com/dashotv/test/server/nzbs"
-
-	"github.com/dashotv/test/server/torrents"
 )
 
 type Server struct {
@@ -50,16 +46,4 @@ func (s *Server) Start() error {
 	}
 
 	return nil
-}
-
-func (s *Server) Routes() {
-	s.Router.GET("/", homeIndex)
-
-	nzbs.Routes(s)
-	torrents.Routes(s)
-
-}
-
-func homeIndex(c *gin.Context) {
-	c.String(http.StatusOK, "home")
 }

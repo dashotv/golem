@@ -33,40 +33,40 @@ func addHandler(c *gin.Context) {
 	category := web.QueryString(c, "category")
 	name := web.QueryString(c, "name")
 
-	Add(url, category, name)
+	Add(c, url, category, name)
 }
 
 func destroyHandler(c *gin.Context) {
 	id := web.QueryInt(c, "id")
 
-	Destroy(id)
+	Destroy(c, id)
 }
 
 func historyHandler(c *gin.Context) {
 	hidden := web.QueryBool(c, "hidden")
 
-	History(hidden)
+	History(c, hidden)
 }
 
 func indexHandler(c *gin.Context) {
 
-	Index()
+	Index(c)
 }
 
 func pauseHandler(c *gin.Context) {
 	id := web.QueryInt(c, "id")
 
-	Pause(id)
+	Pause(c, id)
 }
 
 func removeHandler(c *gin.Context) {
 	id := web.QueryInt(c, "id")
 
-	Remove(id)
+	Remove(c, id)
 }
 
 func resumeHandler(c *gin.Context) {
 	id := web.QueryInt(c, "id")
 
-	Resume(id)
+	Resume(c, id)
 }

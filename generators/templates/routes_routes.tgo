@@ -1,0 +1,27 @@
+package server
+
+import (
+    "net/http"
+
+    "github.com/gin-gonic/gin"
+
+    {{range $name, $group := .Groups -}}
+    "{{$.Repo}}/server/{{$name}}"
+    {{end}}
+)
+
+func (s *Server) Routes() {
+    s.Router.GET("/", homeHandler)
+
+    {{range $name, $group := .Groups -}}
+        {{$name}}.Routes(s)
+    {{end}}
+}
+
+func homeHandler(c *gin.Context) {
+    Home(c)
+}
+
+func Home(c *gin.Context) {
+    c.String(http.StatusOK, "home")
+}

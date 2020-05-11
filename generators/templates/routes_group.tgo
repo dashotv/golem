@@ -26,7 +26,7 @@ func {{$name}}Handler(c *gin.Context) {
     {{range .Params -}}
         {{.Name}} := web.Query{{.GetType}}(c, "{{.Name}}")
     {{end}}
-    {{$route.Camel}}({{range .Params -}}{{.Name}},{{- end}})
+    {{$route.Camel}}(c, {{range .Params -}}{{.Name}},{{- end}})
 }
 
 {{end}}

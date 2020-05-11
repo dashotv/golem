@@ -50,15 +50,3 @@ func (s *Server) Start() error {
 
     return nil
 }
-
-func (s *Server) Routes() {
-    s.Router.GET("/", homeIndex)
-
-    {{range $name, $group := .Groups -}}
-        {{$name}}.Routes(s)
-    {{end}}
-}
-
-func homeIndex(c *gin.Context) {
-    c.String(http.StatusOK, "home")
-}

@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
+	"github.com/dashotv/golem/generators/routes"
 	"github.com/dashotv/golem/tasks"
 )
 
@@ -65,6 +66,17 @@ func (g *Generator) Execute() error {
 		return g.Execute()
 	})
 	// TODO: separate server.go and routes.go. create server if it doesn't exist
+	runner.Add("create server main", func() error {
+		if tasks.PathExists(g.Name + "/server/server.go") {
+			return nil
+		}
+		d := &routes.Definition{
+			Name: g.Name,
+			Repo: g.Repo,
+		}
+		g := routes.NewServerGenerator(g.Config, d)
+		return g.Execute()
+	})
 	runner.Add("make models directory", tasks.NewMakeDirectoryTask(g.Name+"/models"))
 	runner.Add("make models directory keep file", func() error {
 		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})
