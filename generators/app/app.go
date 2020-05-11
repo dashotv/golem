@@ -6,6 +6,7 @@ import (
 	"github.com/dashotv/golem/tasks"
 )
 
+// Generator manages generating an application
 type Generator struct {
 	*base.Generator
 	Config *config.Config
@@ -13,10 +14,12 @@ type Generator struct {
 	Repo   string
 }
 
+// NewAppGenerator returns a new instance of Generator
 func NewAppGenerator(cfg *config.Config, name, repo string) *Generator {
 	return &Generator{Config: cfg, Name: name, Repo: repo}
 }
 
+// Execute processes all of the configurations and generates an application
 func (g *Generator) Execute() error {
 	runner := tasks.NewRunner("generator:app")
 	runner.Add("make app directory", tasks.NewMakeDirectoryTask(g.Name))
@@ -61,11 +64,6 @@ func (g *Generator) Execute() error {
 		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/server/.keep", map[string]string{})
 		return g.Execute()
 	})
-	//runner.Add("create server main", func() error {
-	//	d := map[string]string{"Name": g.Name, "Repo": g.Repo}
-	//	g := base.NewFileGenerator(g.Config, "app_server_main", g.Name+"/server/main.go", d)
-	//	return g.Execute()
-	//})
 	runner.Add("make models directory", tasks.NewMakeDirectoryTask(g.Name+"/models"))
 	runner.Add("make models directory keep file", func() error {
 		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})
@@ -76,12 +74,6 @@ func (g *Generator) Execute() error {
 	if err != nil {
 		return err
 	}
-
-	// TODO: generate example model definition => .golem/models/example.yaml
-	// TODO: generate example route definition => .golem/routes.yaml
-	// TODO: generate example job definition   => .golem/jobs.yaml
-
-	// TODO: run golem generate
 
 	return nil
 }

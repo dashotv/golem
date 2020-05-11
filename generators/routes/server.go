@@ -10,6 +10,7 @@ import (
 	"github.com/dashotv/golem/generators/base"
 )
 
+// ServerGenerator manages the creation of the server file
 type ServerGenerator struct {
 	*base.Generator
 	Config     *config.Config
@@ -18,13 +19,7 @@ type ServerGenerator struct {
 	data       map[string]string
 }
 
-//type ServerDefinition struct {
-//	Package string             `json:"package" yaml:"package"`
-//	Name    string             `json:"name" yaml:"name"`
-//	Repo    string             `json:"repo" yaml:"repo"`
-//	Routes  []*RouteDefinition `json:"routes" yaml:"routes"`
-//}
-
+// NewServerGenerator creates and returns an instance of ServerGenerator
 func NewServerGenerator(cfg *config.Config, d *Definition) *ServerGenerator {
 	return &ServerGenerator{
 		Config:     cfg,
@@ -38,9 +33,11 @@ func NewServerGenerator(cfg *config.Config, d *Definition) *ServerGenerator {
 	}
 }
 
+// Execute creates the server file from the template
 func (g *ServerGenerator) Execute() error {
 	r := tasks.NewRunner("generator:routes:server")
 
+	r.Add("directory", tasks.NewMakeDirectoryTask("server"))
 	r.Add("prepare", g.prepare)
 	r.Add("template", func() error {
 		return templates.New("routes_server").Execute(g.Buffer, g.Definition)
@@ -51,27 +48,7 @@ func (g *ServerGenerator) Execute() error {
 	return r.Run()
 }
 
+// prepare the configuration for the template
 func (g *ServerGenerator) prepare() error {
-	//g.data["Name"] = g.Config.Routes.Name
-	//g.data["Camel"] = strcase.ToCamel(g.Config.Routes.Name)
-	//g.data["Repo"] = g.Config.Routes.Repo
-	//err := g.prepareRoutes()
-	//if err != nil {
-	//	return err
-	//}
 	return nil
 }
-
-//func (g *ServerGenerator) prepareRoutes() error {
-//
-//}
-
-//
-//func getTemplate(name string) string {
-//	filename := fmt.Sprintf("generators/routes/templates/%s.tgo", name)
-//	data, err := Asset(filename)
-//	if err != nil {
-//		panic(err)
-//	}
-//	return string(data)
-//}

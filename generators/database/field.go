@@ -7,23 +7,13 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-// Field is the generator of model fields
+// FieldGenerator is the generator of model fields
 type FieldGenerator struct {
 	Definition *Field
 	data       map[string]string
 }
 
-// FieldDefinition holds the data from the YAML field
-type Field struct {
-	Name   string
-	Camel  string
-	Type   string
-	Json   string
-	Bson   string
-	Tags   string
-	Fields []*Field
-}
-
+// Execute generates the field using the template
 func (f *FieldGenerator) Execute(s *bytes.Buffer) error {
 	err := f.Prepare()
 	if err != nil {
@@ -45,6 +35,7 @@ func (f *FieldGenerator) Execute(s *bytes.Buffer) error {
 	return nil
 }
 
+// Prepare configures the data for the template
 func (f *FieldGenerator) Prepare() error {
 	f.data = map[string]string{
 		"Name": strcase.ToCamel(f.Definition.Name),
@@ -59,6 +50,7 @@ func (f *FieldGenerator) Prepare() error {
 	return nil
 }
 
+// executeStruct generates the field if it is a struct type
 func (f *FieldGenerator) executeStruct(s *bytes.Buffer) error {
 	t, err := template.New("simplefield").Parse(`    {{.Name}} {{.Type}} {
 		{{.Fields}}
@@ -80,6 +72,7 @@ func (f *FieldGenerator) executeStruct(s *bytes.Buffer) error {
 	return nil
 }
 
+// executeField generates the field if it is not a struct type
 func (f *FieldGenerator) executeField(s *bytes.Buffer) error {
 	t, err := template.New("simplefield").Parse(`    {{.Name}} {{.Type}} {{.Tags}}` + "\n")
 	if err != nil {
@@ -94,6 +87,7 @@ func (f *FieldGenerator) executeField(s *bytes.Buffer) error {
 	return nil
 }
 
+// prepareStructFields configures the data for struct field template
 func (f *FieldGenerator) prepareStructFields() error {
 	s := bytes.NewBufferString("")
 	for _, fd := range f.Definition.Fields {
@@ -107,6 +101,7 @@ func (f *FieldGenerator) prepareStructFields() error {
 	return nil
 }
 
+// prepareTags configures the tag data for the field template
 func (f *FieldGenerator) prepareTags() error {
 	s := bytes.NewBufferString("")
 

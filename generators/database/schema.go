@@ -21,8 +21,8 @@ type SchemaGeneratorData struct {
 	Models  []*Model
 }
 
-func NewSchemaGenerator(cfg *config.Config, models []*ModelGenerator) (*SchemaGenerator, error) {
-	g := &SchemaGenerator{
+func NewSchemaGenerator(cfg *config.Config, models []*ModelGenerator) *SchemaGenerator {
+	return &SchemaGenerator{
 		Config: cfg,
 		Models: models,
 		Data: &SchemaGeneratorData{
@@ -34,8 +34,6 @@ func NewSchemaGenerator(cfg *config.Config, models []*ModelGenerator) (*SchemaGe
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}
-
-	return g, nil
 }
 
 func (g *SchemaGenerator) Execute() error {

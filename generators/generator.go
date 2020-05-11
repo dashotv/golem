@@ -7,10 +7,12 @@ import (
 	"github.com/dashotv/golem/tasks"
 )
 
+// Generator is the top-level generator and calls other generators
 type Generator struct {
 	Config *config.Config
 }
 
+// Execute calls all dependent generators based on configuration
 func (g *Generator) Execute() error {
 	runner := tasks.NewRunner("generator")
 
@@ -26,7 +28,6 @@ func (g *Generator) Execute() error {
 			rg := routes.NewGenerator(g.Config)
 			return rg.Execute()
 		})
-		// TODO: Add Route generator
 	}
 
 	if g.Config.Jobs.Enabled {

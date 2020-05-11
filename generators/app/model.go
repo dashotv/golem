@@ -14,6 +14,7 @@ import (
 	"github.com/dashotv/golem/tasks"
 )
 
+// ModelDefinitionGenerator manages the generation of model definitions
 type ModelDefinitionGenerator struct {
 	*base.Generator
 	Config     *config.Config
@@ -22,6 +23,7 @@ type ModelDefinitionGenerator struct {
 	Definition *database.Model
 }
 
+// NewModelDefinitionGenerator creates and returns an instance of ModelDefinitionGenerator
 func NewModelDefinitionGenerator(cfg *config.Config, name string, fields ...string) *ModelDefinitionGenerator {
 	return &ModelDefinitionGenerator{
 		Config:     cfg,
@@ -35,11 +37,12 @@ func NewModelDefinitionGenerator(cfg *config.Config, name string, fields ...stri
 	}
 }
 
+// Execute generates the model definition
 func (g *ModelDefinitionGenerator) Execute() error {
-	if !tasks.Exists(".golem") {
+	if !tasks.PathExists(".golem") {
 		return errors.New(".golem directory does not exist, run from inside app directory")
 	}
-	if tasks.Exists(g.Filename) {
+	if tasks.PathExists(g.Filename) {
 		return errors.New("model definition already exists: " + g.Filename)
 	}
 
@@ -59,6 +62,7 @@ func (g *ModelDefinitionGenerator) Execute() error {
 	return runner.Run()
 }
 
+// prepare the definition and data
 func (g *ModelDefinitionGenerator) prepare() {
 	g.Definition.Name = g.Name
 	g.Definition.Camel = strcase.ToCamel(g.Name)

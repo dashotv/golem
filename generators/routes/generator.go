@@ -8,20 +8,15 @@ import (
 	"github.com/dashotv/golem/tasks"
 )
 
+// Generator manages the generation of all routes related files
 type Generator struct {
 	Config     *config.Config
 	Definition *Definition
 	Groups     []*GroupGenerator
 }
 
-type Definition struct {
-	Name   string
-	Repo   string
-	Groups map[string]*GroupDefinition `json:"groups" yaml:"groups"`
-	Routes map[string]*RouteDefinition `json:"routes" yaml:"routes"`
-}
-
-func (d *Definition) FindRoute(name string) *RouteDefinition {
+// FindRoute finds a route corresponding to the path name passed as argument
+func (d *Definition) FindRoute(name string) *Route {
 	parts := strings.Split(name, "/")
 	if len(parts) > 2 {
 		return nil
@@ -41,34 +36,22 @@ func (d *Definition) FindRoute(name string) *RouteDefinition {
 	return d.Groups[parts[0]].Routes[parts[1]]
 }
 
+// NewGenerator creates and returns an instance of Generator
 func NewGenerator(cfg *config.Config) *Generator {
 	return &Generator{
 		Config:     cfg,
 		Groups:     make([]*GroupGenerator, 0),
 		Definition: &Definition{},
-		//	Name:    cfg.Name,
-		//	Package: "server",
-		//	Repo:    cfg.Repo,
-		//},
 	}
 }
 
+// Execute generates the files from the templates
 func (g *Generator) Execute() error {
 	if err := g.prepare(); err != nil {
 		return err
 	}
 	runner := tasks.NewRunner("generator")
 	r := runner.Group("routes")
-
-	//source := g.Config.Models.Definitions
-	//if !exists(source) {
-	//	return fmt.Errorf("definitions directory doesn't exist: %s", source)
-	//}
-	//
-	//dest := g.Config.Models.Output
-	//if !exists(dest) {
-	//	return fmt.Errorf("output directory doesn't exist: %s", dest)
-	//}
 
 	if g.Config.Routes.Enabled {
 		r.Add("generate server", func() error {
@@ -87,6 +70,7 @@ func (g *Generator) Execute() error {
 	return runner.Run()
 }
 
+// prepare configures the data for the templates
 func (g *Generator) prepare() error {
 	if err := base.ReadYaml(g.Config.Routes.Definition, g.Definition); err != nil {
 		return err

@@ -9,6 +9,7 @@ import (
 	"github.com/dashotv/golem/generators/base"
 )
 
+// ConnectorGenerator manages generation of the database connector
 type ConnectorGenerator struct {
 	*base.Generator
 	Config *config.Config
@@ -16,11 +17,13 @@ type ConnectorGenerator struct {
 	Data   *ConnectorGeneratorData
 }
 
+// ConnectorGeneratorData stores the data for the database connector template
 type ConnectorGeneratorData struct {
 	Package string
 	Models  []map[string]string
 }
 
+// NewConnectorGenerator creates and returns a ConnectorGenerator
 func NewConnectorGenerator(cfg *config.Config, models []*ModelGenerator) *ConnectorGenerator {
 	return &ConnectorGenerator{
 		Config: cfg,
@@ -36,6 +39,7 @@ func NewConnectorGenerator(cfg *config.Config, models []*ModelGenerator) *Connec
 	}
 }
 
+// Execute configures and generates the database connector
 func (g *ConnectorGenerator) Execute() error {
 	err := g.prepare()
 	if err != nil {
@@ -60,6 +64,7 @@ func (g *ConnectorGenerator) Execute() error {
 	return nil
 }
 
+// Prepare the template configuration data
 func (g *ConnectorGenerator) prepare() error {
 	def := g.Config.Connections["default"]
 	for _, m := range g.Models {

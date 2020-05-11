@@ -2,7 +2,6 @@ package routes
 
 import (
 	"bytes"
-	"strings"
 
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
@@ -10,51 +9,17 @@ import (
 	"github.com/dashotv/golem/tasks"
 )
 
+// GroupGenerator manages the creation of group routes
 type GroupGenerator struct {
 	*base.Generator
 	Config     *config.Config
 	Output     string
 	Name       string
-	Definition *GroupDefinition
+	Definition *Group
 }
 
-type GroupDefinition struct {
-	Repo   string
-	Name   string                      `json:"name" yaml:"name"`
-	Path   string                      `json:"path" yaml:"path"`
-	Method string                      `json:"method" yaml:"method"`
-	Routes map[string]*RouteDefinition `json:"routes" yaml:"routes"`
-}
-
-type RouteDefinition struct {
-	Repo   string
-	Name   string             `json:"name" yaml:"name"`
-	Path   string             `json:"path" yaml:"path"`
-	Method string             `json:"method" yaml:"method"`
-	Params []*ParamDefinition `json:"params" yaml:"params"`
-}
-
-func (d *RouteDefinition) GetMethod() string {
-	if d.Method != "" {
-		return strings.Title(d.Method)
-	}
-	return "Get"
-}
-
-type ParamDefinition struct {
-	Name    string `json:"name" yaml:"name"`
-	Type    string `json:"type" yaml:"type"`
-	Default string `json:"default" yaml:"default"`
-}
-
-func (d *ParamDefinition) GetType() string {
-	if d.Type != "" {
-		return strings.Title(d.Type)
-	}
-	return "String"
-}
-
-func NewGroupGenerator(cfg *config.Config, name string, d *GroupDefinition) *GroupGenerator {
+// NewGroupGenerator configures and returns an instance of GroupGenerator
+func NewGroupGenerator(cfg *config.Config, name string, d *Group) *GroupGenerator {
 	d.Name = name
 	d.Repo = cfg.Repo
 	return &GroupGenerator{
@@ -69,6 +34,7 @@ func NewGroupGenerator(cfg *config.Config, name string, d *GroupDefinition) *Gro
 	}
 }
 
+// Execute manages creation of group routes files with the template
 func (g *GroupGenerator) Execute() error {
 	r := tasks.NewRunner("generator:routes:group")
 
@@ -83,6 +49,7 @@ func (g *GroupGenerator) Execute() error {
 	return r.Run()
 }
 
+// prepare configures the data for the template
 func (g *GroupGenerator) prepare() error {
 	return nil
 }

@@ -22,7 +22,7 @@ var defaultImports = []string{
 	"go.mongodb.org/mongo-driver/mongo/options",
 }
 
-// Generator is the database model generator
+// ModelGenerator is the database model generator
 type ModelGenerator struct {
 	*base.Generator
 	Config     *config.Config
@@ -32,16 +32,7 @@ type ModelGenerator struct {
 	data       map[string]string
 }
 
-// ModelDefinition holds the data from the YAML model
-type Model struct {
-	Package string
-	Camel   string
-	Name    string
-	Type    string
-	Imports []string
-	Fields  []*Field
-}
-
+// NewModelGenerator creates and returns an instance of ModelGenerator
 func NewModelGenerator(cfg *config.Config, name, path string) (*ModelGenerator, error) {
 	d := &Model{}
 	err := base.ReadYaml(path, d)
@@ -66,6 +57,7 @@ func NewModelGenerator(cfg *config.Config, name, path string) (*ModelGenerator, 
 	return m, nil
 }
 
+// Execute generates the model file from the template
 func (m *ModelGenerator) Execute() error {
 	err := m.prepare()
 	if err != nil {
@@ -90,6 +82,7 @@ func (m *ModelGenerator) Execute() error {
 	return nil
 }
 
+// prepare configures the data for the template
 func (m *ModelGenerator) prepare() error {
 	m.Definition.Camel = strcase.ToCamel(m.Definition.Name)
 	m.data = map[string]string{
@@ -111,6 +104,7 @@ func (m *ModelGenerator) prepare() error {
 	return nil
 }
 
+// prepareImports configures the import data for the template
 func (m *ModelGenerator) prepareImports() error {
 	s := bytes.NewBufferString("")
 	list := append(m.Definition.Imports, defaultImports...)
@@ -129,6 +123,7 @@ func (m *ModelGenerator) prepareImports() error {
 	return nil
 }
 
+// prepareFields configures the field data for the template
 func (m *ModelGenerator) prepareFields() error {
 	s := bytes.NewBufferString("")
 	for _, fd := range m.Definition.Fields {

@@ -11,6 +11,7 @@ import (
 	"github.com/dashotv/golem/config"
 )
 
+// FileGenerator manages generic or simple file generation
 type FileGenerator struct {
 	*Generator
 	Config *config.Config
@@ -18,6 +19,7 @@ type FileGenerator struct {
 	Data   map[string]string
 }
 
+// NewFileGenerator creates and returns a FileGenerator
 func NewFileGenerator(cfg *config.Config, name string, path string, data map[string]string) *FileGenerator {
 	return &FileGenerator{
 		Config: cfg,
@@ -30,6 +32,7 @@ func NewFileGenerator(cfg *config.Config, name string, path string, data map[str
 	}
 }
 
+// Execute configures and generates a file
 func (f *FileGenerator) Execute() error {
 	err := templates.New(f.Name).Execute(f.Buffer, f.Data)
 	if err != nil {

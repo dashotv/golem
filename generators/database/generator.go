@@ -10,36 +10,47 @@ import (
 	"github.com/dashotv/golem/tasks"
 )
 
+// Generator manages the generation of all database related files
 type Generator struct {
 	Config *config.Config
 	Models []*ModelGenerator
 }
 
+// Execute configures and generates all of the database related files
 func (g *Generator) Execute() error {
 	runner := tasks.NewRunner("generator")
 	r := runner.Group("database")
 
 	source := g.Config.Models.Definitions
-	if !exists(source) {
+	if !tasks.PathExists(source) {
 		return fmt.Errorf("definitions directory doesn't exist: %s", source)
 	}
 
 	dest := g.Config.Models.Output
-	if !exists(dest) {
+	if !tasks.PathExists(dest) {
 		return fmt.Errorf("output directory doesn't exist: %s", dest)
 	}
 
 	if g.Config.Models.Enabled {
 		r.Add("generate models", g.processModels)
-		r.Add("generate schema", g.processSchema)
-		r.Add("generate connector", g.processConnector)
-		r.Add("generate document", g.processDocument)
-		// TODO: decide on using document and null decoder
+		r.Add("generate schema", func() error {
+			sg := NewSchemaGenerator(g.Config, g.Models)
+			return sg.Execute()
+		})
+		r.Add("generate connector", func() error {
+			cg := NewConnectorGenerator(g.Config, g.Models)
+			return cg.Execute()
+		})
+		r.Add("generate document", func() error {
+			dg := base.NewFileGenerator(g.Config, "database_document", "models/document.go", map[string]string{})
+			return dg.Execute()
+		})
 	}
 
 	return runner.Run()
 }
 
+// processModels walks all files in the model definitions path and generates model files for each
 func (g *Generator) processModels() error {
 	err := filepath.Walk(g.Config.Models.Definitions, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
@@ -55,30 +66,4 @@ func (g *Generator) processModels() error {
 		return m.Execute()
 	})
 	return err
-}
-
-func (g *Generator) processSchema() error {
-	sg, err := NewSchemaGenerator(g.Config, g.Models)
-	if err != nil {
-		return err
-	}
-
-	return sg.Execute()
-}
-
-func (g *Generator) processConnector() error {
-	cg := NewConnectorGenerator(g.Config, g.Models)
-	return cg.Execute()
-}
-
-func (g *Generator) processDocument() error {
-	dg := base.NewFileGenerator(g.Config, "database_document", "models/document.go", map[string]string{})
-	return dg.Execute()
-}
-
-func exists(path string) bool {
-	if _, err := os.Stat(path); !os.IsNotExist(err) {
-		return true
-	}
-	return false
 }
