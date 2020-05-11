@@ -49,5 +49,8 @@ func (g *GroupGenerator) Execute() error {
 
 // prepare configures the data for the template
 func (g *GroupGenerator) prepare() error {
+	for n, r := range g.Definition.Routes {
+		r.Name = n
+	}
 	return nil
 }

@@ -1,37 +1,49 @@
 package routes
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/iancoleman/strcase"
+)
 
 // Definition stores the configuration from the routes file
 type Definition struct {
-	Name   string
-	Repo   string
+	Repo   string            `json:"repo" yaml:"repo"`
+	Name   string            `json:"name" yaml:"name"`
 	Groups map[string]*Group `json:"groups" yaml:"groups"`
 	Routes map[string]*Route `json:"routes" yaml:"routes"`
 }
 
 // Group stores the configuration of the group
 type Group struct {
-	Repo   string
+	Repo   string            `json:"repo" yaml:"repo"`
 	Name   string            `json:"name" yaml:"name"`
 	Path   string            `json:"path" yaml:"path"`
 	Method string            `json:"method" yaml:"method"`
 	Routes map[string]*Route `json:"routes" yaml:"routes"`
 }
 
+func (g *Group) Camel() string {
+	return strcase.ToCamel(g.Name)
+}
+
 // Route stores the configuration of the route
 type Route struct {
-	Repo   string
+	Repo   string   `json:"repo" yaml:"repo"`
 	Name   string   `json:"name" yaml:"name"`
 	Path   string   `json:"path" yaml:"path"`
 	Method string   `json:"method" yaml:"method"`
 	Params []*Param `json:"params" yaml:"params"`
 }
 
+func (r *Route) Camel() string {
+	return strcase.ToCamel(r.Name)
+}
+
 // GetMethod returns the capitalized method of the route or the default get
-func (d *Route) GetMethod() string {
-	if d.Method != "" {
-		return strings.Title(d.Method)
+func (r *Route) GetMethod() string {
+	if r.Method != "" {
+		return strings.Title(r.Method)
 	}
 	return "Get"
 }

@@ -35,66 +35,66 @@ func Routes(s *server.Server) {
 func addHandler(c *gin.Context) {
 	url := web.QueryString(c, "url")
 
-	add(url)
+	Add(url)
 }
 
 func destroyHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 
-	destroy(infohash)
+	Destroy(infohash)
 }
 
 func indexHandler(c *gin.Context) {
 
-	index()
+	Index()
 }
 
 func labelHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 	label := web.QueryString(c, "label")
 
-	label(infohash, label)
+	Label(infohash, label)
 }
 
 func pauseHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 
-	pause(infohash)
+	Pause(infohash)
 }
 
 func removeHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 
-	remove(infohash)
+	Remove(infohash)
 }
 
 func resumeHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 
-	resume(infohash)
+	Resume(infohash)
 }
 
 func startHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 
-	start(infohash)
+	Start(infohash)
 }
 
 func stopHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 
-	stop(infohash)
+	Stop(infohash)
 }
 
 func wantHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 	files := web.QueryString(c, "files")
 
-	want(infohash, files)
+	Want(infohash, files)
 }
 
 func wantedHandler(c *gin.Context) {
 	infohash := web.QueryString(c, "infohash")
 
-	wanted(infohash)
+	Wanted(infohash)
 }
