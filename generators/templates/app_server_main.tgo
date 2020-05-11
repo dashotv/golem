@@ -52,8 +52,8 @@ func (s *Server) Start() error {
 func (s *Server) Routes() {
     s.Router.GET("/", homeIndex)
 
-    {{range .Routes -}}
-        {{.Name}}.Routes(s)
+    {{range $name, $group := .Groups -}}
+        {{$name}}.Routes(s)
     {{end}}
 }
 

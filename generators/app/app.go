@@ -54,11 +54,15 @@ func (g *Generator) Execute() error {
 		return g.Execute()
 	})
 	runner.Add("make server directory", tasks.NewMakeDirectoryTask(g.Name+"/server"))
-	runner.Add("create server main", func() error {
-		d := map[string]string{"Name": g.Name, "Repo": g.Repo}
-		g := base.NewFileGenerator(g.Config, "app_server_main", g.Name+"/server/main.go", d)
+	runner.Add("make server directory keep file", func() error {
+		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/server/.keep", map[string]string{})
 		return g.Execute()
 	})
+	//runner.Add("create server main", func() error {
+	//	d := map[string]string{"Name": g.Name, "Repo": g.Repo}
+	//	g := base.NewFileGenerator(g.Config, "app_server_main", g.Name+"/server/main.go", d)
+	//	return g.Execute()
+	//})
 	runner.Add("make models directory", tasks.NewMakeDirectoryTask(g.Name+"/models"))
 	runner.Add("make models directory keep file", func() error {
 		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})

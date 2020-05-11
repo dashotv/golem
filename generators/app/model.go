@@ -4,18 +4,14 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/dashotv/golem/tasks"
-
 	"github.com/iancoleman/strcase"
-
 	"github.com/pkg/errors"
-
-	"github.com/dashotv/golem/generators/templates"
-
-	"github.com/dashotv/golem/generators/database"
 
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
+	"github.com/dashotv/golem/generators/database"
+	"github.com/dashotv/golem/generators/templates"
+	"github.com/dashotv/golem/tasks"
 )
 
 type ModelDefinitionGenerator struct {
