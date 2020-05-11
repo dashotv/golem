@@ -43,7 +43,7 @@ func (g *ServerGenerator) Execute() error {
 
 	r.Add("prepare", g.prepare)
 	r.Add("template", func() error {
-		return templates.New("app_server_main").Execute(g.Buffer, g.Definition)
+		return templates.New("routes_server").Execute(g.Buffer, g.Definition)
 	})
 	r.Add("write", g.Write)
 	r.Add("format", g.Format)

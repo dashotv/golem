@@ -72,7 +72,7 @@ func (g *Generator) processConnector() error {
 }
 
 func (g *Generator) processDocument() error {
-	dg := base.NewFileGenerator(g.Config, "document", "models/document.go", map[string]string{})
+	dg := base.NewFileGenerator(g.Config, "database_document", "models/document.go", map[string]string{})
 	return dg.Execute()
 }
 

@@ -42,7 +42,7 @@ func (g *ConnectorGenerator) Execute() error {
 		return err
 	}
 
-	err = templates.New("connector").Execute(g.Buffer, g.Data)
+	err = templates.New("database_connector").Execute(g.Buffer, g.Data)
 	if err != nil {
 		return err
 	}

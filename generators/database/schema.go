@@ -44,7 +44,7 @@ func (g *SchemaGenerator) Execute() error {
 		return err
 	}
 
-	err = templates.New("schema").Execute(g.Buffer, g.Data)
+	err = templates.New("database_schema").Execute(g.Buffer, g.Data)
 	if err != nil {
 		return err
 	}

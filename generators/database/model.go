@@ -72,7 +72,7 @@ func (m *ModelGenerator) Execute() error {
 		return err
 	}
 
-	err = templates.New("model").Execute(m.Buffer, m.data)
+	err = templates.New("database_model").Execute(m.Buffer, m.data)
 	if err != nil {
 		return err
 	}
