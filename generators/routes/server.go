@@ -25,7 +25,7 @@ func NewServerGenerator(cfg *config.Config, d *Definition) *ServerGenerator {
 		Output:     cfg.Routes.Output,
 		Definition: d,
 		Generator: &base.Generator{
-			Filename: cfg.Routes.Output + "/server.go",
+			Filename: cfg.Path(cfg.Routes.Output, "server.go"),
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}
@@ -40,7 +40,7 @@ func (g *ServerGenerator) Execute() error {
 	r.Add("template", func() error {
 		return templates.New("routes_server").Execute(g.Buffer, g.Definition)
 	})
-	r.Add("write", g.Write)
+	r.Add("write "+g.Filename, g.Write)
 	r.Add("format", g.Format)
 	r.Add("server routes", func() error {
 		srg := NewServerRoutesGenerator(g.Config, g.Definition)
@@ -70,7 +70,7 @@ func NewServerRoutesGenerator(cfg *config.Config, d *Definition) *ServerRoutesGe
 		Output:     cfg.Routes.Output,
 		Definition: d,
 		Generator: &base.Generator{
-			Filename: cfg.Routes.Output + "/routes.go",
+			Filename: cfg.Path(cfg.Routes.Output, "routes.go"),
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}

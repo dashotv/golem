@@ -1,8 +1,14 @@
 package config
 
-import "github.com/pkg/errors"
+import (
+	"path/filepath"
+	"strings"
+
+	"github.com/pkg/errors"
+)
 
 type Config struct {
+	File   string
 	Name   string
 	Repo   string
 	Models struct {
@@ -31,6 +37,21 @@ type Connection struct {
 	URI        string
 	Database   string `json:"database"`
 	Collection string `json:"collection"`
+}
+
+func (c *Config) Root() string {
+	abs, err := filepath.Abs(c.File)
+	if err != nil {
+		return ""
+	}
+
+	return strings.Replace(abs, "/.golem/.golem.yaml", "", 1)
+}
+
+func (c *Config) Path(arg ...string) string {
+	list := []string{c.Root()}
+	list = append(list, arg...)
+	return strings.Join(list, "/")
 }
 
 func (c *Config) Validate() error {

@@ -95,4 +95,6 @@ func initConfig() {
 	if err := cfg.Validate(); err != nil {
 		logrus.Fatalf("failed to validate config: %s", err)
 	}
+
+	cfg.File = cfgFile
 }
