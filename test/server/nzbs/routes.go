@@ -18,13 +18,13 @@ var local = &context{}
 func Routes(s *server.Server) {
 	local.Server = s
 	r := s.Router.Group("/nzbs")
-	r.Get("/add", addHandler)
-	r.Get("/destroy", destroyHandler)
-	r.Get("/history", historyHandler)
-	r.Get("/", indexHandler)
-	r.Get("/pause", pauseHandler)
-	r.Get("/remove", removeHandler)
-	r.Get("/resume", resumeHandler)
+	r.GET("/add", addHandler)
+	r.GET("/destroy", destroyHandler)
+	r.GET("/history", historyHandler)
+	r.GET("/", indexHandler)
+	r.GET("/pause", pauseHandler)
+	r.GET("/remove", removeHandler)
+	r.GET("/resume", resumeHandler)
 
 }
 

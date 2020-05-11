@@ -18,17 +18,17 @@ var local = &context{}
 func Routes(s *server.Server) {
 	local.Server = s
 	r := s.Router.Group("/torrents")
-	r.Get("/add", addHandler)
-	r.Get("/destroy", destroyHandler)
-	r.Get("/", indexHandler)
-	r.Get("/stop", labelHandler)
-	r.Get("/pause", pauseHandler)
-	r.Get("/remove", removeHandler)
-	r.Get("/resume", resumeHandler)
-	r.Get("/start", startHandler)
-	r.Get("/stop", stopHandler)
-	r.Get("/want", wantHandler)
-	r.Get("/wanted", wantedHandler)
+	r.GET("/add", addHandler)
+	r.GET("/destroy", destroyHandler)
+	r.GET("/", indexHandler)
+	r.GET("/stop", labelHandler)
+	r.GET("/pause", pauseHandler)
+	r.GET("/remove", removeHandler)
+	r.GET("/resume", resumeHandler)
+	r.GET("/start", startHandler)
+	r.GET("/stop", stopHandler)
+	r.GET("/want", wantHandler)
+	r.GET("/wanted", wantedHandler)
 
 }
 

@@ -43,9 +43,9 @@ func (r *Route) Camel() string {
 // GetMethod returns the capitalized method of the route or the default get
 func (r *Route) GetMethod() string {
 	if r.Method != "" {
-		return strings.Title(r.Method)
+		return strcase.ToScreamingSnake(r.Method)
 	}
-	return "Get"
+	return "GET"
 }
 
 // Param stores the configuration of the parameter
