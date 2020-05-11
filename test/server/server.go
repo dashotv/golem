@@ -10,6 +10,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/dashotv/test/config"
+	"github.com/dashotv/test/server/nzbs"
+
+	"github.com/dashotv/test/server/torrents"
 )
 
 type Server struct {
@@ -51,6 +54,9 @@ func (s *Server) Start() error {
 
 func (s *Server) Routes() {
 	s.Router.GET("/", homeIndex)
+
+	nzbs.Routes(s)
+	torrents.Routes(s)
 
 }
 

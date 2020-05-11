@@ -64,6 +64,7 @@ func (g *Generator) Execute() error {
 		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/server/.keep", map[string]string{})
 		return g.Execute()
 	})
+	// TODO: separate server.go and routes.go. create server if it doesn't exist
 	runner.Add("make models directory", tasks.NewMakeDirectoryTask(g.Name+"/models"))
 	runner.Add("make models directory keep file", func() error {
 		g := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})

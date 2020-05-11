@@ -58,13 +58,28 @@ func (g *Generator) Execute() error {
 			sg := NewServerGenerator(g.Config, g.Definition)
 			return sg.Execute()
 		})
-		for name, group := range g.Definition.Groups {
-			r.Add("generate groups "+name, func() error {
+		//for name, group := range g.Definition.Groups {
+		//	group.Name = name
+		//	group.Repo = g.Config.Repo
+		//	r.Add(name, func() error {
+		//		fmt.Printf("name: %s\n", name)
+		//		rg := NewGroupGenerator(g.Config, name, group)
+		//		g.Groups = append(g.Groups, rg)
+		//		return rg.Execute()
+		//	})
+		//}
+		r.Add("group", func() error {
+			for name, group := range g.Definition.Groups {
+				group.Name = name
+				group.Repo = g.Config.Repo
 				rg := NewGroupGenerator(g.Config, name, group)
 				g.Groups = append(g.Groups, rg)
-				return rg.Execute()
-			})
-		}
+				if err := rg.Execute(); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
 	}
 
 	return runner.Run()

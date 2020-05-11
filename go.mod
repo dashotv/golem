@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/Kamva/mgm/v2 v2.0.0
+	github.com/davecgh/go-spew v1.1.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334
 	github.com/logrusorgru/aurora v0.0.0-20200102142835-e9ef32dff381

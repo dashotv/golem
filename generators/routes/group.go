@@ -20,15 +20,13 @@ type GroupGenerator struct {
 
 // NewGroupGenerator configures and returns an instance of GroupGenerator
 func NewGroupGenerator(cfg *config.Config, name string, d *Group) *GroupGenerator {
-	d.Name = name
-	d.Repo = cfg.Repo
 	return &GroupGenerator{
 		Config:     cfg,
 		Output:     cfg.Routes.Output,
 		Name:       name,
 		Definition: d,
 		Generator: &base.Generator{
-			Filename: cfg.Routes.Output + "/" + d.Name + "/routes.go",
+			Filename: cfg.Routes.Output + "/" + name + "/routes.go",
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}
@@ -37,14 +35,14 @@ func NewGroupGenerator(cfg *config.Config, name string, d *Group) *GroupGenerato
 // Execute manages creation of group routes files with the template
 func (g *GroupGenerator) Execute() error {
 	r := tasks.NewRunner("generator:routes:group")
-
+	dir := g.Config.Routes.Output + "/" + g.Definition.Name
 	r.Add("prepare", g.prepare)
-	r.Add("make directory", tasks.NewMakeDirectoryTask(g.Config.Routes.Output+"/"+g.Definition.Name))
+	r.Add("make directory: "+dir, tasks.NewMakeDirectoryTask(dir))
 	r.Add("template", func() error {
 		return templates.New("routes_group").Execute(g.Buffer, g.Definition)
 	})
-	r.Add("write", g.Write)
-	r.Add("format", g.Format)
+	r.Add("write: "+g.Filename, g.Write)
+	r.Add("format: "+g.Filename, g.Format)
 
 	return r.Run()
 }
