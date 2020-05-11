@@ -9,7 +9,9 @@ import (
     "github.com/pkg/errors"
     "github.com/sirupsen/logrus"
 
-    "{{.Repo}}/config"
+    "{{.Repo}}/config"{{range $name, $group := .Groups}}
+    "{{$.Repo}}/server/{{$name}}"
+    {{end}}
 )
 
 type Server struct {

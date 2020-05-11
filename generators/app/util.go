@@ -10,9 +10,7 @@ import (
 	"github.com/dashotv/golem/config"
 )
 
-func writeDefaultConfig(dir string) error {
-	cfg := config.DefaultConfig()
-
+func writeConfig(dir string, cfg *config.Config) error {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		err := os.Mkdir(dir, 0755)
 		if err != nil {

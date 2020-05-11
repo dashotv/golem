@@ -21,7 +21,10 @@ func (g *Generator) Execute() error {
 	runner := tasks.NewRunner("generator:app")
 	runner.Add("make app directory", tasks.NewMakeDirectoryTask(g.Name))
 	runner.Add("create default config", func() error {
-		return writeDefaultConfig(g.Name + "/.golem")
+		cfg := config.DefaultConfig()
+		cfg.Name = g.Name
+		cfg.Repo = g.Repo
+		return writeConfig(g.Name+"/.golem", cfg)
 	})
 	runner.Add("create application config", func() error {
 		return writeAppConfig(g.Name)
