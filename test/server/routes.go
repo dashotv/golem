@@ -12,8 +12,8 @@ import (
 func (s *Server) Routes() {
 	s.Router.GET("/", homeHandler)
 
-	nzbs.Routes(s)
-	torrents.Routes(s)
+	nzbs.Routes(s.Config, s.Router)
+	torrents.Routes(s.Config, s.Router)
 
 }
 

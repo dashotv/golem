@@ -9,28 +9,25 @@ import (
     "github.com/pkg/errors"
     "github.com/sirupsen/logrus"
 
+    "{{.Repo}}/application"
     "{{.Repo}}/config"{{range $name, $group := .Groups}}
     "{{$.Repo}}/server/{{$name}}"
     {{end}}
 )
 
+var cfg *config.Config
+var app *application.App
+
 type Server struct {
-    Config *config.Config
     Router *gin.Engine
     Log    *logrus.Entry
-    // additional server needs, e.g. cache client, database client, etc
 }
 
 func New(cfg *config.Config) (*Server, error) {
-    s := &Server{Config: cfg}
-
-    if cfg.Mode == "release" {
-        gin.SetMode(cfg.Mode)
-    }
-
-    host, _ := os.Hostname()
-    s.Log = logrus.WithField("prefix", host)
-    s.Log.Level = logrus.DebugLevel
+    cfg = config.Instance()
+    app = application.Instance()
+    log := app.Log.WithField("prefix", "server")
+    s := &Server{Log: log, Router: app.Router}
 
     return s, nil
 }
@@ -38,7 +35,6 @@ func New(cfg *config.Config) (*Server, error) {
 func (s *Server) Start() error {
     s.Log.Info("starting {{.Name}}...")
 
-    s.Router = gin.Default()
     s.Routes()
 
     //s.Jobs configuration

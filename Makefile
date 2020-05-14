@@ -19,4 +19,7 @@ new: build
 templates:
 	go-bindata -pkg templates -o generators/templates/bindata.go generators/templates/*.tgo
 
+install: build
+	go install
+
 .PHONY: test run templates

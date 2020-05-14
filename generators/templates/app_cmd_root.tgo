@@ -94,6 +94,7 @@ func initConfig() {
         return
     }
 
+    cfg = config.Instance()
     if err := viper.Unmarshal(cfg); err != nil {
         logrus.Fatalf("failed to unmarshal configuration file: %s", err)
     }

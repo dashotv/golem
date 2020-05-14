@@ -5,17 +5,19 @@ package {{.Name}}
 import (
     "github.com/gin-gonic/gin"
 
+    "{{.Repo}}/application"
+    "{{.Repo}}/config"
     "{{.Repo}}/server"
 )
 
-type context struct {
-    Server *server.Server
-}
-var local = &context{}
+var cfg *config.Config
+var app *application.App
 
-func Routes(s *server.Server) {
-    local.Server = s
-    r := s.Router.Group("{{.Path}}")
+func Routes() {
+    cfg = config.Instance()
+    app = application.Instance()
+
+    r := app.Router.Group("{{.Path}}")
     {{range $name, $route := .Routes -}}
         r.{{.GetMethod}}("{{.Path}}", {{$name}}Handler)
     {{end}}

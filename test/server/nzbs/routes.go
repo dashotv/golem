@@ -6,18 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/dashotv/golem/web"
-	"github.com/dashotv/test/server"
+	"github.com/dashotv/test/config"
 )
 
-type context struct {
-	Server *server.Server
-}
+var cfg *config.Config
 
-var local = &context{}
-
-func Routes(s *server.Server) {
-	local.Server = s
-	r := s.Router.Group("/nzbs")
+func Routes(c *config.Config, router *gin.Engine) {
+	cfg = c
+	r := router.Group("/nzbs")
 	r.GET("/add", addHandler)
 	r.GET("/destroy", destroyHandler)
 	r.GET("/history", historyHandler)
