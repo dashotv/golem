@@ -19,7 +19,7 @@ var instance *App
 type App struct {
 	Config *config.Config
 	Router *gin.Engine
-	Cache  *redis.Client
+	// Cache  *redis.Client
 	Log    *logrus.Entry
 	// Add additional clients and connections
 }
@@ -46,17 +46,17 @@ func initialize() *App {
 	router.Use(ginlogrus.Logger(log), gin.Recovery())
 
 	// TODO: add this to config
-	cache := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		DB:   15, // use default DB
-	})
+	// cache := redis.NewClient(&redis.Options{
+	//	Addr: "localhost:6379",
+	//	DB:   15, // use default DB
+	// })
 
 	// Add additional clients and connections
 
 	return &App{
 		Config:   cfg,
 		Router:   router,
-		Cache:    cache,
+		// Cache:    cache,
 		Log:      log,
 	}
 }

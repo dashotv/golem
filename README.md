@@ -51,22 +51,30 @@ This will generate an application similar to the following tree:
 
 ```
 blarg
-├── .blarg.yaml
-├── .golem
-│   └── .golem.yaml
 ├── LICENSE
+├── application
+│   └── app.go
 ├── cmd
 │   ├── root.go
 │   └── server.go
 ├── config
 │   └── config.go
-├── config.go
 ├── main.go
+├── models
+│   ├── connector.go
+│   ├── document.go
+│   ├── hello.go
+│   └── schema.go
 └── server
-    └── main.go
+    ├── releases
+    │   └── routes.go
+    ├── routes.go
+    └── server.go
 ```
 
-This structure is a `cobra` application, with the addition of a `config` package
+This structure is a `cobra` application, with the addition of a few additional
+pacakges. See `Anatomy` for more information.
+`config` package
 that manages configuration of the application and a `server` subcommand that
 runs the application for you. The `config` is also configured to automaticall
 unmarshal for you, with all the support from `viper` for environment and
@@ -78,3 +86,43 @@ used for generation.
 * `.golem/models`: contains yaml model definition files
 * `.golem/routes.yaml`: contains route definition files
 * `.golem/jobs.yaml`: contains job definition files
+
+## Anatomy
+
+A simple overview of the generated files.
+
+### Application
+
+The application package manages shared configuration and clients with all other
+aspects of the system.
+
+### Config
+
+A simple configuration structure setup to use `Viper` unmarshalling. Because the
+generated application is compatible with `Cobra` and `Viper` you can use
+functionality from those tools to support additional functionality like
+environment variable overrides.
+
+There is also a stubbed validation function which is configured to be called
+after `Viper` loads the configuration. If you look in `cmd/root.go` you can
+find the wiring that makes this possible, as well as the definitions for where
+to search for configurations files at runtime.
+
+### Models
+
+The generated model structures are placed here and include a `Connector` class
+which manges the connections to the database(s). Use the `models.NewConnector()`
+function to get an instance of the `Connector`.
+
+The generated models include a model object, a `Store` structure which handles interaction with
+the database, and a `Query` structure that gives you an easy interface to generating
+queries to the data.
+
+### Server
+
+`Golem` assumes that you are building an application to serve web requests and the
+`server` package is where all of this is wired up.
+
+For each of the `Group` of `Routes` defined in `.golem/routes.yaml` it generates
+a package which implements handler functions that automatically convert the
+parameters.

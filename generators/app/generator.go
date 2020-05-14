@@ -86,10 +86,10 @@ func (g *Generator) Execute() error {
 		fg := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})
 		return fg.Execute()
 	})
-	runner.Add("make application directory", tasks.NewMakeDirectoryTask(g.Config.Path("application")))
+	runner.Add("make application directory", tasks.NewMakeDirectoryTask(g.Name+"/application"))
 	runner.Add("make application app", func() error {
 		data := map[string]string{"Repo": g.Config.Repo}
-		fg := base.NewFileGenerator(g.Config, "app_application", g.Config.Path("application", "app.go"), data)
+		fg := base.NewFileGenerator(g.Config, "app_application", g.Name+"/application/app.go", data)
 		return fg.Execute()
 	})
 

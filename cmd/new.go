@@ -36,7 +36,7 @@ var newCmd = &cobra.Command{
 		name := args[0]
 		pkg := args[1]
 
-		g := app.NewAppGenerator(cfg, name, pkg)
+		g := app.NewGenerator(cfg, name, pkg)
 		if err := g.Execute(); err != nil {
 			logrus.Fatalf("error generating new app: %s", err)
 		}
