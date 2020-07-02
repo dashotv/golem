@@ -6,14 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/dashotv/golem/web"
+	"github.com/dashotv/test/application"
 	"github.com/dashotv/test/config"
 )
 
 var cfg *config.Config
+var app *application.App
 
-func Routes(c *config.Config, router *gin.Engine) {
-	cfg = c
-	r := router.Group("/torrents")
+func Routes() {
+	cfg = config.Instance()
+	app = application.Instance()
+
+	r := app.Router.Group("/torrents")
 	r.GET("/add", addHandler)
 	r.GET("/destroy", destroyHandler)
 	r.GET("/", indexHandler)

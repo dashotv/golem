@@ -14,8 +14,8 @@ import (
 )
 
 var defaultImports = []string{
-	"github.com/Kamva/mgm/v2",
-	"github.com/Kamva/mgm/v2/operator",
+	"github.com/Kamva/mgm/v3",
+	"github.com/Kamva/mgm/v3/operator",
 	"go.mongodb.org/mongo-driver/bson",
 	"go.mongodb.org/mongo-driver/bson/primitive",
 	"go.mongodb.org/mongo-driver/mongo",
