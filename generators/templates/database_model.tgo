@@ -40,7 +40,7 @@ func New{{.Name}}Store(URI, db, name string) (*{{.Name}}Store, error) {
     return store, nil
 }
 
-func (s *{{.Name}}Store) Find(id string) (*{{.Name}}, error) {
+func (s *{{.Name}}Store) FindByID(id primitive.ObjectID) (*{{.Name}}, error) {
     c := New{{.Name}}()
     err := s.Collection.FindByID(id, c)
     if err != nil {
@@ -48,6 +48,14 @@ func (s *{{.Name}}Store) Find(id string) (*{{.Name}}, error) {
     }
 
     return c, nil
+}
+
+func (s *{{.Name}}Store) Find(id string) (*{{.Name}}, error) {
+    oid, err := primitive.ObjectIDFromHex(id)
+    if err != nil {
+        return nil, err
+    }
+    return s.FindByID(oid)
 }
 
 func (s *{{.Name}}Store) Save(o *{{.Name}}) error {
