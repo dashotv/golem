@@ -28,6 +28,7 @@ func (g *Generator) Execute() error {
 		cfg := config.DefaultConfig()
 		cfg.Name = g.Name
 		cfg.Repo = g.Repo
+		cfg.Routes.Repo = g.Repo
 		return writeConfig(g.Name+"/.golem", cfg)
 	})
 	runner.Add("load default config", func() error {

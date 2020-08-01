@@ -23,7 +23,7 @@ type Server struct {
     Log    *logrus.Entry
 }
 
-func New(cfg *config.Config) (*Server, error) {
+func New() (*Server, error) {
     cfg = config.Instance()
     app = application.Instance()
     log := app.Log.WithField("prefix", "server")
