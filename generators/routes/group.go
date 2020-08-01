@@ -38,9 +38,15 @@ func (g *GroupGenerator) Execute() error {
 	dir := g.Config.Routes.Output + "/" + g.Definition.Name
 	r.Add("prepare", g.prepare)
 	r.Add("make directory: "+dir, tasks.NewMakeDirectoryTask(dir))
-	r.Add("template", func() error {
-		return templates.New("routes_group").Execute(g.Buffer, g.Definition)
-	})
+	if g.Definition.Rest == true {
+		r.Add("template", func() error {
+			return templates.New("routes_group_rest").Execute(g.Buffer, g.Definition)
+		})
+	} else {
+		r.Add("template", func() error {
+			return templates.New("routes_group").Execute(g.Buffer, g.Definition)
+		})
+	}
 	r.Add("write: "+g.Filename, g.Write)
 	r.Add("format: "+g.Filename, g.Format)
 

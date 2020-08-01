@@ -21,6 +21,7 @@ type Group struct {
 	Path   string            `json:"path" yaml:"path"`
 	Method string            `json:"method" yaml:"method"`
 	Routes map[string]*Route `json:"routes" yaml:"routes"`
+	Rest   bool              `json:"rest" yaml:"rest"`
 }
 
 func (g *Group) Camel() string {
