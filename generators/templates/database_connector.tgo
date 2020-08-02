@@ -16,9 +16,11 @@ var cfg *config.Config
 
 func NewConnector() (*Connector, error) {
     cfg = config.Instance()
+    var s *config.Connection
+    var err error
 
     {{range .Models -}}
-    s, err := settingsFor("{{.Name}}")
+    s, err = settingsFor("{{.Name}}")
     if err != nil {
         return nil, err
     }
@@ -27,6 +29,7 @@ func NewConnector() (*Connector, error) {
     if err != nil {
         return nil, err
     }
+
     {{end}}
     c := &Connector{
         {{range .Models -}}
