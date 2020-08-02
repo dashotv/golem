@@ -32,12 +32,25 @@ func writeConfig(dir string, cfg *config.Config) error {
 }
 
 type defaultAppConfig struct {
-	Mode string
-	Port int
+	Mode        string
+	Port        int
+	Connections map[string]*Connection
+}
+
+type Connection struct {
+	URI        string
+	Database   string `json:"database"`
+	Collection string `json:"collection"`
 }
 
 func writeAppConfig(name string) error {
 	cfg := &defaultAppConfig{Mode: "dev", Port: 3000}
+
+	cfg.Connections = make(map[string]*Connection)
+	cfg.Connections["default"] = &Connection{
+		URI:      "mongodb://localhost:27017",
+		Database: "database",
+	}
 
 	b, err := yaml.Marshal(cfg)
 	if err != nil {

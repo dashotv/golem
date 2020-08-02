@@ -20,11 +20,5 @@ func DefaultConfig() *Config {
 	cfg.Jobs.Output = "jobs"
 	cfg.Jobs.Definitions = ".golem/jobs.yaml"
 
-	cfg.Connections = make(map[string]*Connection)
-	cfg.Connections["default"] = &Connection{
-		URI:      "mongodb://localhost:27017",
-		Database: "database",
-	}
-
 	return cfg
 }
