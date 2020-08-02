@@ -51,5 +51,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	routeCmd.Flags().BoolVarP(&crud, "crud", "c", false, "generate Create/Retrieve/Update/Destroy routes")
+	routeCmd.Flags().BoolVarP(&crud, "rest", "r", false, "generate REST-style routes (Create/Retrieve/Update/Destroy)")
 }

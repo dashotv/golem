@@ -72,10 +72,11 @@ func (g *ModelDefinitionGenerator) prepare() {
 	for _, f := range g.Fields {
 		f := strings.Split(f, ":")
 		n := f[0]
-		t := f[1]
-		if t == "" {
-			t = "string"
+		t := "string"
+		if len(f) > 1 {
+			t = f[1]
 		}
+
 		g.Definition.Fields = append(g.Definition.Fields, &database.Field{Name: n, Type: t})
 	}
 }

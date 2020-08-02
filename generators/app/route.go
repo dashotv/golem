@@ -19,18 +19,21 @@ type RouteDefinitionGenerator struct {
 	Config     *config.Config
 	Name       string
 	Params     []string
-	Crud       bool
+	Rest       bool
 	Definition *routes.Definition
 }
 
 // NewRouteDefinitionGenerator creates and returns an instance of RouteDefinitionGenerator
-func NewRouteDefinitionGenerator(cfg *config.Config, name string, crud bool, params ...string) *RouteDefinitionGenerator {
+func NewRouteDefinitionGenerator(cfg *config.Config, name string, rest bool, params ...string) *RouteDefinitionGenerator {
+	if name[0] != '/' {
+		name = "/" + name
+	}
 	return &RouteDefinitionGenerator{
 		Config:     cfg,
 		Name:       name,
 		Params:     params,
 		Definition: &routes.Definition{},
-		Crud:       crud,
+		Rest:       rest,
 		Generator: &base.Generator{
 			Filename: ".golem/routes.yaml",
 			Buffer:   bytes.NewBufferString(""),
@@ -85,6 +88,11 @@ func (g *RouteDefinitionGenerator) prepareModify(rd *routes.Route) {
 // prepareCreate creates a new routes definition
 func (g *RouteDefinitionGenerator) prepareCreate() {
 	parts := strings.Split(g.Name, "/")
+	route := parts[1]
+	path := "index"
+	if len(parts) > 2 {
+		path = parts[2]
+	}
 
 	// ensure groups exists
 	if g.Definition.Groups == nil {
@@ -93,42 +101,44 @@ func (g *RouteDefinitionGenerator) prepareCreate() {
 
 	// ensure group exists
 	var gd *routes.Group
-	if g.Definition.Groups[parts[1]] != nil {
-		gd = g.Definition.Groups[parts[1]]
+	if g.Definition.Groups[route] != nil {
+		gd = g.Definition.Groups[route]
+		gd.Path = "/" + route
 	} else {
 		gd = &routes.Group{}
 		if g.Definition.Groups == nil {
 			g.Definition.Groups = make(map[string]*routes.Group)
 		}
-		g.Definition.Groups[parts[1]] = gd
+		g.Definition.Groups[route] = gd
+		gd.Path = route
 	}
-	gd.Path = "/" + parts[1]
+
+	if g.Rest {
+		gd.Rest = true
+		return
+	}
 
 	// ensure route exists
 	var rd *routes.Route
-	if gd.Routes[parts[2]] != nil {
-		rd = gd.Routes[parts[2]]
+	if gd.Routes[path] != nil {
+		rd = gd.Routes[path]
+		rd.Path = "/" + path
 	} else {
 		rd = &routes.Route{}
 		if gd.Routes == nil {
 			gd.Routes = make(map[string]*routes.Route)
 		}
-		gd.Routes[parts[2]] = rd
+		gd.Routes[path] = rd
 	}
-	rd.Path = "/" + parts[2]
 
-	if g.Crud {
-		// add crud routes
-	} else {
-		for _, f := range g.Params {
-			f := strings.Split(f, ":")
-			n := f[0]
-			t := f[1]
-			if t == "" {
-				t = "string"
-			}
-			rd.Params = append(rd.Params, &routes.Param{Name: n, Type: t})
+	for _, f := range g.Params {
+		f := strings.Split(f, ":")
+		n := f[0]
+		t := "string"
+		if len(f) > 1 {
+			t = f[1]
 		}
+		rd.Params = append(rd.Params, &routes.Param{Name: n, Type: t})
 	}
 }
 
