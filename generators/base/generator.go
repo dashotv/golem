@@ -7,7 +7,7 @@ import (
 	"os/exec"
 
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // Generator is the base generate for all other generators
