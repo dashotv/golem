@@ -108,7 +108,7 @@ func generatorsTemplatesApp_applicationTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_application.tgo", size: 1470, mode: os.FileMode(420), modTime: time.Unix(1596315641, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_application.tgo", size: 1470, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -128,7 +128,7 @@ func generatorsTemplatesApp_cmd_rootTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_cmd_root.tgo", size: 3310, mode: os.FileMode(420), modTime: time.Unix(1589450016, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_cmd_root.tgo", size: 3310, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -148,7 +148,7 @@ func generatorsTemplatesApp_cmd_serverTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_cmd_server.tgo", size: 1504, mode: os.FileMode(420), modTime: time.Unix(1596316395, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_cmd_server.tgo", size: 1504, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -168,7 +168,7 @@ func generatorsTemplatesApp_config_configTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_config_config.tgo", size: 1236, mode: os.FileMode(420), modTime: time.Unix(1596325316, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_config_config.tgo", size: 1236, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -188,7 +188,7 @@ func generatorsTemplatesApp_licenseTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_license.tgo", size: 11358, mode: os.FileMode(420), modTime: time.Unix(1588828128, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_license.tgo", size: 11358, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -208,7 +208,7 @@ func generatorsTemplatesApp_mainTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_main.tgo", size: 681, mode: os.FileMode(420), modTime: time.Unix(1589005060, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_main.tgo", size: 681, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -228,7 +228,7 @@ func generatorsTemplatesApp_model_yamlTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_model_yaml.tgo", size: 121, mode: os.FileMode(420), modTime: time.Unix(1589004738, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_model_yaml.tgo", size: 121, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -248,7 +248,7 @@ func generatorsTemplatesApp_routes_yamlTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/app_routes_yaml.tgo", size: 694, mode: os.FileMode(420), modTime: time.Unix(1596349517, 0)}
+	info := bindataFileInfo{name: "generators/templates/app_routes_yaml.tgo", size: 694, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -268,7 +268,7 @@ func generatorsTemplatesDatabase_connectorTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/database_connector.tgo", size: 1217, mode: os.FileMode(420), modTime: time.Unix(1596330673, 0)}
+	info := bindataFileInfo{name: "generators/templates/database_connector.tgo", size: 1217, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -288,7 +288,7 @@ func generatorsTemplatesDatabase_documentTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/database_document.tgo", size: 1710, mode: os.FileMode(420), modTime: time.Unix(1593727219, 0)}
+	info := bindataFileInfo{name: "generators/templates/database_document.tgo", size: 1710, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -308,7 +308,7 @@ func generatorsTemplatesDatabase_modelTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/database_model.tgo", size: 4143, mode: os.FileMode(420), modTime: time.Unix(1596330422, 0)}
+	info := bindataFileInfo{name: "generators/templates/database_model.tgo", size: 4143, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -328,7 +328,7 @@ func generatorsTemplatesDatabase_schemaTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/database_schema.tgo", size: 574, mode: os.FileMode(420), modTime: time.Unix(1588591734, 0)}
+	info := bindataFileInfo{name: "generators/templates/database_schema.tgo", size: 574, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -348,7 +348,7 @@ func generatorsTemplatesKeepTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/keep.tgo", size: 41, mode: os.FileMode(420), modTime: time.Unix(1589005504, 0)}
+	info := bindataFileInfo{name: "generators/templates/keep.tgo", size: 41, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -368,7 +368,7 @@ func generatorsTemplatesRoutes_groupTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/routes_group.tgo", size: 749, mode: os.FileMode(420), modTime: time.Unix(1594194853, 0)}
+	info := bindataFileInfo{name: "generators/templates/routes_group.tgo", size: 749, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -388,7 +388,7 @@ func generatorsTemplatesRoutes_group_restTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/routes_group_rest.tgo", size: 871, mode: os.FileMode(420), modTime: time.Unix(1596317466, 0)}
+	info := bindataFileInfo{name: "generators/templates/routes_group_rest.tgo", size: 871, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -408,7 +408,7 @@ func generatorsTemplatesRoutes_routesTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/routes_routes.tgo", size: 513, mode: os.FileMode(420), modTime: time.Unix(1589449856, 0)}
+	info := bindataFileInfo{name: "generators/templates/routes_routes.tgo", size: 513, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -428,7 +428,7 @@ func generatorsTemplatesRoutes_serverTgo() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "generators/templates/routes_server.tgo", size: 920, mode: os.FileMode(420), modTime: time.Unix(1596316453, 0)}
+	info := bindataFileInfo{name: "generators/templates/routes_server.tgo", size: 920, mode: os.FileMode(420), modTime: time.Unix(1602971788, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
