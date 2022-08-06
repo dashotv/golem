@@ -2,10 +2,9 @@ package database
 
 import (
 	"bytes"
+	"github.com/dashotv/golem/templates"
 	"strings"
 	"text/template"
-
-	"github.com/dashotv/golem/generators/templates"
 
 	"github.com/iancoleman/strcase"
 

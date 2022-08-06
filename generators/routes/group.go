@@ -2,10 +2,10 @@ package routes
 
 import (
 	"bytes"
+	"github.com/dashotv/golem/templates"
 
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
-	"github.com/dashotv/golem/generators/templates"
 	"github.com/dashotv/golem/tasks"
 )
 

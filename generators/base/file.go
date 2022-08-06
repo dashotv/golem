@@ -6,9 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/dashotv/golem/generators/templates"
-
 	"github.com/dashotv/golem/config"
+	"github.com/dashotv/golem/templates"
 )
 
 // FileGenerator manages generic or simple file generation

@@ -6,8 +6,6 @@ import (
 	"text/template"
 )
 
-const DIR = "generators/templates"
-
 type Blueprint struct {
 	Name     string
 	Template *template.Template
@@ -20,9 +18,9 @@ func New(name string) *Blueprint {
 }
 
 func (b *Blueprint) readTemplate() (string, error) {
-	filename := fmt.Sprintf("%s/%s.tgo", DIR, b.Name)
+	filename := fmt.Sprintf("%s.tgo", b.Name)
 
-	text, err := Asset(filename)
+	text, err := content.ReadFile(filename)
 	if err != nil {
 		return "", err
 	}

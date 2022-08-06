@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"github.com/dashotv/golem/templates"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -10,7 +11,6 @@ import (
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
 	"github.com/dashotv/golem/generators/database"
-	"github.com/dashotv/golem/generators/templates"
 	"github.com/dashotv/golem/tasks"
 )
 
