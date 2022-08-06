@@ -1,9 +1,8 @@
-module golem
+module github.com/dashotv/golem
 
-go 1.17
+go 1.18
 
 require (
-	github.com/dashotv/golem v0.0.0-20200804213207-b3bb1ced83f6
 	github.com/gin-gonic/gin v1.8.1
 	github.com/iancoleman/strcase v0.2.0
 	github.com/logrusorgru/aurora v2.0.3+incompatible
