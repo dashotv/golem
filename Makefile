@@ -19,7 +19,7 @@ new: build
 	cd ../blarg && ../golem/golem generate
 
 templates:
-	go-bindata -pkg templates -o generators/templates/bindata.go generators/templates/*.tgo
+	cd generators/templates/ && go-bindata -pkg templates -o bindata.go *.tgo
 
 install: build
 	go install
