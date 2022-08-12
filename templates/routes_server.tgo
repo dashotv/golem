@@ -21,7 +21,7 @@ type Server struct {
     Router *gin.Engine
 }
 
-func New() (*Server, error) {
+func NewServer() (*Server, error) {
     app := Instance()
     s := &Server{
         App:    app,
