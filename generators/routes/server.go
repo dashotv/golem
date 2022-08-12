@@ -2,6 +2,7 @@ package routes
 
 import (
 	"bytes"
+
 	"github.com/dashotv/golem/templates"
 
 	"github.com/dashotv/golem/tasks"
@@ -35,7 +36,6 @@ func NewServerGenerator(cfg *config.Config, d *Definition) *ServerGenerator {
 func (g *ServerGenerator) Execute() error {
 	r := tasks.NewRunner("generator:routes:server")
 
-	r.Add("directory", tasks.NewMakeDirectoryTask("server"))
 	r.Add("prepare", g.prepare)
 	r.Add("template", func() error {
 		return templates.New("routes_server").Execute(g.Buffer, g.Definition)
