@@ -10,14 +10,14 @@ import (
     "{{.Repo}}/server"
 )
 
-var cfg *config.Config
-var app *application.App
+var cfg *app.Config
+var app *app.App
 
 func Routes() {
-    cfg = config.Instance()
-    app = application.Instance()
+    appl = app.Instance()
+    cfg = app.ConfigInstance()
 
-    r := app.Router.Group("{{.Path}}")
+    r := appl.Router.Group("{{.Path}}")
 	r.GET("/", indexHandler)
 	r.POST("/", createHandler)
 	r.GET("/:id", showHandler)
