@@ -12,7 +12,7 @@ func DefaultConfig() *Config {
 
 	cfg.Routes.Enabled = true
 	cfg.Routes.Repo = "github.com/dashotv/blarg"
-	cfg.Routes.Output = "server"
+	cfg.Routes.Output = "app"
 	cfg.Routes.Definition = ".golem/routes.yaml"
 
 	cfg.Jobs.Enabled = false

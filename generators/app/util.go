@@ -43,7 +43,7 @@ type Connection struct {
 	Collection string `json:"collection"`
 }
 
-func writeAppConfig(name string) error {
+func writeAppConfig(name string, dir string) error {
 	cfg := &defaultAppConfig{Mode: "dev", Port: 3000}
 
 	cfg.Connections = make(map[string]*Connection)
@@ -57,7 +57,7 @@ func writeAppConfig(name string) error {
 		return errors.Wrap(err, "could not marshal config")
 	}
 
-	err = ioutil.WriteFile(name+"/."+name+".yaml", b, 0644)
+	err = ioutil.WriteFile(dir+"/."+name+".yaml", b, 0644)
 	if err != nil {
 		return errors.Wrap(err, "could not write config")
 	}

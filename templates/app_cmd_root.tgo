@@ -23,11 +23,11 @@ import (
     "github.com/spf13/cobra"
     "github.com/spf13/viper"
 
-    "{{.Repo}}/config"
+    "{{.Repo}}/app"
 )
 
 var cfgFile string
-var cfg *config.Config
+var cfg *app.Config
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

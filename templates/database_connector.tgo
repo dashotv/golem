@@ -3,8 +3,10 @@ package {{.Package}}
 import (
 	"fmt"
 
-	"{{.Repo}}/config"
+	"{{.Repo}}/app"
 )
+
+var cfg *app.Config
 
 type Connector struct {
     {{range .Models -}}
@@ -12,11 +14,9 @@ type Connector struct {
     {{end}}
 }
 
-var cfg *config.Config
-
 func NewConnector() (*Connector, error) {
-    cfg = config.Instance()
-    var s *config.Connection
+    cfg = app.ConfigInstance()
+    var s *app.Connection
     var err error
 
     {{range .Models -}}
@@ -40,7 +40,7 @@ func NewConnector() (*Connector, error) {
     return c, nil
 }
 
-func settingsFor(name string) (*config.Connection, error) {
+func settingsFor(name string) (*app.Connection, error) {
     if cfg.Connections["default"] == nil {
         return nil, fmt.Errorf("no connection configuration for %s", name)
     }

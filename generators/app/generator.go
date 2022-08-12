@@ -39,10 +39,10 @@ func (g *Generator) Execute() error {
 		g.Config.File = g.Name + "/.golem/.golem.yaml"
 		return nil
 	})
-	runner.Add("create application config", func() error {
-		return writeAppConfig(g.Name)
+	runner.Add("create config file", func() error {
+		return writeAppConfig(g.Name, g.Name)
 	})
-	runner.Add("create application main", func() error {
+	runner.Add("create main", func() error {
 		d := map[string]string{"Repo": g.Repo}
 		fg := base.NewFileGenerator(g.Config, "app_main", g.Name+"/main.go", d)
 		return fg.Execute()
@@ -52,10 +52,16 @@ func (g *Generator) Execute() error {
 		fg := base.NewFileGenerator(g.Config, "app_license", g.Name+"/LICENSE", d)
 		return fg.Execute()
 	})
-	runner.Add("make config directory", tasks.NewMakeDirectoryTask(g.Name+"/config"))
+	runner.Add("make application directory", tasks.NewMakeDirectoryTask(g.Name+"/app"))
+	runner.Add("make application app", func() error {
+		data := map[string]string{"Repo": g.Config.Repo}
+		fg := base.NewFileGenerator(g.Config, "app_app", g.Name+"/app/app.go", data)
+		return fg.Execute()
+	})
+	runner.Add("make config directory", tasks.NewMakeDirectoryTask(g.Name+"/app"))
 	runner.Add("create application config", func() error {
 		d := map[string]string{}
-		fg := base.NewFileGenerator(g.Config, "app_config_config", g.Name+"/config/config.go", d)
+		fg := base.NewFileGenerator(g.Config, "app_config_config", g.Name+"/app/config.go", d)
 		return fg.Execute()
 	})
 	runner.Add("make command directory", tasks.NewMakeDirectoryTask(g.Name+"/cmd"))
@@ -69,13 +75,24 @@ func (g *Generator) Execute() error {
 		fg := base.NewFileGenerator(g.Config, "app_cmd_server", g.Name+"/cmd/server.go", d)
 		return fg.Execute()
 	})
-	runner.Add("make server directory", tasks.NewMakeDirectoryTask(g.Name+"/server"))
-	runner.Add("make server directory keep file", func() error {
-		fg := base.NewFileGenerator(g.Config, "keep", g.Name+"/server/.keep", map[string]string{})
+	runner.Add("create makefile", func() error {
+		fg := base.NewFileGenerator(g.Config, "makefile", g.Name+"/Makefile", map[string]string{"Name": g.Name})
 		return fg.Execute()
 	})
+	runner.Add("create dockerfile", func() error {
+		fg := base.NewFileGenerator(g.Config, "dockerfile", g.Name+"/Dockerfile", map[string]string{"Binary": g.Name})
+		return fg.Execute()
+	})
+	runner.Add("make production directory", tasks.NewMakeDirectoryTask(g.Name+"/production"))
+	runner.Add("create production dockerfile", func() error {
+		fg := base.NewFileGenerator(g.Config, "production_dockerfile", g.Name+"/production/Dockerfile", map[string]string{"Binary": g.Name})
+		return fg.Execute()
+	})
+	runner.Add("create production config file", func() error {
+		return writeAppConfig(g.Name, g.Name+"/production")
+	})
 	runner.Add("create server main", func() error {
-		if tasks.PathExists(g.Name + "/server/server.go") {
+		if tasks.PathExists(g.Name + "/app/server.go") {
 			return nil
 		}
 		d := &routes.Definition{Name: g.Name, Repo: g.Repo}
@@ -85,12 +102,6 @@ func (g *Generator) Execute() error {
 	runner.Add("make models directory", tasks.NewMakeDirectoryTask(g.Name+"/models"))
 	runner.Add("make models directory keep file", func() error {
 		fg := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})
-		return fg.Execute()
-	})
-	runner.Add("make application directory", tasks.NewMakeDirectoryTask(g.Name+"/application"))
-	runner.Add("make application app", func() error {
-		data := map[string]string{"Repo": g.Config.Repo}
-		fg := base.NewFileGenerator(g.Config, "app_application", g.Name+"/application/app.go", data)
 		return fg.Execute()
 	})
 

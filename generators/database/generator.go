@@ -42,7 +42,7 @@ func (g *Generator) Execute() error {
 			return cg.Execute()
 		})
 		r.Add("generate document", func() error {
-			dg := base.NewFileGenerator(g.Config, "database_document", "models/document.go", map[string]string{})
+			dg := base.NewFileGenerator(g.Config, "database_decoder", "models/decoder.go", map[string]string{})
 			return dg.Execute()
 		})
 	}

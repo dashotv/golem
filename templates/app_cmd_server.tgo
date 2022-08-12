@@ -19,7 +19,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	"{{.Repo}}/server"
+	"{{.Repo}}/app"
 )
 
 // serverCmd represents the server command
