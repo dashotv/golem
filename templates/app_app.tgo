@@ -36,7 +36,7 @@ func logger() *logrus.Entry {
 	logrus.SetLevel(logrus.InfoLevel)
 	logrus.SetFormatter(&prefixed.TextFormatter{DisableTimestamp: false, FullTimestamp: true})
 	host, _ := os.Hostname()
-	return logrus.WithField("prefix", host)
+	return logrus.WithField("prefix", "app")
 }
 
 func initialize() *App {
