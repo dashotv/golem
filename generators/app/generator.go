@@ -101,7 +101,7 @@ func (g *Generator) Execute() error {
 	})
 	runner.Add("make models directory", tasks.NewMakeDirectoryTask(g.Name+"/models"))
 	runner.Add("make models directory keep file", func() error {
-		fg := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/.keep", map[string]string{})
+		fg := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/keep.go", map[string]string{})
 		return fg.Execute()
 	})
 
