@@ -2,24 +2,14 @@ package database
 
 import (
 	"bytes"
-	"github.com/dashotv/golem/templates"
 	"strings"
-	"text/template"
 
 	"github.com/iancoleman/strcase"
 
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
+	"github.com/dashotv/golem/templates"
 )
-
-var defaultImports = []string{
-	"github.com/kamva/mgm/v3",
-	"github.com/kamva/mgm/v3/operator",
-	"go.mongodb.org/mongo-driver/bson",
-	"go.mongodb.org/mongo-driver/bson/primitive",
-	"go.mongodb.org/mongo-driver/mongo",
-	"go.mongodb.org/mongo-driver/mongo/options",
-}
 
 // ModelGenerator is the database model generator
 type ModelGenerator struct {
@@ -48,7 +38,7 @@ func NewModelGenerator(cfg *config.Config, name, path string) (*ModelGenerator, 
 		Definition: d,
 		data:       make(map[string]string),
 		Generator: &base.Generator{
-			Filename: cfg.Models.Output + "/" + parts[0] + ".go",
+			Filename: cfg.Models.Output + "/models_" + parts[0] + ".go",
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}
@@ -90,35 +80,11 @@ func (m *ModelGenerator) prepare() error {
 		"Type":    m.Definition.Type,
 	}
 
-	err := m.prepareImports()
+	err := m.prepareFields()
 	if err != nil {
 		return err
 	}
 
-	err = m.prepareFields()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// prepareImports configures the import data for the template
-func (m *ModelGenerator) prepareImports() error {
-	s := bytes.NewBufferString("")
-	list := append(m.Definition.Imports, defaultImports...)
-	for _, i := range list {
-		t, err := template.New("import").Parse(`    "{{.}}"` + "\n")
-		if err != nil {
-			return err
-		}
-
-		err = t.Execute(s, i)
-		if err != nil {
-			return err
-		}
-	}
-	m.data["Imports"] = s.String()
 	return nil
 }
 

@@ -6,8 +6,8 @@ func DefaultConfig() *Config {
 	cfg.Repo = "github.com/dashotv/test"
 
 	cfg.Models.Enabled = true
-	cfg.Models.Package = "models"
-	cfg.Models.Output = "models"
+	cfg.Models.Package = "app"
+	cfg.Models.Output = "app"
 	cfg.Models.Definitions = ".golem/models"
 
 	cfg.Routes.Enabled = true

@@ -26,7 +26,7 @@ func App() *Application {
 type Application struct {
 	Config *Config
 	Router *gin.Engine
-	DB *models.Connector
+	DB *Connector
 	// Cache  *redis.Client
 	Log    *logrus.Entry
 	// Add additional clients and connections
@@ -42,7 +42,7 @@ func initialize() *Application {
 	cfg := ConfigInstance()
 	log := logger()
 
-	db, err := models.NewConnector()
+	db, err := NewConnector()
 	if err != nil {
 		log.Errorf("database connection failed: %s", err)
 	}

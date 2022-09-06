@@ -34,7 +34,7 @@ func NewConnectorGenerator(cfg *config.Config, models []*ModelGenerator) *Connec
 			Repo:    cfg.Repo,
 		},
 		Generator: &base.Generator{
-			Filename: cfg.Models.Output + "/connector.go",
+			Filename: cfg.Models.Output + "/models_connector.go",
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}

@@ -99,11 +99,6 @@ func (g *Generator) Execute() error {
 		sg := routes.NewServerGenerator(g.Config, d)
 		return sg.Execute()
 	})
-	runner.Add("make models directory", tasks.NewMakeDirectoryTask(g.Name+"/models"))
-	runner.Add("make models directory keep file", func() error {
-		fg := base.NewFileGenerator(g.Config, "keep", g.Name+"/models/keep.go", map[string]string{})
-		return fg.Execute()
-	})
 
 	err := runner.Run()
 	if err != nil {
