@@ -39,5 +39,7 @@ func (b *Blueprint) Execute(buf *bytes.Buffer, data interface{}) error {
 		return err
 	}
 
+	//fmt.Printf("template %s\n%# v\n", b.Name, pretty.Formatter(data))
+
 	return b.Template.Execute(buf, data)
 }

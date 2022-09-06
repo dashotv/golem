@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/dashotv/golem/config"
-	"github.com/dashotv/golem/generators/base"
 	"github.com/dashotv/golem/tasks"
 )
 
@@ -33,18 +32,18 @@ func (g *Generator) Execute() error {
 
 	if g.Config.Models.Enabled {
 		r.Add("generate models", g.processModels)
-		r.Add("generate schema", func() error {
-			sg := NewSchemaGenerator(g.Config, g.Models)
-			return sg.Execute()
-		})
+		//r.Add("generate schema", func() error {
+		//	sg := NewSchemaGenerator(g.Config, g.Models)
+		//	return sg.Execute()
+		//})
 		r.Add("generate connector", func() error {
 			cg := NewConnectorGenerator(g.Config, g.Models)
 			return cg.Execute()
 		})
-		r.Add("generate document", func() error {
-			dg := base.NewFileGenerator(g.Config, "database_decoder", "models/decoder.go", map[string]string{})
-			return dg.Execute()
-		})
+		//r.Add("generate document", func() error {
+		//	dg := base.NewFileGenerator(g.Config, "database_decoder", "models/decoder.go", map[string]string{})
+		//	return dg.Execute()
+		//})
 	}
 
 	return runner.Run()

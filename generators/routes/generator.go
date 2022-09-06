@@ -58,28 +58,6 @@ func (g *Generator) Execute() error {
 			sg := NewServerRoutesGenerator(g.Config, g.Definition)
 			return sg.Execute()
 		})
-		//for name, group := range g.Definition.Groups {
-		//	group.Name = name
-		//	group.Repo = g.Config.Repo
-		//	r.Add(name, func() error {
-		//		fmt.Printf("name: %s\n", name)
-		//		rg := NewGroupGenerator(g.Config, name, group)
-		//		g.Groups = append(g.Groups, rg)
-		//		return rg.Execute()
-		//	})
-		//}
-		r.Add("group", func() error {
-			for name, group := range g.Definition.Groups {
-				group.Name = name
-				group.Repo = g.Config.Repo
-				rg := NewGroupGenerator(g.Config, name, group)
-				g.Groups = append(g.Groups, rg)
-				if err := rg.Execute(); err != nil {
-					return err
-				}
-			}
-			return nil
-		})
 	}
 
 	return runner.Run()
@@ -89,6 +67,45 @@ func (g *Generator) Execute() error {
 func (g *Generator) prepare() error {
 	if err := base.ReadYaml(g.Config.Routes.Definition, g.Definition); err != nil {
 		return err
+	}
+
+	for name, group := range g.Definition.Groups {
+		if group.Method == "" {
+			group.Method = "GET"
+		}
+		if group.Path[0] != '/' {
+			group.Path = "/" + group.Path
+		}
+		if group.Rest {
+			group.Routes = map[string]*Route{
+				"index": &Route{
+					Method: "GET",
+					Name:   name + strings.Title("index"),
+				},
+				"create": &Route{
+					Method: "POST",
+					Name:   name + strings.Title("create"),
+				},
+				"show": &Route{
+					Method: "GET",
+					Name:   name + strings.Title("show"),
+				},
+				"update": &Route{
+					Method: "PUT",
+					Name:   name + strings.Title("update"),
+				},
+				"delete": &Route{
+					Method: "DELETE",
+					Name:   name + strings.Title("delete"),
+				},
+			}
+		}
+		for rn, route := range group.Routes {
+			if route.Path == "" {
+				route.Path = "/"
+			}
+			route.Name = name + strings.Title(rn)
+		}
 	}
 	return nil
 }

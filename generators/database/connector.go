@@ -2,10 +2,10 @@ package database
 
 import (
 	"bytes"
-	"github.com/dashotv/golem/templates"
 
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
+	"github.com/dashotv/golem/templates"
 )
 
 // ConnectorGenerator manages generation of the database connector

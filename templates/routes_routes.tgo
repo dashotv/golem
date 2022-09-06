@@ -6,17 +6,16 @@ import (
     "net/http"
 
     "github.com/gin-gonic/gin"
-
-    {{range $name, $group := .Groups -}}
-    "{{$.Repo}}/app/{{$name}}"
-    {{end}}
 )
 
 func (s *Server) Routes() {
     s.Router.GET("/", homeHandler)
 
     {{range $name, $group := .Groups -}}
-        {{$name}}.Routes()
+        {{$name}} := s.Router.Group("{{.Path}}")
+    {{range $rn, $route := .Routes -}}
+    {{$name}}.{{.GetMethod}}("{{.Path}}", {{$route.Name}}Handler)
+    {{end}}
     {{end}}
 }
 
@@ -27,3 +26,16 @@ func homeHandler(c *gin.Context) {
 func Index(c *gin.Context) {
     c.String(http.StatusOK, "home")
 }
+
+{{range $name, $group := .Groups -}}
+// {{.Path}}
+    {{range $rn, $route := .Routes -}}
+    func {{$route.Name}}Handler(c *gin.Context) {
+        {{range .Params -}}
+            {{.Name}} := web.Query{{.GetType}}(c, "{{.Name}}")
+        {{end}}
+        {{$route.Camel}}(c, {{range .Params -}}{{.Name}},{{- end}})
+    }
+
+    {{end}}
+{{end}}

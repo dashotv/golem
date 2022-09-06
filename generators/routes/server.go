@@ -40,7 +40,7 @@ func (g *ServerGenerator) Execute() error {
 	r.Add("template", func() error {
 		return templates.New("routes_server").Execute(g.Buffer, g.Definition)
 	})
-	r.Add("write "+g.Filename, g.Write)
+	r.Add("write", g.Write)
 	r.Add("format", g.Format)
 	r.Add("server routes", func() error {
 		srg := NewServerRoutesGenerator(g.Config, g.Definition)

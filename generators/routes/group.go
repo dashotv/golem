@@ -2,7 +2,6 @@ package routes
 
 import (
 	"bytes"
-	"github.com/dashotv/golem/templates"
 
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators/base"
@@ -26,7 +25,7 @@ func NewGroupGenerator(cfg *config.Config, name string, d *Group) *GroupGenerato
 		Name:       name,
 		Definition: d,
 		Generator: &base.Generator{
-			Filename: cfg.Routes.Output + "/" + name + "/routes.go",
+			Filename: cfg.Routes.Output + "/routs_" + name + ".go",
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}
@@ -35,21 +34,7 @@ func NewGroupGenerator(cfg *config.Config, name string, d *Group) *GroupGenerato
 // Execute manages creation of group routes files with the template
 func (g *GroupGenerator) Execute() error {
 	r := tasks.NewRunner("generator:routes:" + g.Name)
-	dir := g.Config.Routes.Output + "/" + g.Definition.Name
 	r.Add("prepare", g.prepare)
-	r.Add("make directory: "+dir, tasks.NewMakeDirectoryTask(dir))
-	if g.Definition.Rest == true {
-		r.Add("template", func() error {
-			return templates.New("routes_group_rest").Execute(g.Buffer, g.Definition)
-		})
-	} else {
-		r.Add("template", func() error {
-			return templates.New("routes_group").Execute(g.Buffer, g.Definition)
-		})
-	}
-	r.Add("write: "+g.Filename, g.Write)
-	r.Add("format: "+g.Filename, g.Format)
-
 	return r.Run()
 }
 

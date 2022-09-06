@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"{{.Repo}}/app"
+	"github.com/dashotv/grimoire"
 )
 
 var cfg *app.Config
 
 type Connector struct {
     {{range .Models -}}
-    {{.Camel}} *{{.Camel}}Store
+    {{.Camel}} *grimoire.Store[*{{.Camel}}]
     {{end}}
 }
 
@@ -25,7 +26,7 @@ func NewConnector() (*Connector, error) {
         return nil, err
     }
 
-    {{.Name}}, err := New{{.Camel}}Store(s.URI, s.Database, s.Collection)
+    {{.Name}}, err := grimoire.New[*{{.Camel}}](s.URI, s.Database, s.Collection)
     if err != nil {
         return nil, err
     }
