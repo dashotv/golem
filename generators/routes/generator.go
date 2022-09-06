@@ -81,22 +81,36 @@ func (g *Generator) prepare() error {
 				"index": &Route{
 					Method: "GET",
 					Name:   name + strings.Title("index"),
+					Path:   "/",
 				},
 				"create": &Route{
 					Method: "POST",
 					Name:   name + strings.Title("create"),
+					Path:   "/",
 				},
 				"show": &Route{
 					Method: "GET",
 					Name:   name + strings.Title("show"),
+					Path:   "/:id",
+					Params: []*Param{
+						{Name: "id", Type: "string"},
+					},
 				},
 				"update": &Route{
 					Method: "PUT",
 					Name:   name + strings.Title("update"),
+					Path:   "/:id",
+					Params: []*Param{
+						{Name: "id", Type: "string"},
+					},
 				},
 				"delete": &Route{
 					Method: "DELETE",
 					Name:   name + strings.Title("delete"),
+					Path:   "/:id",
+					Params: []*Param{
+						{Name: "id", Type: "string"},
+					},
 				},
 			}
 		}
