@@ -32,7 +32,11 @@ func Index(c *gin.Context) {
     {{range $rn, $route := .Routes -}}
     func {{$route.Name}}Handler(c *gin.Context) {
         {{range .Params -}}
+            {{if .Query -}}
+            {{.Name}} := web.Query{{.GetType}}(c, "{{.Name}}")
+            {{else -}}
             {{.Name}} := c.Param("{{.Name}}")
+            {{end -}}
         {{end}}
         {{$route.Camel}}(c, {{range .Params -}}{{.Name}},{{- end}})
     }

@@ -54,6 +54,7 @@ type Param struct {
 	Name    string `json:"name" yaml:"name"`
 	Type    string `json:"type" yaml:"type"`
 	Default string `json:"default" yaml:"default"`
+	Query   bool   `json:"query" yaml:"query"`
 }
 
 // GetType returns the capitalized type of the parameter or the default string
