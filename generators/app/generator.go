@@ -83,13 +83,13 @@ func (g *Generator) Execute() error {
 		fg := base.NewFileGenerator(g.Config, "dockerfile", g.Name+"/Dockerfile", map[string]string{"Binary": g.Name})
 		return fg.Execute()
 	})
-	runner.Add("make production directory", tasks.NewMakeDirectoryTask(g.Name+"/production"))
-	runner.Add("create production dockerfile", func() error {
-		fg := base.NewFileGenerator(g.Config, "production_dockerfile", g.Name+"/production/Dockerfile", map[string]string{"Binary": g.Name})
+	runner.Add("make etc directory", tasks.NewMakeDirectoryTask(g.Name+"/etc"))
+	runner.Add("create service config", func() error {
+		fg := base.NewFileGenerator(g.Config, "etc_service", g.Name+"/etc/"+g.Name+".service", map[string]string{"Name": g.Name})
 		return fg.Execute()
 	})
 	runner.Add("create production config file", func() error {
-		return writeAppConfig(g.Name, g.Name+"/production")
+		return writeAppConfig(g.Name, g.Name+"/etc")
 	})
 	runner.Add("create server main", func() error {
 		if tasks.PathExists(g.Name + "/app/server.go") {
