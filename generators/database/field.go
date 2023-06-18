@@ -20,7 +20,7 @@ func (f *FieldGenerator) Execute(s *bytes.Buffer) error {
 		return err
 	}
 
-	if f.Definition.Type == "struct" || f.Definition.Type == "[]struct" {
+	if f.Definition.Type == "struct" || f.Definition.Type == "[]struct" || f.Definition.Type == "[]*struct" {
 		err := f.executeStruct(s)
 		if err != nil {
 			return err
