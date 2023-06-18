@@ -19,8 +19,16 @@ type ConnectorGenerator struct {
 // ConnectorGeneratorData stores the data for the database connector template
 type ConnectorGeneratorData struct {
 	Package string
-	Models  []map[string]string
+	Models  []*ConnectorGeneratorDataModel
 	Repo    string
+}
+
+type ConnectorGeneratorDataModel struct {
+	Name   string
+	Type   string
+	Camel  string
+	Struct bool
+	Model  bool
 }
 
 // NewConnectorGenerator creates and returns a ConnectorGenerator
@@ -30,7 +38,7 @@ func NewConnectorGenerator(cfg *config.Config, models []*ModelGenerator) *Connec
 		Models: models,
 		Data: &ConnectorGeneratorData{
 			Package: cfg.Models.Package,
-			Models:  make([]map[string]string, 0),
+			Models:  make([]*ConnectorGeneratorDataModel, 0),
 			Repo:    cfg.Repo,
 		},
 		Generator: &base.Generator{
@@ -68,9 +76,16 @@ func (g *ConnectorGenerator) Execute() error {
 // Prepare the template configuration data
 func (g *ConnectorGenerator) prepare() error {
 	for _, m := range g.Models {
-		d := map[string]string{
-			"Camel": m.Definition.Camel,
-			"Name":  m.Definition.Name,
+		//d := map[string]string{
+		//	"Camel": m.Definition.Camel,
+		//	"Name":  m.Definition.Name,
+		//}
+		d := &ConnectorGeneratorDataModel{
+			Name:   m.Definition.Name,
+			Type:   m.Definition.Type,
+			Camel:  m.Definition.Camel,
+			Struct: m.Definition.Type == "struct",
+			Model:  m.Definition.Type == "model",
 		}
 		g.Data.Models = append(g.Data.Models, d)
 	}

@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,6 +32,16 @@ var modelCmd = &cobra.Command{
 		fields := args[1:]
 
 		g := app.NewModelDefinitionGenerator(cfg, name, fields...)
+
+		s, err := cmd.Flags().GetBool("struct")
+		if err != nil {
+			logrus.Fatalln("error getting struct flag")
+		}
+
+		if s {
+			g.Type = "struct"
+		}
+
 		if err := g.Execute(); err != nil {
 			logrus.Fatalf("error generating new model definition: %s", err)
 		}
@@ -49,5 +59,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// modelCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	modelCmd.Flags().Bool("struct", false, "create model type struct")
 }

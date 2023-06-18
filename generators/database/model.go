@@ -53,7 +53,12 @@ func (m *ModelGenerator) Execute() error {
 		return err
 	}
 
-	err = templates.New("database_model").Execute(m.Buffer, m.data)
+	file := "database_model"
+	if m.data["Type"] == "struct" {
+		file = "database_struct"
+	}
+
+	err = templates.New(file).Execute(m.Buffer, m.data)
 	if err != nil {
 		return err
 	}

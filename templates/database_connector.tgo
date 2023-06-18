@@ -10,7 +10,9 @@ var cfg *Config
 
 type Connector struct {
     {{range .Models -}}
+        {{ if .Model -}}
     {{.Camel}} *grimoire.Store[*{{.Camel}}]
+        {{ end -}}
     {{end}}
 }
 
@@ -20,6 +22,7 @@ func NewConnector() (*Connector, error) {
     var err error
 
     {{range .Models -}}
+        {{ if .Model -}}
     s, err = settingsFor("{{.Name}}")
     if err != nil {
         return nil, err
@@ -29,11 +32,13 @@ func NewConnector() (*Connector, error) {
     if err != nil {
         return nil, err
     }
-
+        {{ end -}}
     {{end}}
     c := &Connector{
         {{range .Models -}}
+            {{ if .Model -}}
         {{.Camel}}: {{.Name}},
+            {{ end -}}
         {{end}}
     }
 

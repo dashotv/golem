@@ -17,6 +17,7 @@ new: build
 	cd ../blarg && ../golem/golem new route /releases --rest
 	cd ../blarg && ../golem/golem new route /hello id count:int
 	cd ../blarg && ../golem/golem new route /hello/new
+	cd ../blarg && ../golem/golem new model --struct foo bar:int baz:string
 	cd ../blarg && ../golem/golem generate
 
 #templates:

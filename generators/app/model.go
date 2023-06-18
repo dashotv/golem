@@ -2,8 +2,9 @@ package app
 
 import (
 	"bytes"
-	"github.com/dashotv/golem/templates"
 	"strings"
+
+	"github.com/dashotv/golem/templates"
 
 	"github.com/iancoleman/strcase"
 	"github.com/pkg/errors"
@@ -19,6 +20,7 @@ type ModelDefinitionGenerator struct {
 	*base.Generator
 	Config     *config.Config
 	Name       string
+	Type       string
 	Fields     []string
 	Definition *database.Model
 }
@@ -28,6 +30,7 @@ func NewModelDefinitionGenerator(cfg *config.Config, name string, fields ...stri
 	return &ModelDefinitionGenerator{
 		Config:     cfg,
 		Name:       name,
+		Type:       "model",
 		Fields:     fields,
 		Definition: &database.Model{},
 		Generator: &base.Generator{
@@ -66,7 +69,7 @@ func (g *ModelDefinitionGenerator) Execute() error {
 func (g *ModelDefinitionGenerator) prepare() {
 	g.Definition.Name = g.Name
 	g.Definition.Camel = strcase.ToCamel(g.Name)
-	g.Definition.Type = "model"
+	g.Definition.Type = g.Type
 	g.Definition.Fields = make([]*database.Field, 0)
 
 	for _, f := range g.Fields {
