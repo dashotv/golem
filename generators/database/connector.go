@@ -12,15 +12,13 @@ import (
 type ConnectorGenerator struct {
 	*base.Generator
 	Config *config.Config
-	Models []*ModelGenerator
+	Models []map[string]string
 	Data   *ConnectorGeneratorData
 }
 
 // ConnectorGeneratorData stores the data for the database connector template
 type ConnectorGeneratorData struct {
-	Package string
-	Models  []*ConnectorGeneratorDataModel
-	Repo    string
+	Models []*ConnectorGeneratorDataModel
 }
 
 type ConnectorGeneratorDataModel struct {
@@ -32,14 +30,12 @@ type ConnectorGeneratorDataModel struct {
 }
 
 // NewConnectorGenerator creates and returns a ConnectorGenerator
-func NewConnectorGenerator(cfg *config.Config, models []*ModelGenerator) *ConnectorGenerator {
+func NewConnectorGenerator(cfg *config.Config, models []map[string]string) *ConnectorGenerator {
 	return &ConnectorGenerator{
 		Config: cfg,
 		Models: models,
 		Data: &ConnectorGeneratorData{
-			Package: cfg.Models.Package,
-			Models:  make([]*ConnectorGeneratorDataModel, 0),
-			Repo:    cfg.Repo,
+			Models: []*ConnectorGeneratorDataModel{},
 		},
 		Generator: &base.Generator{
 			Filename: cfg.Models.Output + "/models_connector.go",
@@ -49,23 +45,13 @@ func NewConnectorGenerator(cfg *config.Config, models []*ModelGenerator) *Connec
 }
 
 // Execute configures and generates the database connector
-func (g *ConnectorGenerator) Execute() error {
+func (g *ConnectorGenerator) Execute(buf *bytes.Buffer) error {
 	err := g.prepare()
 	if err != nil {
 		return err
 	}
 
-	err = templates.New("database_connector").Execute(g.Buffer, g.Data)
-	if err != nil {
-		return err
-	}
-
-	err = g.Write()
-	if err != nil {
-		return err
-	}
-
-	err = g.Format()
+	err = templates.New("database_connector").Execute(buf, g.Data)
 	if err != nil {
 		return err
 	}
@@ -81,11 +67,11 @@ func (g *ConnectorGenerator) prepare() error {
 		//	"Name":  m.Definition.Name,
 		//}
 		d := &ConnectorGeneratorDataModel{
-			Name:   m.Definition.Name,
-			Type:   m.Definition.Type,
-			Camel:  m.Definition.Camel,
-			Struct: m.Definition.Type == "struct",
-			Model:  m.Definition.Type == "model",
+			Name:   m["Name"],
+			Type:   m["Type"],
+			Camel:  m["Camel"],
+			Struct: m["Type"] == "struct",
+			Model:  m["Type"] == "model",
 		}
 		g.Data.Models = append(g.Data.Models, d)
 	}

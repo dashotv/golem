@@ -1,7 +1,10 @@
 package generators
 
 import (
+	"bytes"
+
 	"github.com/dashotv/golem/config"
+	"github.com/dashotv/golem/generators/base"
 	"github.com/dashotv/golem/generators/database"
 	"github.com/dashotv/golem/generators/routes"
 	"github.com/dashotv/golem/tasks"
@@ -18,7 +21,13 @@ func (g *Generator) Execute() error {
 
 	if g.Config.Models.Enabled {
 		runner.Add("database", func() error {
-			dg := database.Generator{Config: g.Config}
+			dg := database.Generator{
+				Config: g.Config,
+				Generator: &base.Generator{
+					Filename: g.Config.Models.Output + "/models.go",
+					Buffer:   bytes.NewBufferString(""),
+				},
+			}
 			return dg.Execute()
 		})
 	}

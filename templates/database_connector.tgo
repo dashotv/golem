@@ -1,11 +1,3 @@
-package {{.Package}}
-
-import (
-	"fmt"
-
-	"github.com/dashotv/grimoire"
-)
-
 var cfg *Config
 
 type Connector struct {
