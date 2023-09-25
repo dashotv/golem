@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	"github.com/dashotv/golem/generators/app"
+	"github.com/dashotv/golem/generators"
 )
 
 // newCmd represents the new command
@@ -36,7 +36,7 @@ var newCmd = &cobra.Command{
 		name := args[0]
 		pkg := args[1]
 
-		g := app.NewGenerator(cfg, name, pkg)
+		g := generators.NewAppGenerator(cfg, name, pkg)
 		if err := g.Execute(); err != nil {
 			logrus.Fatalf("error generating new app: %s", err)
 		}

@@ -1,4 +1,4 @@
-type {{.Name}} struct { // {{.Type}}
+type {{.Camel}} struct { // {{.Type}}
     grimoire.Document `bson:",inline"` // includes default model settings
     //ID        primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
     //CreatedAt time.Time          `json:"created_at" bson:"created_at"`

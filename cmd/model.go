@@ -19,7 +19,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	"github.com/dashotv/golem/generators/app"
+	"github.com/dashotv/golem/generators"
 )
 
 // modelCmd represents the model command
@@ -31,7 +31,7 @@ var modelCmd = &cobra.Command{
 		name := args[0]
 		fields := args[1:]
 
-		g := app.NewModelDefinitionGenerator(cfg, name, fields...)
+		g := generators.NewModelDefinitionGenerator(cfg, name, fields...)
 
 		s, err := cmd.Flags().GetBool("struct")
 		if err != nil {

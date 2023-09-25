@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,21 +19,21 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	"github.com/dashotv/golem/generators/app"
+	"github.com/dashotv/golem/generators"
 )
 
 var crud bool
 
 // routeCmd represents the route command
 var routeCmd = &cobra.Command{
-	Use:   "route <name>[/<name>] [param...]",
+	Use:   "route [/]<path>[/<path>] [param...]",
 	Short: "generate a new route definition",
 	Long:  "generate a new route definition",
 	Run: func(cmd *cobra.Command, args []string) {
-		name := args[0]
+		path := args[0]
 		params := args[1:]
 
-		g := app.NewRouteDefinitionGenerator(cfg, name, crud, params...)
+		g := generators.NewRouteDefinitionGenerator(cfg, path, crud, params...)
 		if err := g.Execute(); err != nil {
 			logrus.Fatalf("error generating new model definition: %s", err)
 		}
