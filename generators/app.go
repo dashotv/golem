@@ -303,8 +303,8 @@ type defaultAppConfig struct {
 
 type Connection struct {
 	URI        string
-	Database   string `json:"database"`
-	Collection string `json:"collection"`
+	Database   string `json:"database,omitempty" yaml:"database,omitempty"`
+	Collection string `json:"collection,omitempty" yaml:"collection,omitempty"`
 }
 
 func writeAppConfig(name string, dir string) error {
