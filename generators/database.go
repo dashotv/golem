@@ -134,23 +134,23 @@ func (g *DatabaseGenerator) addModel(name, path string) error {
 
 // Model holds the data from the YAML model
 type Model struct {
-	Package string
-	Camel   string
-	Name    string
-	Type    string
-	Imports []string
-	Fields  []*Field
+	Package string   `yaml:"package,omitempty"`
+	Camel   string   `yaml:"camel,omitempty"`
+	Name    string   `yaml:"name,omitempty"`
+	Type    string   `yaml:"type,omitempty"`
+	Imports []string `yaml:"imports,omitempty"`
+	Fields  []*Field `yaml:"fields,omitempty"`
 }
 
 // Field holds the data from the YAML field
 type Field struct {
-	Name   string
-	Camel  string
-	Type   string
-	Json   string
-	Bson   string
-	Tags   string
-	Fields []*Field
+	Name   string   `yaml:"name,omitempty"`
+	Camel  string   `yaml:"camel,omitempty"`
+	Type   string   `yaml:"type,omitempty"`
+	Json   string   `yaml:"json,omitempty"`
+	Bson   string   `yaml:"bson,omitempty"`
+	Tags   string   `yaml:"tags,omitempty"`
+	Fields []*Field `yaml:"fields,omitempty"`
 }
 
 // ConnectorGenerator manages generation of the database connector

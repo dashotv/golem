@@ -6,13 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/iancoleman/strcase"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
-	"github.com/dashotv/golem/templates"
 )
 
 // AppGenerator manages generating an application
@@ -155,12 +153,11 @@ func (g *ModelDefinitionGenerator) Execute() error {
 	runner := tasks.NewRunner("generator:model")
 	runner.Add("ensure models directory exists", tasks.NewMakeDirectoryTask(".golem/models"))
 	runner.Add("generate model definition", func() error {
-		err := templates.New("app_model_yaml").Execute(g.Buffer, g.Definition)
+		data, err := yaml.Marshal(g.Definition)
 		if err != nil {
 			return err
 		}
-
-		return g.Write()
+		return os.WriteFile(g.Filename, data, 0644)
 	})
 
 	return runner.Run()
@@ -169,7 +166,6 @@ func (g *ModelDefinitionGenerator) Execute() error {
 // prepare the definition and data
 func (g *ModelDefinitionGenerator) prepare() {
 	g.Definition.Name = g.Name
-	g.Definition.Camel = strcase.ToCamel(g.Name)
 	g.Definition.Type = g.Type
 	g.Definition.Fields = make([]*Field, 0)
 
