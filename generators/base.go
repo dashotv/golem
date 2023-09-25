@@ -2,7 +2,6 @@ package generators
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"regexp"
@@ -24,7 +23,7 @@ type Generator struct {
 // Write the output of the generator to a file
 func (g *Generator) Write() error {
 	logrus.Debugf("Model Output:\n\n" + g.Buffer.String())
-	return ioutil.WriteFile(g.Filename, g.Buffer.Bytes(), 0644)
+	return os.WriteFile(g.Filename, g.Buffer.Bytes(), 0644)
 }
 
 // Format the file using goimports
@@ -42,7 +41,7 @@ func (g *Generator) Format() error {
 
 // ReadYaml reads a yaml file into a structure
 func ReadYaml(path string, object interface{}) error {
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}

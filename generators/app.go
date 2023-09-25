@@ -2,7 +2,6 @@ package generators
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -288,7 +287,7 @@ func writeConfig(dir string, cfg *config.Config) error {
 		return errors.Wrap(err, "could not marshal config")
 	}
 
-	err = ioutil.WriteFile(dir+"/.golem.yaml", b, 0644)
+	err = os.WriteFile(dir+"/.golem.yaml", b, 0644)
 	if err != nil {
 		return errors.Wrap(err, "could not write config")
 	}
@@ -322,7 +321,7 @@ func writeAppConfig(name string, dir string) error {
 		return errors.Wrap(err, "could not marshal config")
 	}
 
-	err = ioutil.WriteFile(dir+"/."+name+".yaml", b, 0644)
+	err = os.WriteFile(dir+"/."+name+".yaml", b, 0644)
 	if err != nil {
 		return errors.Wrap(err, "could not write config")
 	}
