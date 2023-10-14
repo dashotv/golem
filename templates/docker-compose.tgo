@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  tower:
+    image: cosmtrek/air
+    working_dir: /app
+    command: server
+    container_name: {{.Name}}
+    ports:
+      - '{{.Port}}:{{.Port}}'
+    volumes:
+      - ./:/app
+    # depends_on:
+    #   - db
+    #   - redis
+    #   - nats

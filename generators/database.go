@@ -64,7 +64,7 @@ func (g *DatabaseGenerator) generateHeader() error {
 	data := map[string]string{
 		"Package": g.Config.Models.Package,
 	}
-	return templates.New("database").Execute(g.Buffer, data)
+	return templates.New("app/database").Execute(g.Buffer, data)
 }
 
 func (g *DatabaseGenerator) generateConnector() error {
@@ -74,9 +74,9 @@ func (g *DatabaseGenerator) generateConnector() error {
 
 func (g *DatabaseGenerator) generateModels() error {
 	for _, m := range g.Models {
-		file := "database_model"
+		file := "app/model"
 		if m["Type"] == "struct" {
-			file = "database_struct"
+			file = "app/struct"
 		}
 
 		err := templates.New(file).Execute(g.Buffer, m)
@@ -183,7 +183,7 @@ func NewConnectorGenerator(cfg *config.Config, models []map[string]string) *Conn
 			Models: []*ConnectorGeneratorDataModel{},
 		},
 		Generator: &Generator{
-			Filename: cfg.Models.Output + "/models_connector.go",
+			Filename: cfg.Models.Output + "/models.go",
 			Buffer:   bytes.NewBufferString(""),
 		},
 	}
@@ -196,7 +196,7 @@ func (g *ConnectorGenerator) Execute(buf *bytes.Buffer) error {
 		return err
 	}
 
-	err = templates.New("database_connector").Execute(buf, g.Data)
+	err = templates.New("app/connector").Execute(buf, g.Data)
 	if err != nil {
 		return err
 	}

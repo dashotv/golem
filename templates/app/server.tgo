@@ -15,22 +15,10 @@ import (
 )
 
 type Server struct {
-    App    *Application
-    Config *Config
-    Log    *logrus.Entry
-    Router *gin.Engine
-}
-
-func NewServer() (*Server, error) {
-    app := Instance()
-    s := &Server{
-        App:    app,
-        Config: ConfigInstance(),
-        Log:    app.Log.WithField("prefix", "server"),
-        Router: app.Router,
-    }
-
-    return s, nil
+    Log    *zap.SugaredLogger
+    Engine *gin.Engine
+    Router *gin.RouterGroup
+    Default *gin.RouterGroup
 }
 
 func (s *Server) Start() error {
@@ -41,7 +29,7 @@ func (s *Server) Start() error {
     //s.Jobs configuration
 
     s.Log.Info("starting web...")
-    if err := s.Router.Run(fmt.Sprintf(":%d", s.Config.Port)); err != nil {
+    if err := s.Engine.Run(fmt.Sprintf(":%d", s.Config.Port)); err != nil {
         return errors.Wrap(err, "starting router")
     }
 

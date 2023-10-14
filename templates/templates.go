@@ -2,5 +2,5 @@ package templates
 
 import "embed"
 
-//go:embed *.tgo
+//go:embed *
 var content embed.FS

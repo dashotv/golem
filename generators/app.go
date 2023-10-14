@@ -49,45 +49,45 @@ func (g *AppGenerator) Execute() error {
 	})
 	runner.Add("create main", func() error {
 		d := map[string]string{"Repo": g.Repo}
-		fg := NewFileGenerator(g.Config, "app_main", g.Name+"/main.go", d)
+		fg := NewFileGenerator(g.Config, "main", g.Name+"/main.go", d)
 		return fg.Execute()
 	})
 	runner.Add("create application license", func() error {
 		d := map[string]string{}
-		fg := NewFileGenerator(g.Config, "app_license", g.Name+"/LICENSE", d)
+		fg := NewFileGenerator(g.Config, "license", g.Name+"/LICENSE", d)
 		return fg.Execute()
 	})
 	runner.Add("make application directory", tasks.NewMakeDirectoryTask(g.Name+"/app"))
 	runner.Add("make application app", func() error {
 		data := map[string]string{"Repo": g.Config.Repo}
-		fg := NewFileGenerator(g.Config, "app_app", g.Name+"/app/app.go", data)
+		fg := NewFileGenerator(g.Config, "app/app", g.Name+"/app/app.go", data)
 		return fg.Execute()
 	})
 	runner.Add("make config directory", tasks.NewMakeDirectoryTask(g.Name+"/app"))
 	runner.Add("create application config", func() error {
 		d := map[string]string{}
-		fg := NewFileGenerator(g.Config, "app_config_config", g.Name+"/app/config.go", d)
+		fg := NewFileGenerator(g.Config, "app/config", g.Name+"/app/config.go", d)
 		return fg.Execute()
 	})
 	runner.Add("create cron config", func() error {
 		d := map[string]string{}
-		fg := NewFileGenerator(g.Config, "app_cron", g.Name+"/app/cron.go", d)
+		fg := NewFileGenerator(g.Config, "app/cron", g.Name+"/app/cron.go", d)
 		return fg.Execute()
 	})
 	runner.Add("create cache config", func() error {
 		d := map[string]string{}
-		fg := NewFileGenerator(g.Config, "app_cache", g.Name+"/app/cache.go", d)
+		fg := NewFileGenerator(g.Config, "app/cache", g.Name+"/app/cache.go", d)
 		return fg.Execute()
 	})
 	runner.Add("make command directory", tasks.NewMakeDirectoryTask(g.Name+"/cmd"))
 	runner.Add("create application root command", func() error {
 		d := map[string]string{"Name": g.Name, "Repo": g.Repo}
-		fg := NewFileGenerator(g.Config, "app_cmd_root", g.Name+"/cmd/root.go", d)
+		fg := NewFileGenerator(g.Config, "cmd/root", g.Name+"/cmd/root.go", d)
 		return fg.Execute()
 	})
 	runner.Add("create application server command", func() error {
 		d := map[string]string{"Name": g.Name, "Repo": g.Repo}
-		fg := NewFileGenerator(g.Config, "app_cmd_server", g.Name+"/cmd/server.go", d)
+		fg := NewFileGenerator(g.Config, "cmd/server", g.Name+"/cmd/server.go", d)
 		return fg.Execute()
 	})
 	runner.Add("create makefile", func() error {
@@ -95,12 +95,24 @@ func (g *AppGenerator) Execute() error {
 		return fg.Execute()
 	})
 	runner.Add("create dockerfile", func() error {
-		fg := NewFileGenerator(g.Config, "dockerfile", g.Name+"/Dockerfile", map[string]string{"Binary": g.Name})
+		fg := NewFileGenerator(g.Config, "dockerfile", g.Name+"/Dockerfile", map[string]string{"Name": g.Name})
+		return fg.Execute()
+	})
+	runner.Add("create docker-compose file", func() error {
+		fg := NewFileGenerator(g.Config, "docker-compose", g.Name+"/docker-compose.yml", map[string]string{"Name": g.Name, "Port": "3000"})
+		return fg.Execute()
+	})
+	runner.Add("create air config file", func() error {
+		fg := NewFileGenerator(g.Config, ".air.toml", g.Name+"/.air.toml", map[string]string{"Name": g.Name})
+		return fg.Execute()
+	})
+	runner.Add("create drone file", func() error {
+		fg := NewFileGenerator(g.Config, ".drone.yml", g.Name+"/.drone.yml", map[string]string{"Name": g.Name})
 		return fg.Execute()
 	})
 	runner.Add("make etc directory", tasks.NewMakeDirectoryTask(g.Name+"/etc"))
 	runner.Add("create service config", func() error {
-		fg := NewFileGenerator(g.Config, "etc_service", g.Name+"/etc/"+g.Name+".service", map[string]string{"Name": g.Name})
+		fg := NewFileGenerator(g.Config, "etc/service", g.Name+"/etc/"+g.Name+".service", map[string]string{"Name": g.Name})
 		return fg.Execute()
 	})
 	runner.Add("create production config file", func() error {

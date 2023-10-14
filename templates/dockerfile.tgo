@@ -1,26 +1,19 @@
-FROM golang:1.18-alpine
+############################
+# STEP 1 build executable binary
+############################
+FROM golang:1.21-alpine AS builder
 
-RUN apk add --no-cache --update curl \
-    bash \
-    grep \
-    sed \
-    jq \
-    ca-certificates \
-    openssl \
-    git \
-	make \
-	gcc \
-	musl-dev
-
-WORKDIR /app
-
-COPY go.* .
-RUN go mod tidy
-
+WORKDIR /go/src/app
 COPY . .
 
-RUN make deps
+RUN go install
 
-EXPOSE 3000
-
-CMD ["gin","--appPort", "9000", "--port", "3000", "--immediate", "run", "server"]
+############################
+# STEP 2 build a small image
+############################
+FROM alpine
+# Copy our static executable.
+WORKDIR /root/
+COPY --from=builder /go/bin/{{.Name}} .
+COPY --from=builder /go/src/app/etc/.{{.Name}}.yaml ./.{{.Name}}.yaml
+CMD ["./{{.Name}}", "server"]

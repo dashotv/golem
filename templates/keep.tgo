@@ -1,4 +1,0 @@
-package models
-// ensure directory gets added to source and
-// generation will work even if models aren't
-// yet added.

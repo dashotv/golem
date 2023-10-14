@@ -298,7 +298,7 @@ func (g *ServerGenerator) Execute() error {
 
 	r.Add("prepare", g.prepare)
 	r.Add("template", func() error {
-		return templates.New("routes_server").Execute(g.Buffer, g.Definition)
+		return templates.New("app/server").Execute(g.Buffer, g.Definition)
 	})
 	r.Add("write", g.Write)
 	r.Add("format", g.Format)
@@ -342,7 +342,7 @@ func (g *ServerRoutesGenerator) Execute() error {
 
 	r.Add("prepare", g.prepare)
 	r.Add("template", func() error {
-		return templates.New("routes_routes").Execute(g.Buffer, g.Definition)
+		return templates.New("app/routes").Execute(g.Buffer, g.Definition)
 	})
 	r.Add("write", g.Write)
 	r.Add("format", g.Format)

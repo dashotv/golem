@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"{{.Repo}}/app"
@@ -28,14 +27,10 @@ var serverCmd = &cobra.Command{
 	Short: "run the server",
 	Long:  "run the server",
 	Run: func(cmd *cobra.Command, args []string) {
-		server, err := app.NewServer()
+		err := app.Start()
 		if err != nil {
-			logrus.Fatalf("error: %s", err)
-		}
-
-		err = server.Start()
-		if err != nil {
-			logrus.Fatalf("error: %s", err)
+			fmt.Printf("error starting server: %s\n", err)
+			os.Exit(1)
 		}
 	},
 }
