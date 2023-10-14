@@ -24,7 +24,14 @@ func homeHandler(c *gin.Context) {
 }
 
 func Index(c *gin.Context) {
-    c.String(http.StatusOK, "home")
+    c.JSON(http.StatusOK, gin.H{
+        "name": "{{.Name}}",
+        "routes": gin.H{
+            {{range $name, $group := .Groups -}}
+            "{{$name}}": "{{.Path}}",
+            {{end -}}
+        },
+    })
 }
 
 {{range $name, $group := .Groups -}}
