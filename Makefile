@@ -2,14 +2,13 @@
 test:
 	go test -v ./...
 
-build: templates
+build:
 	go build
 
 gen: build
 	cd test && ../golem generate
 
 new: clean build
-	cd .. && rm -rf blarg
 	cd .. && ./golem/golem new blarg github.com/dashotv/blarg
 	cd ../blarg && go mod init github.com/dashotv/blarg
 	cd ../blarg && git init .
@@ -28,4 +27,4 @@ clean:
 install: build
 	go install
 
-.PHONY: test run templates
+.PHONY: test run

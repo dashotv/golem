@@ -69,6 +69,16 @@ func (g *AppGenerator) Execute() error {
 		fg := NewFileGenerator(g.Config, "app_config_config", g.Name+"/app/config.go", d)
 		return fg.Execute()
 	})
+	runner.Add("create cron config", func() error {
+		d := map[string]string{}
+		fg := NewFileGenerator(g.Config, "app_cron", g.Name+"/app/cron.go", d)
+		return fg.Execute()
+	})
+	runner.Add("create cache config", func() error {
+		d := map[string]string{}
+		fg := NewFileGenerator(g.Config, "app_cache", g.Name+"/app/cache.go", d)
+		return fg.Execute()
+	})
 	runner.Add("make command directory", tasks.NewMakeDirectoryTask(g.Name+"/cmd"))
 	runner.Add("create application root command", func() error {
 		d := map[string]string{"Name": g.Name, "Repo": g.Repo}

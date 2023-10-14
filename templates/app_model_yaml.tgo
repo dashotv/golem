@@ -1,8 +1,0 @@
-name: {{.Name}}
-type: {{.Type}}
-imports:
-fields:
-  {{range .Fields -}}
-  - name: {{.Name}}
-    type: {{.Type}}
-  {{end}}

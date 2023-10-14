@@ -9,7 +9,7 @@ import (
 )
 
 func (s *Server) Routes() {
-    s.Router.GET("/", homeHandler)
+    s.Default.GET("/", homeHandler)
 
     {{range $name, $group := .Groups -}}
         {{$name}} := s.Router.Group("{{.Path}}")

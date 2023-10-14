@@ -1,11 +1,8 @@
 package app
 
 import (
-    "sync"
+    "errors"
 )
-
-var configOnce sync.Once
-var configInstance *Config
 
 type Config struct {
     Mode string                        `yaml:"mode"`
@@ -17,13 +14,6 @@ type Connection struct {
 	URI        string `yaml:"uri,omitempty"`
 	Database   string `yaml:"database,omitempty"`
 	Collection string `yaml:"collection,omitempty"`
-}
-
-func ConfigInstance() *Config {
-    configOnce.Do(func() {
-        configInstance = &Config{}
-    })
-    return configInstance
 }
 
 func (c *Config) Validate() error {
