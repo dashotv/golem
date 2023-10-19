@@ -6,28 +6,28 @@ import (
 )
 
 type Config struct {
-	File   string
-	Name   string
-	Repo   string
+	File   string `yaml:"-"`
+	Name   string `yaml:"name,omitempty"`
+	Repo   string `yaml:"repo,omitempty"`
 	Models struct {
-		Enabled     bool
-		Package     string
-		Output      string
-		Definitions string
-	}
+		Enabled     bool   `yaml:"enabled,omitempty"`
+		Package     string `yaml:"package,omitempty"`
+		Output      string `yaml:"output,omitempty"`
+		Definitions string `yaml:"definitions,omitempty"`
+	} `yaml:"models,omitempty"`
 	Routes struct {
-		Enabled    bool
-		Name       string
-		Definition string
-		Output     string
-		Repo       string
-	}
+		Enabled    bool   `yaml:"enabled,omitempty"`
+		Name       string `yaml:"name,omitempty"`
+		Definition string `yaml:"definition,omitempty"`
+		Output     string `yaml:"output,omitempty"`
+		Repo       string `yaml:"repo,omitempty"`
+	} `yaml:"routes,omitempty"`
 	Jobs struct {
-		Enabled     bool
-		Package     string
-		Definitions string
-		Output      string
-	}
+		Enabled     bool   `yaml:"enabled,omitempty"`
+		Package     string `yaml:"package,omitempty"`
+		Definitions string `yaml:"definitions,omitempty"`
+		Output      string `yaml:"output,omitempty"`
+	} `yaml:"jobs,omitempty"`
 }
 
 func (c *Config) Root() string {
