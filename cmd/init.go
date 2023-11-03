@@ -22,42 +22,33 @@ import (
 	"github.com/dashotv/golem/generators"
 )
 
-// modelCmd represents the model command
-var modelCmd = &cobra.Command{
-	Use:   "model <name> [field...]",
-	Short: "generate a new model definition",
-	Long:  "generate a new model definition",
+// initCmd represents the new command
+var initCmd = &cobra.Command{
+	Use:   "init <name> <full package>",
+	Short: "initialize golem application",
+	Long:  "initialize golem application",
+	Args:  cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
-		fields := args[1:]
+		pkg := args[1]
 
-		g := generators.NewModelDefinitionGenerator(cfg, name, fields...)
-
-		s, err := cmd.Flags().GetBool("struct")
-		if err != nil {
-			logrus.Fatalln("error getting struct flag")
-		}
-
-		if s {
-			g.Type = "struct"
-		}
-
+		g := generators.NewAppGenerator(cfg, name, pkg)
 		if err := g.Execute(); err != nil {
-			logrus.Fatalf("error generating new model definition: %s", err)
+			logrus.Fatalf("error generating new app: %s", err)
 		}
 	},
 }
 
 func init() {
-	addCmd.AddCommand(modelCmd)
+	rootCmd.AddCommand(initCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// modelCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// newCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	modelCmd.Flags().Bool("struct", false, "create model type struct")
+	// newCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

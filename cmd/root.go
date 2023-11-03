@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,6 @@ import (
 	"os"
 
 	"github.com/logrusorgru/aurora"
-
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -98,3 +97,27 @@ func initConfig() {
 
 	cfg.File = cfgFile
 }
+
+// func executeCommand(name string, arg ...string) error {
+// 	cmd := exec.Command(name, arg...)
+// 	cmd.Stdin = os.Stdin
+// 	cmd.Stdout = os.Stdout
+// 	cmd.Stderr = os.Stderr
+//
+// 	return cmd.Run()
+// }
+//
+// func checkBinaries() error {
+// 	bins := []string{
+// 		"cobra",
+// 	}
+//
+// 	for _, b := range bins {
+// 		_, err := exec.LookPath(b)
+// 		if err != nil {
+// 			return errors.Wrap(err, "couldn't find binary in path: "+b)
+// 		}
+// 	}
+//
+// 	return nil
+// }

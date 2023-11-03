@@ -16,59 +16,20 @@ limitations under the License.
 package cmd
 
 import (
-	"os"
-	"os/exec"
-
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-
-	"github.com/dashotv/golem/generators"
 )
 
-// newCmd represents the new command
-var newCmd = &cobra.Command{
-	Use:   "new <name> <full package>",
-	Short: "create new golem application",
-	Long:  "create new golem application",
+// addCmd represents the new command
+var addCmd = &cobra.Command{
+	Use:   "add <type> [options]",
+	Short: "add new types to golem application",
+	Long:  "add new types to golem application",
 	Args:  cobra.ExactArgs(2),
-	Run: func(cmd *cobra.Command, args []string) {
-		name := args[0]
-		pkg := args[1]
-
-		g := generators.NewAppGenerator(cfg, name, pkg)
-		if err := g.Execute(); err != nil {
-			logrus.Fatalf("error generating new app: %s", err)
-		}
-	},
-}
-
-func executeCommand(name string, arg ...string) error {
-	cmd := exec.Command(name, arg...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	return cmd.Run()
-}
-
-func checkBinaries() error {
-	bins := []string{
-		"cobra",
-	}
-
-	for _, b := range bins {
-		_, err := exec.LookPath(b)
-		if err != nil {
-			return errors.Wrap(err, "couldn't find binary in path: "+b)
-		}
-	}
-
-	return nil
+	Run:   nil,
 }
 
 func init() {
-	rootCmd.AddCommand(newCmd)
+	rootCmd.AddCommand(addCmd)
 
 	// Here you will define your flags and configuration settings.
 
