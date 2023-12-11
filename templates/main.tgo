@@ -15,10 +15,21 @@ limitations under the License.
 */
 package main
 
-// go:generate golem generate
+//go:generate golem generate
 
-import "{{.Repo}}/cmd"
+import (
+	"fmt"
+	"os"
+
+	"github.com/dotenv-org/godotenvvault"
+
+	"{{.Repo}}/cmd"
+)
 
 func main() {
+	if err := godotenvvault.Load(); err != nil {
+		fmt.Printf("failed to load env: %s\n", err)
+		os.Exit(1)
+	}
 	cmd.Execute()
 }

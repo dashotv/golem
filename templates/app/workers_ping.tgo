@@ -1,0 +1,10 @@
+package {{.Package}}
+
+// Example Minion Worker
+type Ping struct{}
+
+func (j *Ping) Kind() string { return "ping" }
+func (j *Ping) Work(ctx context.Context, job *minion.Job[*Ping]) error {
+	log.Named("ping").Debug("ping")
+	return nil
+}

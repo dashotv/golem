@@ -1,0 +1,33 @@
+func (a *Application) Routes() {
+    a.Default.GET("/", a.indexHandler)
+    a.Default.GET("/health", a.healthHandler)
+
+    {{range $name, $group := .Groups -}}
+        {{$name}} := a.Router.Group("{{.Path}}")
+    {{range $rn, $route := .CombinedRoutes -}}
+    {{$name}}.{{.Method}}("{{.Path}}", a.{{$group.Camel}}{{$route.Camel}}Handler)
+    {{end}}
+    {{end}}
+}
+
+func (a *Application) indexHandler(c *gin.Context) {
+    c.JSON(http.StatusOK, gin.H{
+        "name": "{{.Config.Name}}",
+        "routes": gin.H{
+            {{range $name, $group := .Groups -}}
+            "{{$name}}": "{{.Path}}",
+            {{end -}}
+        },
+    })
+}
+
+func (a *Application) healthHandler(c *gin.Context) {
+	health, err := a.Health()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"name": "{{.Config.Name}}", "health": health})
+}

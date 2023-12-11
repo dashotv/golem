@@ -1,0 +1,36 @@
+type Connector struct {
+	Log *zap.SugaredLogger
+    {{range .Models -}}
+        {{ if .Model -}}
+    {{.Camel}} *grimoire.Store[*{{.Camel}}]
+        {{ end -}}
+    {{end}}
+}
+
+func NewConnector(app *Application) (*Connector, error) {
+    var s *Connection
+    var err error
+
+    {{range .Models -}}
+        {{ if .Model -}}
+    s, err = app.Config.ConnectionFor("{{.Name}}")
+    if err != nil {
+        return nil, err
+    }
+    {{.Name}}, err := grimoire.New[*{{.Camel}}](s.URI, s.Database, s.Collection)
+    if err != nil {
+        return nil, err
+    }
+        {{ end }}
+    {{end -}}
+    c := &Connector{
+        Log: app.Log.Named("db"),
+        {{range .Models -}}
+            {{ if .Model -}}
+        {{.Camel}}: {{.Name}},
+            {{ end -}}
+        {{end}}
+    }
+
+    return c, nil
+}

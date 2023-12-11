@@ -1,0 +1,16 @@
+package {{.Package}}
+
+import (
+	"context"
+
+	"github.com/dashotv/minion"
+)
+
+type {{.Worker.Camel}} struct {
+    {{range .Worker.Fields}}{{.Camel}} {{.Type}} `bson:"{{.BsonTag}}" json:"{{.JsonTag}}"`{{end}}
+}
+
+func (j *{{.Worker.Camel}}) Kind() string { return "{{.Worker.Name}}" }
+func (j *{{.Worker.Camel}}) Work(ctx context.Context, job *minion.Job[*{{.Worker.Camel}}]) error {
+    return nil
+}

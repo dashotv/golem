@@ -1,0 +1,92 @@
+
+{{- $name := .Config.Name }}
+{{- $hasReceiver := .HasReceiver }}
+type Events struct {
+	App *Application
+	Merc *mercury.Mercury
+	Log *zap.SugaredLogger
+	{{- range $i, $e := .Events }}
+	{{ $e.Camel }} chan *{{ $e.Payload }}{{ end }}
+}
+
+func NewEvents(app *Application) (*Events, error) {
+	m, err := mercury.New("{{$name}}", app.Config.NatsURL)
+	if err != nil {
+		return nil, err
+	}
+
+	e := &Events{
+		App: app,
+		Merc: m,
+		Log: app.Log.Named("events"),
+		{{- range $i, $e := .Events }}
+		{{ $e.Camel }}: make(chan *{{ $e.Payload }}),{{ end }}
+	}
+	{{ range $i, $e := .Events }}{{ if $e.Receiver }}
+	if err := e.Merc.Receiver("{{$e.Channel}}", e.{{ $e.Camel }}); err != nil {
+		return nil, err
+	}
+	{{ else }}
+	if err := e.Merc.Sender("{{$e.Channel}}", e.{{ $e.Camel }}); err != nil {
+		return nil, err
+	}
+	{{ end }}{{ end -}}
+
+	return e, nil
+}
+
+func (e *Events) Start() error {
+	e.Log.Infof("starting events...")
+
+    {{- if $hasReceiver}}
+    go func() {
+        // wire up receivers
+        for {
+            select {
+            {{- range $i, $e := .Events }}{{ if $e.Receiver }}
+            case m := <-e.{{ $e.Camel }}:{{ if $e.ProxyTo }}
+				v, err := on{{$e.Camel}}(e.App, m)
+				if err != nil {
+					e.Log.Errorf("proxy failed: on{{ $e.Camel }}: %s", err)
+					continue
+				}
+                e.Send("{{ $e.ProxyTo }}", v){{ else }}
+                on{{ $e.Camel }}(e.App, m)
+            {{ end }}{{ end }}{{ end -}}
+            }
+        }
+    }(){{ else }}
+    // no receivers{{ end }}
+    return nil
+}
+
+func (e *Events) Send(topic EventsTopic, data any) error {
+	f := func() interface{} { return e.doSend(topic, data) }
+
+	err, ok := WithTimeout(f, time.Second*5)
+	if !ok {
+		e.Log.Errorf("timeout sending: %s", topic)
+		return fmt.Errorf("timeout sending: %s", topic)
+	}
+	if err != nil {
+		e.Log.Errorf("sending: %s", err)
+		return errors.Wrap(err.(error), "events.send")
+	}
+	return nil
+}
+
+func (e *Events) doSend(topic EventsTopic, data any) error {
+	switch topic {
+    {{- range $i, $e := .Events }}{{ if $e.Sender }}
+    case "{{$e.Channel}}":
+		m, ok := data.(*{{ $e.Payload }})
+		if !ok {
+			return errors.Errorf("events.send: wrong data type: %t", data)
+		}
+		e.{{.Camel}} <- m
+    {{ end }}{{ end -}}
+	default:
+		e.Log.Warnf("events.send: unknown topic: %s", topic)
+	}
+	return nil
+}

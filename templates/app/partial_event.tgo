@@ -1,0 +1,5 @@
+{{- if .Create }}type Event{{ .Camel }} struct { // {{.Name}}
+    {{- range .Fields }}
+    {{ .Camel }} {{ .Type }} `bson:"{{ .BsonTag }}" json:"{{ .JsonTag }}"`
+    {{- end }}
+}{{ end }}

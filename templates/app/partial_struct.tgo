@@ -1,0 +1,5 @@
+type {{.Camel}} struct { // {{.Type}}
+{{ range $fn, $field := .Fields -}}
+    {{.Camel}} {{.Type}} `bson:"{{.BsonTag}}" json:"{{.JsonTag}}"`
+{{end -}}
+}

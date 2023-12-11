@@ -1,0 +1,26 @@
+	//golem:template:app/app_partial_definitions
+	// DO NOT EDIT. This section is managed by github.com/dashotv/golem.
+	{{- if eq .Routes "true" }}
+	// Routes
+	Engine  *gin.Engine
+	Default *gin.RouterGroup
+	Router *gin.RouterGroup
+	{{ end -}}
+	{{- if eq .Models "true" }}
+	// Models
+	DB *Connector
+	{{ end -}}
+    {{- if eq .Events "true" }}
+	// Events
+	Events *Events
+	{{ end -}}
+	{{- if eq .Workers "true" }}
+	// Workers
+	Workers *minion.Minion
+	{{ end -}}
+	{{- if eq .Cache "true" }}
+	//Cache
+	Cache *Cache
+	{{ end }}
+
+	//golem:template:app/app_partial_definitions

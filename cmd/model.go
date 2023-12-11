@@ -16,34 +16,56 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sirupsen/logrus"
+	"strings"
+
 	"github.com/spf13/cobra"
 
+	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/generators"
+	"github.com/dashotv/golem/output"
 )
+
+var modelStruct bool
+var modelDesc = `Generate a new model definition
+
+  NAME 		name, must be unique
+  FIELD 	field name:type, can be repeated
+`
 
 // modelCmd represents the model command
 var modelCmd = &cobra.Command{
-	Use:   "model <name> [field...]",
+	Use:   "model NAME [FIELD...]",
 	Short: "generate a new model definition",
-	Long:  "generate a new model definition",
+	Long:  modelDesc,
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
 		fields := args[1:]
 
-		g := generators.NewModelDefinitionGenerator(cfg, name, fields...)
-
-		s, err := cmd.Flags().GetBool("struct")
-		if err != nil {
-			logrus.Fatalln("error getting struct flag")
+		m := &config.Model{
+			Name: name,
+			Type: "model",
+		}
+		if modelStruct {
+			m.Type = "struct"
 		}
 
-		if s {
-			g.Type = "struct"
+		for _, f := range fields {
+			s := strings.Split(f, ":")
+			n := s[0]
+			t := "string"
+			if len(s) > 1 {
+				t = s[1]
+			}
+			m.Fields = append(m.Fields, &config.Field{Name: n, Type: t, Json: "", Bson: ""})
 		}
 
-		if err := g.Execute(); err != nil {
-			logrus.Fatalf("error generating new model definition: %s", err)
+		if err := generators.NewModel(cfg, m); err != nil {
+			output.FatalTrace("error: %s", err)
+		}
+
+		if err := markdown("model"); err != nil {
+			output.FatalTrace("error: %s", err)
 		}
 	},
 }
@@ -59,5 +81,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	modelCmd.Flags().Bool("struct", false, "create model type struct")
+	modelCmd.Flags().BoolVarP(&modelStruct, "struct", "s", false, "create model type struct")
 }

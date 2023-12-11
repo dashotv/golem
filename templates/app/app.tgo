@@ -1,163 +1,58 @@
-package app
+package {{.Package}}
 
 import (
-	"net/http"
-	"os"
-	"time"
+	"fmt"
 
-	"github.com/clerkinc/clerk-sdk-go/clerk"
-	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
-	"github.com/philippgille/gokv/redis"
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
 
-var initialized bool
-var cfg *Config
-var log *zap.SugaredLogger
-var logger *zap.Logger
-var db *Connector
-var router *gin.Engine
-var routerDefault *gin.RouterGroup
-var routerAuth *gin.RouterGroup
-var cache *Cache
-var server *Server
+var app *Application
 
-type SetupFunc func() error
+type setupFunc func(app *Application) error
+type healthFunc func(app *Application) error
 
-func Start() error {
-	err := setup(
-		setupConfig,
-		setupLogger,
-		setupDb,
-		setupRouter,
-		setupCache,
-	)
-	if err != nil {
-		return err
-	}
+var initializers = []setupFunc{setupConfig, setupLogger}
+var healthchecks = map[string]healthFunc{}
 
-	initialized = true
-	log.Info("initialized: ", initialized)
-	log.Debugf("config: %#v", cfg)
+type Application struct {
+	Config  *Config
+	Log     *zap.SugaredLogger
 
-	server = &Server{Log: log.Named("server"), Engine: router, Router: routerAuth, Default: routerDefault}
-	return server.Start()
+	//golem:template:app/app_partial_definitions
+
+	//golem:template:app/app_partial_definitions
 }
 
-func setup(fs ...SetupFunc) error {
-	for _, f := range fs {
-		if err := f(); err != nil {
+func Start() error {
+	if app != nil {
+		return errors.New("application already started")
+	}
+
+	app := &Application{}
+
+	for _, f := range initializers {
+		if err := f(app); err != nil {
 			return err
 		}
 	}
 
-	return nil
-}
+	app.Log.Info("starting {{.Name}}...")
 
-func setupConfig() (err error) {
-	cfg = &Config{}
+	//golem:template:app/app_partial_start
 
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err != nil {
-		// fmt.Printf("WARN: unable to read config: %s\n", err)
-		return nil //errors.Wrap(err, "unable to read config")
-	}
-
-	if err := viper.Unmarshal(cfg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal configuration file")
-	}
-
-	if err := cfg.Validate(); err != nil {
-		return errors.Wrap(err, "failed to validate config")
-	}
+	//golem:template:app/app_partial_start
 
 	return nil
 }
 
-func setupLogger() (err error) {
-	zapcfg := zap.NewProductionConfig()
-
-	switch cfg.Mode {
-	case "dev":
-		zapcfg.Development = true
-		zapcfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
-	case "release":
-		zapcfg.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
+func (a *Application) Health() (map[string]bool, error) {
+	resp := make(map[string]bool)
+	for n, f := range healthchecks {
+		err := f(a)
+		resp[n] = err == nil
 	}
 
-	logger, err = zap.NewProduction()
-	if err != nil {
-		return err
-	}
-	log = logger.Sugar().Named("app")
-
-	return nil
+	return resp, nil
 }
-
-func setupCache() (err error) {
-//	cache, err = NewCache(log.Named("cache"), redis.Options{Address: cfg.Redis.Address})
-//	if err != nil {
-//		return err
-//	}
-
-	return nil
-}
-
-func setupDb() (err error) {
-	db, err = NewConnector()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func setupRouter() (err error) {
-	if cfg.Mode == "release" {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
-	router = gin.New()
-	router.Use(ginzap.Ginzap(logger, time.RFC3339, true), ginzap.RecoveryWithZap(logger, true))
-	routerDefault = router.Group("/")
-	routerAuth = router.Group("/")
-
-// 	if cfg.Auth {
-// 		clerKey := os.Getenv("CLERK_SECRET_KEY")
-// 		if clerKey == "" {
-// 			log.Fatal("CLERK_SECRET_KEY is not set")
-// 		}
-//
-// 		clerkClient, err := clerk.NewClient(clerKey)
-// 		if err != nil {
-// 			log.Fatalf("clerk: %s", err)
-// 		}
-//
-// 		routerAuth.Use(requireSession(clerkClient))
-// 	}
-
-	return nil
-}
-
-// requireSession is a middleware that requires a clerk session to be present
-// func requireSession(client clerk.Client) gin.HandlerFunc {
-// 	requireActionSession := clerk.RequireSessionV2(client)
-// 	return func(gctx *gin.Context) {
-// 		var skip = true
-// 		var handler http.HandlerFunc = func(http.ResponseWriter, *http.Request) {
-// 			skip = false
-// 		}
-// 		requireActionSession(handler).ServeHTTP(gctx.Writer, gctx.Request)
-// 		switch {
-// 		case skip:
-// 			gctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "session required"})
-// 		default:
-// 			gctx.Next()
-// 		}
-// 	}
-// }

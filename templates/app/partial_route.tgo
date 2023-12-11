@@ -1,0 +1,14 @@
+// {{.Camel}} ({{.Path}})
+{{$group := .Camel -}}
+{{range $rn, $route := .CombinedRoutes -}}
+func (a *Application) {{$group}}{{$route.Camel}}Handler(c *gin.Context) {
+    {{range .Params -}}
+        {{if .Query -}}
+        {{.Name}} := Query{{.TypeCamel}}(c, "{{.Name}}")
+        {{else -}}
+        {{.Name}} := c.Param("{{.Name}}")
+        {{end -}}
+    {{end -}}
+    a.{{$group}}{{$route.Camel}}(c, {{range .Params -}}{{.Name}},{{- end}})
+}
+{{end}}

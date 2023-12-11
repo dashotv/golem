@@ -4,21 +4,19 @@ func DefaultConfig() *Config {
 	cfg := &Config{}
 	cfg.Name = "test"
 	cfg.Repo = "github.com/dashotv/test"
+	cfg.Package = "app"
+	cfg.Output = "app"
 
-	cfg.Models.Enabled = true
-	cfg.Models.Package = "app"
-	cfg.Models.Output = "app"
-	cfg.Models.Definitions = ".golem/models"
+	cfg.Plugins.Models = false
+	cfg.Plugins.Routes = false
+	cfg.Plugins.Workers = false
+	cfg.Plugins.Cache = false
+	cfg.Plugins.Events = false
 
-	cfg.Routes.Enabled = true
-	cfg.Routes.Repo = "github.com/dashotv/blarg"
-	cfg.Routes.Output = "app"
-	cfg.Routes.Definition = ".golem/routes.yaml"
-
-	cfg.Jobs.Enabled = false
-	cfg.Jobs.Package = "jobs"
-	cfg.Jobs.Output = "jobs"
-	cfg.Jobs.Definitions = ".golem/jobs.yaml"
+	cfg.Definitions.Models = ".golem/models"
+	cfg.Definitions.Routes = ".golem/routes"
+	cfg.Definitions.Events = ".golem/events"
+	cfg.Definitions.Workers = ".golem/workers"
 
 	return cfg
 }

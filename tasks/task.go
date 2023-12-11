@@ -12,18 +12,22 @@ type TaskFunction func() error
 
 // newTask is a simple wrapper for creating an instance of Task
 func newTask(name string, f TaskFunction) *Task {
-	return &Task{Name: name, Function: f}
+	return &Task{name: name, function: f}
 }
 
 // Task store name and function for task
 type Task struct {
-	Name     string
-	Function TaskFunction
+	name     string
+	function TaskFunction
+}
+
+func (t *Task) Name() string {
+	return t.name
 }
 
 // Run executes the task
 func (t *Task) Run() error {
-	return t.Function()
+	return t.function()
 }
 
 // PathExists returns true or false if the path exists
@@ -37,11 +41,9 @@ func PathExists(path string) bool {
 // NewMakeDirectoryTask is a convenience method for creating a task that creates a directory if it doesn't exist
 func NewMakeDirectoryTask(dir string) func() error {
 	return func() error {
-		if !PathExists(dir) {
-			err := os.Mkdir(dir, 0755)
-			if err != nil {
-				return errors.Wrap(err, "mkdir")
-			}
+		err := os.Mkdir(dir, 0755)
+		if err != nil {
+			return errors.Wrap(err, "mkdir")
 		}
 		return nil
 	}

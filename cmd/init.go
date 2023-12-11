@@ -16,10 +16,10 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/dashotv/golem/generators"
+	"github.com/dashotv/golem/output"
 )
 
 // initCmd represents the new command
@@ -32,9 +32,12 @@ var initCmd = &cobra.Command{
 		name := args[0]
 		pkg := args[1]
 
-		g := generators.NewAppGenerator(cfg, name, pkg)
-		if err := g.Execute(); err != nil {
-			logrus.Fatalf("error generating new app: %s", err)
+		if err := generators.Init(name, pkg); err != nil {
+			output.FatalTrace("init: error: %s", err)
+		}
+
+		if err := markdown("init"); err != nil {
+			output.FatalTrace("error: %s", err)
 		}
 	},
 }

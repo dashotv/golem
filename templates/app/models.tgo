@@ -1,0 +1,10 @@
+package {{.Package}}
+
+func (c *Connector) {{.Model.Camel}}List() ([]*{{.Model.Camel}}, error) {
+    list, err := c.{{.Model.Camel}}.Query().Limit(10).Run()
+    if err != nil {
+        return nil, err
+    }
+
+    return list, nil
+}

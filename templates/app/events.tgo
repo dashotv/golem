@@ -1,0 +1,14 @@
+{{- $event := .Event }}
+package {{.Package}}
+
+{{ if $event.ProxyTo -}}
+func on{{$event.Camel}}(app *Application, msg *{{$event.Payload}}) (*{{$event.ProxyType}}, error) {
+    // handle *{{$event.Payload}}
+    return &{{$event.ProxyType}}{}, nil
+}
+{{ else }}
+func on{{$event.Camel}}(app *Application, msg *{{$event.Payload}}) error {
+    // handle *{{$event.Payload}}
+    return nil
+}
+{{ end -}}

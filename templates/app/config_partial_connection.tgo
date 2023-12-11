@@ -1,0 +1,55 @@
+
+//golem:template:app/config_partial_connection
+// DO NOT EDIT. This section is managed by github.com/dashotv/golem.
+{{ if eq .Models "true" }}
+func (c *Config) validateDefaultConnection() error {
+	if len(c.Connections) == 0 {
+		return errors.New("you must specify a default connection")
+	}
+
+	var def *Connection
+	for n, c := range c.Connections {
+		if n == "default" || n == "Default" {
+			def = c
+			break
+		}
+	}
+
+	if def == nil {
+		return errors.New("no 'default' found in connections list")
+	}
+	if def.Database == "" {
+		return errors.New("default connection must specify database")
+	}
+	if def.URI == "" {
+		return errors.New("default connection must specify URI")
+	}
+
+	return nil
+}
+
+func (c *Config) ConnectionFor(name string) (*Connection, error) {
+	def, ok := c.Connections["default"]
+	if !ok {
+		return nil, errors.Errorf("connection for %s: no default connection found", name)
+	}
+
+	conn, ok := c.Connections[name]
+	if !ok {
+		return nil, errors.Errorf("no connection named '%s'", name)
+	}
+
+	if conn.URI != "" {
+		conn.URI = def.URI
+	}
+	if conn.Database != "" {
+		conn.Database = def.Database
+	}
+	if conn.Collection != "" {
+		conn.Collection = def.Collection
+	}
+
+	return conn, nil
+}
+{{ end }}
+//golem:template:app/config_partial_connection

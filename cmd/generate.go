@@ -16,10 +16,10 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/dashotv/golem/generators"
+	"github.com/dashotv/golem/output"
 )
 
 // generateCmd represents the generate command
@@ -28,10 +28,8 @@ var generateCmd = &cobra.Command{
 	Short: "generate mongo database models based on MDM library",
 	Long:  "generate mongo database models based on MDM library",
 	Run: func(cmd *cobra.Command, args []string) {
-		g := &generators.MainGenerator{Config: cfg}
-		err := g.Execute()
-		if err != nil {
-			logrus.Fatalf("generation error: %s", err)
+		if err := generators.App(cfg); err != nil {
+			output.FatalTrace("error: %s", err)
 		}
 	},
 }

@@ -1,0 +1,6 @@
+		//golem:template:app/config_partial_validate
+		// DO NOT EDIT. This section is managed by github.com/dashotv/golem.
+        {{- if eq .Models "true" }}
+		c.validateDefaultConnection,
+        {{ end }}
+		//golem:template:app/config_partial_validate
