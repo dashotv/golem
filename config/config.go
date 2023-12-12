@@ -14,6 +14,7 @@ import (
 
 type Config struct {
 	File    string `yaml:"-"`
+	Version string `yaml:"version,omitempty"`
 	Name    string `yaml:"name,omitempty"`
 	Repo    string `yaml:"repo,omitempty"`
 	Package string `yaml:"package,omitempty"`

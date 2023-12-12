@@ -2,6 +2,7 @@ package config
 
 func DefaultConfig() *Config {
 	cfg := &Config{}
+	cfg.Version = "2.0"
 	cfg.Name = "test"
 	cfg.Repo = "github.com/dashotv/test"
 	cfg.Package = "app"
