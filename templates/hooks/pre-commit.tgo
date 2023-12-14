@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
 if [[ -e ".env.vault" ]]; then
-  if [[ ! -e '.env.vault.md5' ]]; then
-    echo "[pre-commit] .env.vault creating checksum file..."
-    md5sum ".env.vault" >".env.vault.md5"
+  if [[ ! -e '.md5.env' ]]; then
+    echo "[pre-commit] .env creating checksum file..."
+    md5sum ".env" >".md5.env"
+  fi
+  if [[ ! -e '.md5.env.production' ]]; then
+    echo "[pre-commit] .env.production creating checksum file..."
+    md5sum ".env.production" >".md5.env.production"
   fi
   echo "[pre-commit] checking/updating .env.vault file..."
-  if ! md5sum -c - <".env.vault.md5" &>/dev/null; then
+  if ! md5sum -c - <".md5.env" &>/dev/null ||
+    md5sum -c - <".md5.env.production" &>/dev/null; then
     npx dotenv-vault local build &>/dev/null
     git add .env.vault
   fi
