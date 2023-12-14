@@ -2,7 +2,6 @@ package generators
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -29,10 +28,8 @@ func NewModel(cfg *config.Config, m *config.Model) error {
 }
 
 func Models(cfg *config.Config) error {
-	dir := filepath.Join(cfg.Root(), cfg.Definitions.Models)
 	data := cfg.Data()
 	var output []string
-	models := make(map[string]*config.Model)
 
 	runner := tasks.NewRunner("app:models")
 	runner.Add("header", func() error {
@@ -45,25 +42,9 @@ func Models(cfg *config.Config) error {
 	})
 
 	// collect models for connector registration
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
-			return nil
-		}
-
-		if strings.HasSuffix(path, ".yaml") {
-			model := &config.Model{}
-			err := tasks.ReadYaml(path, model)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("reading model: %s", path))
-			}
-
-			models[model.Name] = model
-		}
-
-		return nil
-	})
+	models, err := cfg.Models()
 	if err != nil {
-		return errors.Wrap(err, "walking models")
+		return errors.Wrap(err, "collecting models")
 	}
 
 	modelData := struct {

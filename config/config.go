@@ -104,67 +104,94 @@ func (c *Config) Disable(name string) error {
 	return nil
 }
 
-func (c *Config) Models() (map[string]*Model, error) {
-	dir := c.Path(c.Definitions.Models)
-	models := make(map[string]*Model)
+func (c *Config) walk(dir string, fn func(yaml string) error) error {
 	walk := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("walking models: %s", path))
+			return errors.Wrap(err, fmt.Sprintf("walking %s: %s", dir, path))
 		}
 		if info.IsDir() {
 			return nil
 		}
 
 		if strings.HasSuffix(path, ".yaml") {
-			model := &Model{}
-			err := tasks.ReadYaml(path, model)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("reading model: %s", path))
-			}
-
-			models[model.Name] = model
+			return fn(path)
 		}
 
 		return nil
 	}
 	if err := filepath.Walk(dir, walk); err != nil {
-		return nil, err
+		return err
 	}
-	return models, nil
+	return nil
+}
+
+func (c *Config) Models() (map[string]*Model, error) {
+	dir := c.Path(c.Definitions.Models)
+	models := make(map[string]*Model)
+	err := c.walk(dir, func(path string) error {
+		model := &Model{}
+		err := tasks.ReadYaml(path, model)
+		if err != nil {
+			return errors.Wrap(err, fmt.Sprintf("reading model: %s", path))
+		}
+
+		models[model.Name] = model
+		return nil
+	})
+	return models, err
+}
+
+func (c *Config) Groups() (map[string]*Group, error) {
+	dir := c.Path(c.Definitions.Routes)
+	groups := make(map[string]*Group)
+	err := c.walk(dir, func(path string) error {
+		group := &Group{}
+		err := tasks.ReadYaml(path, group)
+		if err != nil {
+			return errors.Wrap(err, fmt.Sprintf("reading group: %s", path))
+		}
+
+		groups[group.Name] = group
+		return nil
+	})
+	return groups, err
+}
+
+func (c *Config) Workers() (map[string]*Worker, error) {
+	dir := c.Path(c.Definitions.Workers)
+	workers := make(map[string]*Worker)
+	err := c.walk(dir, func(path string) error {
+		worker := &Worker{}
+		err := tasks.ReadYaml(path, worker)
+		if err != nil {
+			return errors.Wrap(err, fmt.Sprintf("reading worker: %s", path))
+		}
+
+		workers[worker.Name] = worker
+		return nil
+	})
+	return workers, err
 }
 
 func (c *Config) Events() (map[string]*Event, bool, error) {
 	dir := c.Path(c.Definitions.Events)
 	events := make(map[string]*Event)
 	var hasReceiver bool
-	walk := func(path string, info os.FileInfo, err error) error {
+	err := c.walk(dir, func(path string) error {
+		event := &Event{}
+		err := tasks.ReadYaml(path, event)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("walking event: %s", path))
-		}
-		if info.IsDir() {
-			return nil
+			return errors.Wrap(err, fmt.Sprintf("reading event: %s", path))
 		}
 
-		if strings.HasSuffix(path, ".yaml") {
-			event := &Event{}
-			err := tasks.ReadYaml(path, event)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("reading event: %s", path))
-			}
-
-			if !hasReceiver && event.Receiver {
-				hasReceiver = true
-			}
-
-			events[event.Name] = event
+		if !hasReceiver && event.Receiver {
+			hasReceiver = true
 		}
 
+		events[event.Name] = event
 		return nil
-	}
-	if err := filepath.Walk(dir, walk); err != nil {
-		return nil, false, err
-	}
-	return events, hasReceiver, nil
+	})
+	return events, hasReceiver, err
 }
 
 func (c *Config) Root() string {

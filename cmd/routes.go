@@ -30,6 +30,9 @@ var routesCmd = &cobra.Command{
 
 		groups := make(map[string]*config.Group)
 		err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				output.FatalTrace("error: walking groups: %s", err)
+			}
 			if info.IsDir() {
 				return nil
 			}
@@ -38,8 +41,7 @@ var routesCmd = &cobra.Command{
 				group := &config.Group{}
 				err := tasks.ReadYaml(path, group)
 				if err != nil {
-					output.Printf("reading group: %s", path)
-					os.Exit(1)
+					output.FatalTrace("error: reading group: %s", err)
 				}
 
 				groups[group.Name] = group

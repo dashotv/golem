@@ -2,7 +2,6 @@ package generators
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -49,7 +48,6 @@ func NewRoute(cfg *config.Config, group string, route *config.Route) error {
 }
 
 func Routes(cfg *config.Config) error {
-	dir := filepath.Join(cfg.Root(), cfg.Definitions.Routes)
 	data := cfg.Data()
 	var output []string
 
@@ -64,26 +62,9 @@ func Routes(cfg *config.Config) error {
 	})
 
 	// collect groups for route registration
-	groups := make(map[string]*config.Group)
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
-			return nil
-		}
-
-		if strings.HasSuffix(path, ".yaml") {
-			group := &config.Group{}
-			err := tasks.ReadYaml(path, group)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("reading group: %s", path))
-			}
-
-			groups[group.Name] = group
-		}
-
-		return nil
-	})
+	groups, err := cfg.Groups()
 	if err != nil {
-		return errors.Wrap(err, "walking routes")
+		return errors.Wrap(err, "collecting models")
 	}
 
 	routes := struct {

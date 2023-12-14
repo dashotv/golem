@@ -1,11 +1,8 @@
 package generators
 
 import (
-	"fmt"
-	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -29,28 +26,10 @@ func NewWorker(cfg *config.Config, worker *config.Worker) error {
 }
 
 func Workers(cfg *config.Config) error {
-	dir := filepath.Join(cfg.Root(), cfg.Definitions.Workers)
-
-	workers := make(map[string]*config.Worker)
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
-			return nil
-		}
-
-		if strings.HasSuffix(path, ".yaml") {
-			worker := &config.Worker{}
-			err := tasks.ReadYaml(path, worker)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("reading worker: %s", path))
-			}
-
-			workers[worker.Name] = worker
-		}
-
-		return nil
-	})
+	// collect models for connector registration
+	workers, err := cfg.Workers()
 	if err != nil {
-		return errors.Wrap(err, "walking routes")
+		return errors.Wrap(err, "collecting models")
 	}
 
 	data := struct {
