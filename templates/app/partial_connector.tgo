@@ -21,7 +21,8 @@ func NewConnector(app *Application) (*Connector, error) {
     if err != nil {
         return nil, err
     }
-        {{ end }}
+    {{ if .QueryDefaults }}{{.Name}}.SetQueryDefaults({{.QueryDefaultsString}}){{ end }}
+    {{ end }}
     {{end -}}
     c := &Connector{
         Log: app.Log.Named("db"),

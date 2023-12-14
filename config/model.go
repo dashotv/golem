@@ -1,12 +1,18 @@
 package config
 
-import "github.com/iancoleman/strcase"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/iancoleman/strcase"
+)
 
 type Model struct {
-	Name    string   `yaml:"name,omitempty"`
-	Type    string   `yaml:"type,omitempty"`
-	Imports []string `yaml:"imports,omitempty"`
-	Fields  []*Field `yaml:"fields,omitempty"`
+	Name          string                 `yaml:"name,omitempty"`
+	Type          string                 `yaml:"type,omitempty"`
+	QueryDefaults map[string]interface{} `yaml:"query_defaults,omitempty"`
+	Imports       []string               `yaml:"imports,omitempty"`
+	Fields        []*Field               `yaml:"fields,omitempty"`
 }
 
 func (m *Model) Model() bool {
@@ -19,6 +25,22 @@ func (m *Model) Struct() bool {
 
 func (m *Model) Camel() string {
 	return strcase.ToCamel(m.Name)
+}
+
+func (m *Model) QueryDefaultsString() string {
+	out := []string{}
+	if len(m.QueryDefaults) == 0 {
+		return ""
+	}
+	for k, v := range m.QueryDefaults {
+		switch val := v.(type) {
+		case string:
+			out = append(out, fmt.Sprintf("{\"%s\": \"%s\"}", k, val))
+		default:
+			out = append(out, fmt.Sprintf("{\"%s\": %v}", k, val))
+		}
+	}
+	return "[]bson.M{" + strings.Join(out, ",") + "}"
 }
 
 type Field struct {
