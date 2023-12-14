@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -102,9 +103,15 @@ func Routes(cfg *config.Config) error {
 		return nil
 	})
 
-	for k, v := range groups {
+	keys := make([]string, 0, len(groups))
+	for k := range groups {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
 		k := k
-		v := v
+		v := groups[k]
 		runner.Add("group:"+k, func() error {
 			buf, err := tasks.Buffer(filepath.Join("app", "partial_route"), v)
 			if err != nil {

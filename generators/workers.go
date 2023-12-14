@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -65,9 +66,15 @@ func Workers(cfg *config.Config) error {
 		return tasks.File(filepath.Join("app", "app_workers"), filepath.Join("app", "app_workers.go"), data)
 	})
 
-	for k, v := range workers {
+	keys := make([]string, 0, len(workers))
+	for k := range workers {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
 		k := k
-		v := v
+		v := workers[k]
 		runner.Add("hook:"+k, func() error {
 			d := struct {
 				Package string

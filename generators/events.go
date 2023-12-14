@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -65,9 +66,15 @@ func Events(cfg *config.Config) error {
 		return nil
 	})
 
-	for k, v := range events {
+	keys := make([]string, 0, len(events))
+	for k := range events {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
 		k := k
-		v := v
+		v := events[k]
 		runner.Add("event:"+k, func() error {
 			buf, err := tasks.Buffer(filepath.Join("app", "partial_event"), v)
 			if err != nil {

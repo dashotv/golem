@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -82,9 +83,15 @@ func Models(cfg *config.Config) error {
 		return nil
 	})
 
-	for k, v := range models {
+	keys := make([]string, 0, len(models))
+	for k := range models {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
 		k := k
-		v := v
+		v := models[k]
 		runner.Add("model:"+k, func() error {
 			t := "app/partial_model"
 			if v.Type == "struct" {
