@@ -28,6 +28,36 @@ func (c *Config) validateDefaultConnection() error {
 	return nil
 }
 
+type Connection struct {
+	URI        string `yaml:"uri,omitempty"`
+	Database   string `yaml:"database,omitempty"`
+	Collection string `yaml:"collection,omitempty"`
+}
+
+func (c *Connection) UnmarshalText(text []byte) error {
+	vals := strings.Split(string(text), ",")
+	c.URI = vals[0]
+	c.Database = vals[1]
+	c.Collection = vals[2]
+	return nil
+}
+
+type ConnectionSet map[string]*Connection
+
+func (c *ConnectionSet) UnmarshalText(text []byte) error {
+	*c = make(map[string]*Connection)
+	for _, conn := range strings.Split(string(text), ";") {
+		kv := strings.Split(conn, "=")
+		vals := strings.Split(kv[1]+",,", ",")
+		(*c)[kv[0]] = &Connection{
+			URI:        vals[0],
+			Database:   vals[1],
+			Collection: vals[2],
+		}
+	}
+	return nil
+}
+
 func (c *Config) ConnectionFor(name string) (*Connection, error) {
 	def, ok := c.Connections["default"]
 	if !ok {
@@ -39,13 +69,13 @@ func (c *Config) ConnectionFor(name string) (*Connection, error) {
 		return nil, errors.Errorf("no connection named '%s'", name)
 	}
 
-	if conn.URI != "" {
+	if conn.URI == "" {
 		conn.URI = def.URI
 	}
-	if conn.Database != "" {
+	if conn.Database == "" {
 		conn.Database = def.Database
 	}
-	if conn.Collection != "" {
+	if conn.Collection == "" {
 		conn.Collection = def.Collection
 	}
 
