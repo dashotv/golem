@@ -70,10 +70,14 @@ func initConfig() {
 		viper.SetConfigName("config")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	if viper.ConfigFileUsed() == "" {
+		output.Warnf("Warning: no config file found")
+		return
+	}
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
+		output.Fatalf("error reading config file: %s", err)
 		return
 	}
 
