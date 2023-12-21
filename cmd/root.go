@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -70,15 +71,14 @@ func initConfig() {
 		viper.SetConfigName("config")
 	}
 
-	if viper.ConfigFileUsed() == "" {
-		output.Warnf("Warning: no config file found")
-		return
-	}
-
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		output.Fatalf("error reading config file: %s", err)
-		return
+		if errors.As(err, &viper.ConfigFileNotFoundError{}) {
+			output.Warnf("config file not found, during initialization this is non-fatal.")
+		} else {
+			output.Fatalf("error reading config file: %s", err)
+			return
+		}
 	}
 
 	if err := viper.Unmarshal(cfg); err != nil {
