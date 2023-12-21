@@ -23,7 +23,8 @@ new: clean build init
 	cd $(DEST)/$(NAME) && $(BINARY) add event flame -r time:time.Time download:float64 upload:float64
 	cd $(DEST)/$(NAME) && $(BINARY) plugin enable cache
 	cd $(DEST)/$(NAME) && $(BINARY) add worker ProcessRelease id
-	cd $(DEST)/$(NAME) && $(BINARY) add worker process_download id -s '0 0 11 * * *'
+	cd $(DEST)/$(NAME) && $(BINARY) add queue downloads -c 3
+	cd $(DEST)/$(NAME) && $(BINARY) add worker process_download id -s '0 0 11 * * *' -q downloads
 	cd $(DEST)/$(NAME) && $(BINARY) generate
 	cd $(DEST)/$(NAME) && $(BINARY) readme
 	cd $(DEST)/$(NAME) && $(BINARY) routes

@@ -2,7 +2,6 @@ package generators
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -24,12 +23,23 @@ func NewEvent(cfg *config.Config, event *config.Event) error {
 	runner.Add("plugin:enable", func() error {
 		return pluginEnable(cfg, "events")
 	})
+	if event.Receiver {
+		runner.Add("hook", func() error {
+			d := struct {
+				Package string
+				Event   *config.Event
+			}{
+				Package: cfg.Package,
+				Event:   event,
+			}
+			return tasks.FileDoesntExist(filepath.Join("app", "events"), filepath.Join("app", "events_"+event.Name+".go"), d)
+		})
+	}
 
 	return runner.Run()
 }
 
 func Events(cfg *config.Config) error {
-	dir := filepath.Join(cfg.Root(), cfg.Definitions.Events)
 	data := cfg.Data()
 	var output []string
 
@@ -43,7 +53,7 @@ func Events(cfg *config.Config) error {
 		return nil
 	})
 
-	events, hasReceiver, err := WalkEvents(dir)
+	events, hasReceiver, err := cfg.Events()
 	if err != nil {
 		return errors.Wrap(err, "walking events")
 	}
@@ -86,16 +96,6 @@ func Events(cfg *config.Config) error {
 		if !v.Receiver {
 			continue
 		}
-		runner.Add("hook:"+k, func() error {
-			d := struct {
-				Package string
-				Event   *config.Event
-			}{
-				Package: cfg.Package,
-				Event:   v,
-			}
-			return tasks.FileDoesntExist(filepath.Join("app", "events"), filepath.Join("app", "events_"+k+".go"), d)
-		})
 	}
 
 	runner.Add("save", func() error {
@@ -103,37 +103,4 @@ func Events(cfg *config.Config) error {
 	})
 
 	return runner.Run()
-}
-
-func WalkEvents(dir string) (map[string]*config.Event, bool, error) {
-	events := make(map[string]*config.Event)
-	var hasReceiver bool
-	walk := func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("walking event: %s", path))
-		}
-		if info.IsDir() {
-			return nil
-		}
-
-		if strings.HasSuffix(path, ".yaml") {
-			event := &config.Event{}
-			err := tasks.ReadYaml(path, event)
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("reading event: %s", path))
-			}
-
-			if !hasReceiver && event.Receiver {
-				hasReceiver = true
-			}
-
-			events[event.Name] = event
-		}
-
-		return nil
-	}
-	if err := filepath.Walk(dir, walk); err != nil {
-		return nil, false, err
-	}
-	return events, hasReceiver, nil
 }

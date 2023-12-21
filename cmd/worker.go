@@ -15,6 +15,7 @@ import (
 )
 
 var workerSchedule string
+var workerQueue string
 var workerDesc = `... worker NAME [FIELD...]
 
   NAME		worker name, must be unique
@@ -30,6 +31,17 @@ var workerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		n := strcase.ToSnake(args[0])
 		w := &config.Worker{Name: n, Schedule: workerSchedule}
+
+		if workerQueue != "" {
+			queues, err := cfg.Queues()
+			if err != nil {
+				output.FatalTrace("error: %s", err)
+			}
+			if _, ok := queues[workerQueue]; !ok {
+				output.Fatalf("error: queue %s does not exist", workerQueue)
+			}
+			w.Queue = workerQueue
+		}
 
 		if len(args) > 1 {
 			for _, a := range args[1:] {
@@ -65,4 +77,5 @@ func init() {
 	// is called directly, e.g.:
 	// workerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	workerCmd.Flags().StringVarP(&workerSchedule, "schedule", "s", "", "schedule for worker (cron format with seconds)")
+	workerCmd.Flags().StringVarP(&workerQueue, "queue", "q", "", "queue for worker, must already exist")
 }

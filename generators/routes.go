@@ -14,14 +14,14 @@ import (
 
 func NewGroup(cfg *config.Config, group *config.Group) error {
 	runner := tasks.NewRunner("group")
-	runner.Add("plugin:enable", func() error {
-		return pluginEnable(cfg, "routes")
-	})
 	runner.Add("directory", func() error {
 		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Routes))
 	})
 	runner.Add("file", func() error {
 		return tasks.WriteYaml(filepath.Join(cfg.Root(), cfg.Definitions.Routes, group.Name+".yaml"), group)
+	})
+	runner.Add("plugin:enable", func() error {
+		return pluginEnable(cfg, "routes")
 	})
 
 	return runner.Run()

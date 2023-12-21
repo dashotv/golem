@@ -1,5 +1,16 @@
 package {{.Package}}
 
+func (c *Connector) {{.Model.Camel}}Get(id string) (*{{.Model.Camel}}, error) {
+    m, err := c.{{.Model.Camel}}.Get(id, &{{.Model.Camel}}{})
+    if err != nil {
+        return nil, err
+    }
+
+    // post process here
+
+    return m, nil
+}
+
 func (c *Connector) {{.Model.Camel}}List() ([]*{{.Model.Camel}}, error) {
     list, err := c.{{.Model.Camel}}.Query().Limit(10).Run()
     if err != nil {

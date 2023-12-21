@@ -31,6 +31,7 @@ type Config struct {
 		Routes  string `yaml:"routes,omitempty"`
 		Events  string `yaml:"events,omitempty"`
 		Workers string `yaml:"workers,omitempty"`
+		Queues  string `yaml:"queues,omitempty"`
 	} `yaml:"definitions,omitempty"`
 }
 
@@ -171,6 +172,22 @@ func (c *Config) Workers() (map[string]*Worker, error) {
 		return nil
 	})
 	return workers, err
+}
+
+func (c *Config) Queues() (map[string]*Queue, error) {
+	dir := c.Path(c.Definitions.Queues)
+	queues := make(map[string]*Queue)
+	err := c.walk(dir, func(path string) error {
+		queue := &Queue{}
+		err := tasks.ReadYaml(path, queue)
+		if err != nil {
+			return errors.Wrap(err, fmt.Sprintf("reading queue: %s", path))
+		}
+
+		queues[queue.Name] = queue
+		return nil
+	})
+	return queues, err
 }
 
 func (c *Config) Events() (map[string]*Event, bool, error) {

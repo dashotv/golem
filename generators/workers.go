@@ -2,7 +2,6 @@ package generators
 
 import (
 	"path/filepath"
-	"sort"
 
 	"github.com/pkg/errors"
 
@@ -12,22 +11,52 @@ import (
 
 func NewWorker(cfg *config.Config, worker *config.Worker) error {
 	runner := tasks.NewRunner("worker")
-	runner.Add("plugin:enable", func() error {
-		return pluginEnable(cfg, "workers")
-	})
 	runner.Add("directory", func() error {
 		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Workers))
 	})
 	runner.Add("file", func() error {
 		return tasks.WriteYaml(filepath.Join(cfg.Root(), cfg.Definitions.Workers, worker.Name+".yaml"), worker)
 	})
+	runner.Add("plugin:enable", func() error {
+		return pluginEnable(cfg, "workers")
+	})
+	runner.Add("hook", func() error {
+		d := struct {
+			Package string
+			Worker  *config.Worker
+		}{
+			Package: cfg.Package,
+			Worker:  worker,
+		}
+		return tasks.FileDoesntExist(filepath.Join("app", "workers"), filepath.Join("app", "workers_"+worker.Name+".go"), d)
+	})
+
+	return runner.Run()
+}
+
+func NewQueue(cfg *config.Config, queue *config.Queue) error {
+	runner := tasks.NewRunner("queue")
+	runner.Add("plugin:enable", func() error {
+		return pluginEnable(cfg, "workers")
+	})
+	runner.Add("directory", func() error {
+		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Queues))
+	})
+	runner.Add("file", func() error {
+		return tasks.WriteYaml(filepath.Join(cfg.Root(), cfg.Definitions.Queues, queue.Name+".yaml"), queue)
+	})
 
 	return runner.Run()
 }
 
 func Workers(cfg *config.Config) error {
-	// collect models for connector registration
+	// collect workers
 	workers, err := cfg.Workers()
+	if err != nil {
+		return errors.Wrap(err, "collecting models")
+	}
+	// collect queues
+	queues, err := cfg.Queues()
 	if err != nil {
 		return errors.Wrap(err, "collecting models")
 	}
@@ -35,9 +64,11 @@ func Workers(cfg *config.Config) error {
 	data := struct {
 		Config  *config.Config
 		Workers map[string]*config.Worker
+		Queues  map[string]*config.Queue
 	}{
 		Config:  cfg,
 		Workers: workers,
+		Queues:  queues,
 	}
 
 	runner := tasks.NewRunner("workers")
@@ -45,25 +76,5 @@ func Workers(cfg *config.Config) error {
 		return tasks.File(filepath.Join("app", "app_workers"), filepath.Join("app", "app_workers.go"), data)
 	})
 
-	keys := make([]string, 0, len(workers))
-	for k := range workers {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	for _, k := range keys {
-		k := k
-		v := workers[k]
-		runner.Add("hook:"+k, func() error {
-			d := struct {
-				Package string
-				Worker  *config.Worker
-			}{
-				Package: cfg.Package,
-				Worker:  v,
-			}
-			return tasks.FileDoesntExist(filepath.Join("app", "workers"), filepath.Join("app", "workers_"+k+".go"), d)
-		})
-	}
 	return runner.Run()
 }

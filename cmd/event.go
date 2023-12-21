@@ -4,7 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"path/filepath"
+	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -57,7 +57,7 @@ var eventCmd = &cobra.Command{
 		}
 
 		if e.ProxyTo != "" {
-			events, _, err := generators.WalkEvents(filepath.Join(cfg.Root(), cfg.Definitions.Events))
+			events, _, err := cfg.Events()
 			if err != nil {
 				output.FatalTrace("error: %s", err)
 			}
@@ -68,7 +68,7 @@ var eventCmd = &cobra.Command{
 				}
 			}
 			if e.ProxyType == "" {
-				output.FatalTrace("error: %s", err)
+				output.FatalTrace("error: %s", fmt.Errorf("proxy type %s not found, expected to find existing event that matches this name", e.ProxyTo))
 			}
 		}
 

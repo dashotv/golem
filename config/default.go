@@ -18,6 +18,7 @@ func DefaultConfig() *Config {
 	cfg.Definitions.Routes = ".golem/routes"
 	cfg.Definitions.Events = ".golem/events"
 	cfg.Definitions.Workers = ".golem/workers"
+	cfg.Definitions.Queues = ".golem/queues"
 
 	return cfg
 }

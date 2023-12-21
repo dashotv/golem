@@ -23,6 +23,18 @@ func NewModel(cfg *config.Config, m *config.Model) error {
 	runner.Add("plugin:enable", func() error {
 		return pluginEnable(cfg, "models")
 	})
+	if m.Type == "model" {
+		runner.Add("hook", func() error {
+			d := struct {
+				Package string
+				Model   *config.Model
+			}{
+				Package: cfg.Package,
+				Model:   m,
+			}
+			return tasks.FileDoesntExist(filepath.Join("app", "models"), filepath.Join("app", "models_"+m.Name+".go"), d)
+		})
+	}
 
 	return runner.Run()
 }
