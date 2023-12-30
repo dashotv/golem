@@ -55,15 +55,15 @@ func (f *Field) Camel() string {
 }
 
 func (f *Field) JsonTag() string {
-	if f.Json == "" {
-		return f.Name + ",omitempty"
+	if f.Json != "" {
+		return f.Json
 	}
-	return f.Json
+	return f.Name
 }
 
 func (f *Field) BsonTag() string {
-	if f.Bson == "" {
-		return f.Name + ",omitempty"
+	if f.Bson != "" {
+		return f.Bson
 	}
-	return f.Bson
+	return f.Name
 }
