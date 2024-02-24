@@ -37,6 +37,7 @@ func Init(name, repo string) error {
 
 		cfg.File = cfgFile
 		g = cfg.Data()
+		g["Port"] = "3000"
 
 		err = os.Chdir(cfg.Root())
 		if err != nil {

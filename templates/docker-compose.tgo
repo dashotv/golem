@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  tower:
+  {{.Name}}:
     image: cosmtrek/air
     working_dir: /app
     command: server
