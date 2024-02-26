@@ -10,12 +10,22 @@ import (
 )
 
 func init() {
-    initializers = append(initializers, setupRoutes)
+  initializers = append(initializers, setupRoutes)
 	healthchecks["routes"] = checkRoutes
+	starters = append(starters, startRoutes)
 }
 
 func checkRoutes(app *Application) error {
 	// TODO: check routes
+	return nil
+}
+
+func startRoutes(ctx context.Context, app *Application) error {
+	app.Routes()
+	app.Log.Info("starting routes...")
+	if err := app.Engine.Run(fmt.Sprintf(":%d", app.Config.Port)); err != nil {
+		return errors.Wrap(err, "starting router")
+	}
 	return nil
 }
 

@@ -15,6 +15,7 @@ type healthFunc func(app *Application) error
 
 var initializers = []setupFunc{setupConfig, setupLogger}
 var healthchecks = map[string]healthFunc{}
+var starters = []func(ctx context.Context, app *Application) error{}
 
 type Application struct {
 	Config  *Config
@@ -25,12 +26,12 @@ type Application struct {
 	//golem:template:app/app_partial_definitions
 }
 
-func Start() error {
+func Setup() error {
 	if app != nil {
-		return errors.New("application already started")
+		return errors.New("application already setup")
 	}
 
-	app := &Application{}
+	app = &Application{}
 
 	for _, f := range initializers {
 		if err := f(app); err != nil {
@@ -38,13 +39,35 @@ func Start() error {
 		}
 	}
 
-	app.Log.Info("starting {{.Name}}...")
-
-	//golem:template:app/app_partial_start
-
-	//golem:template:app/app_partial_start
-
 	return nil
+}
+
+func Start() error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	if app == nil {
+		err := Setup()
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, f := range starters {
+		if err := f(ctx, app); err != nil {
+			return err
+		}
+	}
+
+	app.Log.Info("started")
+
+	for {
+		select {
+		case <-ctx.Done():
+			app.Log.Info("stopping")
+			return nil
+		}
+	}
 }
 
 func (a *Application) Health() (map[string]bool, error) {
