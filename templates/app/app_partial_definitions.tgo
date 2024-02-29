@@ -2,9 +2,9 @@
 	// DO NOT EDIT. This section is managed by github.com/dashotv/golem.
 	{{- if eq .Routes "true" }}
 	// Routes
-	Engine  *gin.Engine
-	Default *gin.RouterGroup
-	Router *gin.RouterGroup
+	Engine  *echo.Echo
+	Default *echo.Group
+	Router *echo.Group
 	{{ end -}}
 	{{- if eq .Models "true" }}
 	// Models

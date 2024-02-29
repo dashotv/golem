@@ -1,7 +1,8 @@
 package {{.Package}}
 
 func (c *Connector) {{.Model.Camel}}Get(id string) (*{{.Model.Camel}}, error) {
-    m, err := c.{{.Model.Camel}}.Get(id, &{{.Model.Camel}}{})
+    m := &{{.Model.Camel}}{}
+    err := c.{{.Model.Camel}}.Find(id, m)
     if err != nil {
         return nil, err
     }

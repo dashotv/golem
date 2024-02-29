@@ -7,15 +7,24 @@ import (
 )
 
 {{$group := .Group.Camel -}}
+{{$path := .Group.Path -}}
 {{range $rn, $route := .Group.CombinedRoutes -}}
-func (a *Application) {{$group}}{{$route.Camel}}(c *gin.Context, {{range .Params -}}{{.Name}} {{.Type}},{{- end}}) {
+// {{.Method}} {{$path}}{{$route.Path}}
+func (a *Application) {{$group}}{{$route.Camel}}(c echo.Context, {{range .Params -}}{{.Name}} {{.Type}},{{- end}}) error {
+    {{- if .Index }}
+    // list, err := a.DB.{{$group}}List()
+    // if err != nil {
+    //     return c.JSON(http.StatusInternalServerError, gin.H{"error": true, "message": "error loading {{$group}}"})
+    // }{{ end -}}
     {{- if .Crud }}
-    // asssuming this is a CRUD route, get the subject from the database
     // subject, err := a.DB.{{$group}}.Get(id)
-    {{ end -}}
-    c.JSON(http.StatusOK, gin.H{
-        "error": false,
-    })
+    // if err != nil {
+    //     return c.JSON(http.StatusNotFound, gin.H{"error": true, "message": "not found"})
+    // }
+    {{ end }}
+    // TODO: implement the route
+    return c.JSON(http.StatusNotImplemented, gin.H{"error": "not implmented"})
+    // return c.JSON(http.StatusOK, gin.H{"error": false})
 }
 
 {{end}}

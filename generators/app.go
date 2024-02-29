@@ -64,11 +64,11 @@ func App(cfg *config.Config) error {
 	}
 
 	commands := runner.Group("commands")
-	commands.Add("goimports", func() error {
-		return tasks.GoImports()
-	})
 	commands.Add("go mod tidy", func() error {
 		return tasks.GoModTidy()
+	})
+	commands.Add("goimports", func() error {
+		return tasks.GoImports()
 	})
 
 	return runner.Run()

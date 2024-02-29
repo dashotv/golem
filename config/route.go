@@ -117,6 +117,10 @@ func (r *Route) Crud() bool {
 	return false
 }
 
+func (r *Route) Index() bool {
+	return r.Name == "index"
+}
+
 type Param struct {
 	Name  string `json:"name,omitempty" yaml:"name,omitempty"`
 	Type  string `json:"type,omitempty" yaml:"type,omitempty"`

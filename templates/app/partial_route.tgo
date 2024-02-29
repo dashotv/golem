@@ -1,7 +1,7 @@
 // {{.Camel}} ({{.Path}})
 {{$group := .Camel -}}
 {{range $rn, $route := .CombinedRoutes -}}
-func (a *Application) {{$group}}{{$route.Camel}}Handler(c *gin.Context) {
+func (a *Application) {{$group}}{{$route.Camel}}Handler(c echo.Context) error {
     {{range .Params -}}
         {{if .Query -}}
         {{.Name}} := Query{{.TypeCamel}}(c, "{{.Name}}")
@@ -9,6 +9,6 @@ func (a *Application) {{$group}}{{$route.Camel}}Handler(c *gin.Context) {
         {{.Name}} := c.Param("{{.Name}}")
         {{end -}}
     {{end -}}
-    a.{{$group}}{{$route.Camel}}(c, {{range .Params -}}{{.Name}},{{- end}})
+    return a.{{$group}}{{$route.Camel}}(c, {{range .Params -}}{{.Name}},{{- end}})
 }
 {{end}}

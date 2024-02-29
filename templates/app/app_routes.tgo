@@ -2,11 +2,15 @@
 package {{.Package}}
 
 import (
+	"context"
+	"fmt"
 	"net/http"
-	"time"
 
-	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -23,28 +27,35 @@ func checkRoutes(app *Application) error {
 func startRoutes(ctx context.Context, app *Application) error {
 	app.Routes()
 	app.Log.Info("starting routes...")
-	if err := app.Engine.Run(fmt.Sprintf(":%d", app.Config.Port)); err != nil {
+	if err := app.Engine.Start(fmt.Sprintf(":%d", app.Config.Port)); err != nil {
 		return errors.Wrap(err, "starting router")
 	}
 	return nil
 }
 
 func setupRoutes(app *Application) error {
-	if app.Config.Mode == "release" {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
 	logger := app.Log.Named("routes").Desugar()
+	e := echo.New()
+	e.HideBanner = true
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogURI:    true,
+		LogStatus: true,
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			logger.Info("request",
+				zap.String("URI", v.URI),
+				zap.Int("status", v.Status),
+			)
 
-	app.Engine = gin.New()
-	app.Engine.Use(
-		ginzap.Ginzap(logger, time.RFC3339, true),
-		ginzap.RecoveryWithZap(logger, true),
-	)
+			return nil
+		},
+	}))
+	e.Use(middleware.Recover())
+
+	app.Engine = e
 	// unauthenticated routes
-	app.Default = app.Engine.Group("/")
+	app.Default = app.Engine.Group("")
 	// authenticated routes (if enabled, otherwise same as default)
-	app.Router = app.Engine.Group("/")
+	app.Router = app.Engine.Group("")
 
 	// if app.Config.Auth {
 	// 	clerkSecret := app.Config.ClerkSecretKey

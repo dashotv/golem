@@ -3,9 +3,11 @@ package {{.Package}}
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+
+	"github.com/dashotv/minion"
 )
 
 var app *Application
@@ -47,8 +49,7 @@ func Start() error {
 	defer cancel()
 
 	if app == nil {
-		err := Setup()
-		if err != nil {
+		if err := Setup(); err != nil {
 			return err
 		}
 	}
