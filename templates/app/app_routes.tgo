@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/clerkinc/clerk-sdk-go/clerk"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"go.infratographer.com/x/echox/echozap"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
+	"go.infratographer.com/x/echox/echozap"
 )
 
 func init() {
@@ -46,40 +46,40 @@ func setupRoutes(app *Application) error {
 	// authenticated routes (if enabled, otherwise same as default)
 	app.Router = app.Engine.Group("")
 
-	// if app.Config.Auth {
-	// 	clerkSecret := app.Config.ClerkSecretKey
-	// 	if clerkSecret == "" {
-	// 		app.Log.Fatal("CLERK_SECRET_KEY is not set")
-	// 	}
-	//
-	// 	clerkClient, err := clerk.NewClient(clerkSecret)
-	// 	if err != nil {
-	// 		app.Log.Fatalf("clerk: %s", err)
-	// 	}
-	//
-	// 	app.Router.Use(requireSession(clerkClient))
-	// }
+	if app.Config.Auth {
+		clerkSecret := app.Config.ClerkSecretKey
+		if clerkSecret == "" {
+			app.Log.Fatal("CLERK_SECRET_KEY is not set")
+		}
+
+		clerkClient, err := clerk.NewClient(clerkSecret)
+		if err != nil {
+			app.Log.Fatalf("clerk: %s", err)
+		}
+
+		app.Router.Use(requireSession(clerkClient))
+	}
 
 	return nil
 }
 
-// Enable Auth and uncomment to use Clerk to manage auth
+// Enable Auth in .env or .env.production
 // also add this import: "github.com/clerkinc/clerk-sdk-go/clerk"
 //
 // requireSession wraps the clerk.RequireSession middleware
-// func requireSession(client clerk.Client) HandlerFunc {
-// 	requireActiveSession := clerk.RequireSessionV2(client)
-// 	return func(gctx *gin.Context) {
-// 		var skip = true
-// 		var handler http.HandlerFunc = func(http.ResponseWriter, *http.Request) {
-// 			skip = false
-// 		}
-// 		requireActiveSession(handler).ServeHTTP(gctx.Writer, gctx.Request)
-// 		switch {
-// 		case skip:
-// 			gctx.AbortWithStatusJSON(http.StatusBadRequest, H{"error": "session required"})
-// 		default:
-// 			gctx.Next()
-// 		}
-// 	}
-// }
+func requireSession(client clerk.Client) HandlerFunc {
+	requireActiveSession := clerk.RequireSessionV2(client)
+	return func(gctx *gin.Context) {
+		var skip = true
+		var handler http.HandlerFunc = func(http.ResponseWriter, *http.Request) {
+			skip = false
+		}
+		requireActiveSession(handler).ServeHTTP(gctx.Writer, gctx.Request)
+		switch {
+		case skip:
+			gctx.AbortWithStatusJSON(http.StatusBadRequest, H{"error": "session required"})
+		default:
+			gctx.Next()
+		}
+	}
+}
