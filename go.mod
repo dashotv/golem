@@ -1,8 +1,6 @@
 module github.com/dashotv/golem
 
-go 1.21
-
-toolchain go1.21.4
+go 1.22.0
 
 require (
 	github.com/charmbracelet/glamour v0.6.0
