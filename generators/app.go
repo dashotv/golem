@@ -67,10 +67,11 @@ func App(cfg *config.Config) error {
 	commands.Add("go mod tidy", func() error {
 		return tasks.GoModTidy()
 	})
-	// TODO: this breaks the echo import and I don't know why
-	// commands.Add("goimports", func() error {
-	// 	return tasks.GoImports()
-	// })
+	// TODO: this breaks the echo import in app/app.go on first run
+	// and I don't know why
+	commands.Add("goimports", func() error {
+		return tasks.GoImports()
+	})
 
 	return runner.Run()
 }
