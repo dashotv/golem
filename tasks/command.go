@@ -30,7 +30,7 @@ func GoFmt() error {
 	return Command("go fmt ./...", "go", "fmt", "./...")
 }
 func GoImports() error {
-	return Command("goimports", "goimports", "-w", ".")
+	return Command("goimports", "go", "run", "--", "golang.org/x/tools/cmd/goimports@latest", "-w", ".")
 }
 func GoModInit(repo string) error {
 	return Command("go mod init", "go", "mod", "init", repo)

@@ -29,6 +29,7 @@ import (
 var cfg = &config.Config{}
 var cfgFile string
 var colors bool
+var silent bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -52,6 +53,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().BoolVar(&colors, "colors", true, "use color output")
+	rootCmd.PersistentFlags().BoolVar(&silent, "silent", false, "silence output")
 }
 
 // initConfig reads in config file and ENV variables if set.
