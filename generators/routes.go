@@ -114,7 +114,7 @@ func Routes(cfg *config.Config) error {
 	}
 
 	runner.Add("save", func() error {
-		return tasks.RawFile(filepath.Join("app", "app_routes.go"), strings.Join(output, "\n"))
+		return tasks.RawFile(filepath.Join("app", "routes.gen.go"), strings.Join(output, "\n"))
 	})
 
 	return runner.Run()

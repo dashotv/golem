@@ -89,7 +89,7 @@ func Clients(cfg *config.Config) error {
 				Group:  g,
 			}
 			runner.Add("file", func() error {
-				return tasks.File(filepath.Join("client", "group"), filepath.Join(cfg.Root(), "client", g.Name+".go"), groupData)
+				return tasks.File(filepath.Join("client", "group"), filepath.Join(cfg.Root(), "client", g.Name+".gen.go"), groupData)
 			})
 		}
 
@@ -114,7 +114,7 @@ func Clients(cfg *config.Config) error {
 		}
 
 		runner.Add("save", func() error {
-			return tasks.RawFile(filepath.Join("client", "models.go"), strings.Join(modelsOutput, "\n"))
+			return tasks.RawFile(filepath.Join("client", "models.gen.go"), strings.Join(modelsOutput, "\n"))
 		})
 	}
 

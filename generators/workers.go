@@ -73,7 +73,7 @@ func Workers(cfg *config.Config) error {
 
 	runner := tasks.NewRunner("workers")
 	runner.Add("file", func() error {
-		return tasks.File(filepath.Join("app", "app_workers"), filepath.Join("app", "app_workers.go"), data)
+		return tasks.File(filepath.Join("app", "app_workers"), filepath.Join("app", "workers.gen.go"), data)
 	})
 
 	return runner.Run()

@@ -99,7 +99,7 @@ func Events(cfg *config.Config) error {
 	}
 
 	runner.Add("save", func() error {
-		return tasks.RawFile(filepath.Join("app", "app_events.go"), strings.Join(output, "\n"))
+		return tasks.RawFile(filepath.Join("app", "events.gen.go"), strings.Join(output, "\n"))
 	})
 
 	return runner.Run()

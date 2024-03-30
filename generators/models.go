@@ -113,7 +113,7 @@ func Models(cfg *config.Config) error {
 	}
 
 	runner.Add("save", func() error {
-		return tasks.RawFile(filepath.Join("app", "app_models.go"), strings.Join(output, "\n"))
+		return tasks.RawFile(filepath.Join("app", "models.gen.go"), strings.Join(output, "\n"))
 	})
 
 	return runner.Run()

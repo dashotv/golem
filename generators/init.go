@@ -107,13 +107,13 @@ func Init(name, repo string) error {
 		return tasks.File(filepath.Join("app", "app"), filepath.Join("app", "app.go"), g)
 	})
 	app.Add("config", func() error {
-		return tasks.File(filepath.Join("app", "app_config"), filepath.Join("app", "app_config.go"), g)
+		return tasks.File(filepath.Join("app", "app_config"), filepath.Join("app", "config.go"), g)
 	})
 	app.Add("logger", func() error {
-		return tasks.File(filepath.Join("app", "app_logger"), filepath.Join("app", "app_logger.go"), g)
+		return tasks.File(filepath.Join("app", "app_logger"), filepath.Join("app", "logger.go"), g)
 	})
 	runner.Add("utils", func() error {
-		return tasks.File(filepath.Join("app", "app_utils"), filepath.Join("app", "app_utils.go"), g)
+		return tasks.File(filepath.Join("app", "app_utils"), filepath.Join("app", "utils.go"), g)
 	})
 
 	commands := runner.Group("commands")

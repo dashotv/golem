@@ -13,7 +13,7 @@ func SupportedClients() []string {
 func (c *Client) Filename() string {
 	switch c.Language {
 	case "go":
-		return filepath.Join("client", "client.go")
+		return filepath.Join("client", "client.gen.go")
 		// case "js":
 		// 	return filepath.Join("javascript", "src", "client.js")
 		// case "ts":
