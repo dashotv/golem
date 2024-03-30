@@ -12,19 +12,65 @@ import (
 // {{.Method}} {{$path}}{{$route.Path}}
 func (a *Application) {{$group}}{{$route.Camel}}(c echo.Context, {{range .Params -}}{{.Name}} {{.Type}},{{- end}}) error {
     {{- if .Index }}
-    // list, err := a.DB.{{$group}}List()
-    // if err != nil {
-    //     return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error loading {{$group}}"})
-    // }{{ end -}}
-    {{- if .Crud }}
-    // subject, err := a.DB.{{$group}}.Get(id)
+    if page < 1 {
+        page = 1
+    }
+    if limit < 1 {
+        limit = 25
+    }
+    skip := (page - 1) * limit
+    list, err := a.DB.{{$group}}List(limit, skip)
+    if err != nil {
+        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error loading {{$group}}"})
+    }
+    return c.JSON(http.StatusOK, H{"error": false, "result": list})
+    {{- else if .Create }}
+    // TODO: process the subject
+    if err := a.DB.{{$group}}.Save(subject); err != nil {
+        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error saving {{$group}}"})
+    }
+    return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+    {{- else if .Update }}
+    // TODO: process the subject
+
+    // if you need to copy or compare to existing object...
+    // data, err := a.DB.{{$group}}Get(id)
     // if err != nil {
     //     return c.JSON(http.StatusNotFound, H{"error": true, "message": "not found"})
     // }
-    {{ end }}
+    // data.Name = subject.Name ...
+    if err := a.DB.{{$group}}.Save(subject); err != nil {
+        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error saving {{$group}}"})
+    }
+    return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+    {{- else if .Delete }}
+    subject, err := a.DB.{{$group}}Get(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, H{"error": true, "message": "not found"})
+	}
+    if err := a.DB.{{$group}}.Delete(subject); err != nil {
+        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error deleting {{$group}}"})
+    }
+	return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+    {{- else if .Settings }}
+    subject, err := a.DB.{{$group}}Get(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, H{"error": true, "message": "not found"})
+	}
+
+    // switch Setting.Name {
+    // case "something":
+    //    subject.Something = Setting.Value
+    // }
+
+    if err := a.DB.{{$group}}.Save(subject); err != nil {
+        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error saving {{$group}}"})
+    }
+	return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+    {{ else }}
     // TODO: implement the route
     return c.JSON(http.StatusNotImplemented, H{"error": "not implmented"})
-    // return c.JSON(http.StatusOK, H{"error": false})
+    {{ end -}}
 }
 
 {{end}}

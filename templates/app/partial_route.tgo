@@ -5,6 +5,11 @@ func (a *Application) {{$group}}{{$route.Camel}}Handler(c echo.Context) error {
     {{range .Params -}}
         {{if .Query -}}
         {{.Name}} := Query{{.TypeCamel}}(c, "{{.Name}}")
+        {{else if .Bind -}}
+        var {{.Name}} {{.Type}}
+        if err := c.Bind({{.Name}}); err != nil {
+            return err
+        }
         {{else -}}
         {{.Name}} := c.Param("{{.Name}}")
         {{end -}}

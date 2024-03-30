@@ -25,6 +25,7 @@ type Config struct {
 		Workers bool `yaml:"workers"`
 		Cache   bool `yaml:"cache"`
 		Events  bool `yaml:"events"`
+		Clients bool `yaml:"clients"`
 	} `yaml:"plugins"`
 	Definitions struct {
 		Models  string `yaml:"models,omitempty"`
@@ -32,6 +33,7 @@ type Config struct {
 		Events  string `yaml:"events,omitempty"`
 		Workers string `yaml:"workers,omitempty"`
 		Queues  string `yaml:"queues,omitempty"`
+		Clients string `yaml:"clients,omitempty"`
 	} `yaml:"definitions,omitempty"`
 }
 
@@ -47,6 +49,7 @@ func (c *Config) Data() map[string]string {
 		"Cache":   fmt.Sprintf("%t", c.Plugins.Cache),
 		"Events":  fmt.Sprintf("%t", c.Plugins.Events),
 		"Workers": fmt.Sprintf("%t", c.Plugins.Workers),
+		"Clients": fmt.Sprintf("%t", c.Plugins.Clients),
 	}
 }
 
@@ -62,6 +65,8 @@ func (c *Config) Enable(name string) error {
 		c.Plugins.Events = true
 	case "workers", "Workers":
 		c.Plugins.Workers = true
+	case "clients", "Clients":
+		c.Plugins.Clients = true
 	default:
 		return fmt.Errorf("unknown plugin: %s", name)
 	}
@@ -81,6 +86,8 @@ func (c *Config) Enabled(name string) bool {
 		return c.Plugins.Events
 	case "workers", "Workers":
 		return c.Plugins.Workers
+	case "clients", "Clients":
+		return c.Plugins.Clients
 	default:
 		return false
 	}
@@ -98,6 +105,8 @@ func (c *Config) Disable(name string) error {
 		c.Plugins.Events = false
 	case "workers", "Workers":
 		c.Plugins.Workers = false
+	case "clients", "Clients":
+		c.Plugins.Clients = false
 	default:
 		return fmt.Errorf("unknown plugin: %s", name)
 	}
@@ -156,6 +165,22 @@ func (c *Config) Groups() (map[string]*Group, error) {
 		return nil
 	})
 	return groups, err
+}
+
+func (c *Config) Clients() (map[string]*Client, error) {
+	dir := c.Path(c.Definitions.Clients)
+	clients := make(map[string]*Client)
+	err := c.walk(dir, func(path string) error {
+		client := &Client{}
+		err := tasks.ReadYaml(path, client)
+		if err != nil {
+			return errors.Wrap(err, fmt.Sprintf("reading client: %s", path))
+		}
+
+		clients[client.Language] = client
+		return nil
+	})
+	return clients, err
 }
 
 func (c *Config) Workers() (map[string]*Worker, error) {

@@ -1,12 +1,17 @@
 ############################
 # STEP 1 build executable binary
 ############################
-FROM golang:1.21-alpine AS builder
+FROM golang:alpine AS builder
 
 WORKDIR /go/src/app
-COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod \
+  --mount=type=bind,source=go.sum,target=go.sum \
+  --mount=type=bind,source=go.mod,target=go.mod \
+  go mod download
 
-RUN go install
+RUN --mount=type=cache,target=/go/pkg/mod \
+  --mount=type=bind,target=. \
+  go install
 
 ############################
 # STEP 2 build a small image
@@ -15,5 +20,5 @@ FROM alpine
 # Copy our static executable.
 WORKDIR /root/
 COPY --from=builder /go/bin/{{.Name}} .
-COPY --from=builder /go/src/app/etc/.{{.Name}}.yaml ./.{{.Name}}.yaml
+COPY .env.vault .
 CMD ["./{{.Name}}", "server"]

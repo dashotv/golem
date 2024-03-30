@@ -17,7 +17,7 @@ init: clean build
 
 clean:
 	@echo "Cleaning... $(DEST)/$(NAME)"
-	@rm -rf $(DEST)/$(NAME)
+	@find $(DEST)/$(NAME) -delete
 	@rm -rf $(BINARY)
 
 install: build

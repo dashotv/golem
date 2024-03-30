@@ -64,7 +64,7 @@ func Routes(cfg *config.Config) error {
 	// collect groups for route registration
 	groups, err := cfg.Groups()
 	if err != nil {
-		return errors.Wrap(err, "collecting models")
+		return errors.Wrap(err, "collecting groups")
 	}
 
 	routes := struct {

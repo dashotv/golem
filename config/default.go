@@ -13,12 +13,14 @@ func DefaultConfig() *Config {
 	cfg.Plugins.Workers = false
 	cfg.Plugins.Cache = false
 	cfg.Plugins.Events = false
+	cfg.Plugins.Clients = false
 
 	cfg.Definitions.Models = ".golem/models"
 	cfg.Definitions.Routes = ".golem/routes"
 	cfg.Definitions.Events = ".golem/events"
 	cfg.Definitions.Workers = ".golem/workers"
 	cfg.Definitions.Queues = ".golem/queues"
+	cfg.Definitions.Clients = ".golem/clients"
 
 	return cfg
 }

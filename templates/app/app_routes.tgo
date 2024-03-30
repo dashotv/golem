@@ -63,3 +63,8 @@ func setupRoutes(app *Application) error {
 
 	return nil
 }
+
+type Setting struct {
+	Name string `json:"name"`
+	Value bool `json:"value"`
+}

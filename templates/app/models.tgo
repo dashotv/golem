@@ -12,8 +12,8 @@ func (c *Connector) {{.Model.Camel}}Get(id string) (*{{.Model.Camel}}, error) {
     return m, nil
 }
 
-func (c *Connector) {{.Model.Camel}}List() ([]*{{.Model.Camel}}, error) {
-    list, err := c.{{.Model.Camel}}.Query().Limit(10).Run()
+func (c *Connector) {{.Model.Camel}}List(limit, skip int) ([]*{{.Model.Camel}}, error) {
+    list, err := c.{{.Model.Camel}}.Query().Limit(limit).Skip(skip).Run()
     if err != nil {
         return nil, err
     }

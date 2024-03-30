@@ -10,6 +10,7 @@ import (
 
 var rest bool
 var groupPath string
+var groupModel string
 var groupDesc = `... group NAME
 
   NAME	group name, must be unique, path defaults to "/NAME"
@@ -32,10 +33,15 @@ var groupCmd = &cobra.Command{
 			path = "/" + path
 		}
 
+		if rest && groupModel == "" {
+			output.Fatalf("error: model is required for REST-style routes")
+		}
+
 		g := &config.Group{
-			Name: name,
-			Path: path,
-			Rest: rest,
+			Name:  name,
+			Path:  path,
+			Rest:  rest,
+			Model: groupModel,
 		}
 
 		if err := generators.NewGroup(cfg, g); err != nil {
@@ -61,4 +67,5 @@ func init() {
 	// is called directly, e.g.:
 	groupCmd.Flags().BoolVarP(&rest, "rest", "r", false, "generate REST-style routes (Create/Retrieve/Update/Destroy)")
 	groupCmd.Flags().StringVarP(&groupPath, "path", "p", "", "custom path for group")
+	groupCmd.Flags().StringVarP(&groupModel, "model", "m", "", "model for REST-style routes")
 }

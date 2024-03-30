@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e -x
+set -e
 
 name="blarg"
 path="$1"
@@ -17,8 +17,9 @@ cd "$path" || exit 1
 
 # add
 cd "$name" || exit 1
-"$binary" --silent add group releases --rest
-"$binary" --silent add route releases additional -m POST
+"$binary" --silent add model release name version
+"$binary" --silent add group release --rest -m '*Release'
+"$binary" --silent add route release additional -m POST
 "$binary" --silent add group hello
 "$binary" --silent add route hello world -p funky/world id count:int
 "$binary" --silent add route hello new -m POST
@@ -33,6 +34,7 @@ cd "$name" || exit 1
 "$binary" --silent add worker ProcessRelease id
 "$binary" --silent add queue downloads -c 3
 "$binary" --silent add worker process_download id -s '0 0 11 * * *' -q downloads
+"$binary" --silent add client go
 "$binary" --silent generate
 # "$binary" readme
 # "$binary" routes

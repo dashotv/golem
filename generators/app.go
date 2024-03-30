@@ -40,6 +40,11 @@ func App(cfg *config.Config) error {
 			return Workers(cfg)
 		})
 	}
+	if cfg.Plugins.Clients {
+		runner.Add("clients", func() error {
+			return Clients(cfg)
+		})
+	}
 
 	runner.Group("app").Add("modify", func() error {
 		return tasks.Modify(filepath.Join("app", "app.go"), g)

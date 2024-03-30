@@ -3,6 +3,7 @@ package tasks
 import (
 	"bytes"
 	"os"
+	"path/filepath"
 	"regexp"
 
 	"github.com/pkg/errors"
@@ -15,6 +16,11 @@ func File(template, output string, data interface{}) error {
 	err := templates.New(template).Execute(buf, data)
 	if err != nil {
 		return errors.Wrap(err, "execute template")
+	}
+
+	dir := filepath.Dir(output)
+	if err := Directory(dir); err != nil {
+		return errors.Wrap(err, "creating directory")
 	}
 
 	err = os.WriteFile(output, buf.Bytes(), 0644)
