@@ -35,7 +35,7 @@ func (r *Runner) Add(name string, f TaskFunction) {
 
 // Add a new group to runner and return the group instance
 func (r *Runner) Group(name string) *Runner {
-	n := NewRunner(r.Name() + ":" + name)
+	n := NewRunner(r.Name() + "." + name)
 	r.Add(name, n.Run)
 	return n
 }

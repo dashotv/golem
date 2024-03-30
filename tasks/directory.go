@@ -3,13 +3,13 @@ package tasks
 import (
 	"os"
 
-	"github.com/pkg/errors"
+	"github.com/dashotv/fae"
 )
 
 func Directory(dir string) error {
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
-		return errors.Wrap(err, "mkdir")
+		return fae.Wrap(err, "mkdir")
 	}
 	return nil
 }

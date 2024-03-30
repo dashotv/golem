@@ -6,8 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
 )
@@ -47,7 +46,7 @@ func Models(cfg *config.Config) error {
 	runner.Add("header", func() error {
 		header, err := tasks.Buffer(filepath.Join("app", "app_models"), data)
 		if err != nil {
-			return errors.Wrap(err, "models header")
+			return fae.Wrap(err, "models header")
 		}
 		output = append(output, header)
 		return nil
@@ -56,7 +55,7 @@ func Models(cfg *config.Config) error {
 	// collect models for connector registration
 	models, err := cfg.Models()
 	if err != nil {
-		return errors.Wrap(err, "collecting models")
+		return fae.Wrap(err, "collecting models")
 	}
 
 	modelData := struct {
@@ -70,7 +69,7 @@ func Models(cfg *config.Config) error {
 	runner.Add("connector", func() error {
 		buf, err := tasks.Buffer(filepath.Join("app", "partial_connector"), modelData)
 		if err != nil {
-			return errors.Wrap(err, "models connector buffer")
+			return fae.Wrap(err, "models connector buffer")
 		}
 		output = append(output, buf)
 		return nil
@@ -92,7 +91,7 @@ func Models(cfg *config.Config) error {
 			}
 			buf, err := tasks.Buffer(t, v)
 			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("model buffer: %s", k))
+				return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
 			}
 			output = append(output, buf)
 			return nil

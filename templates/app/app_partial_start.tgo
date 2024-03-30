@@ -13,7 +13,7 @@
 	app.Routes()
 	app.Log.Info("starting routes...")
 	if err := app.Engine.Run(fmt.Sprintf(":%d", app.Config.Port)); err != nil {
-		return errors.Wrap(err, "starting router")
+		return fae.Wrap(err, "starting router")
 	}
 	{{ end }}
 

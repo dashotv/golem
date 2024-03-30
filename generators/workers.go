@@ -3,8 +3,7 @@ package generators
 import (
 	"path/filepath"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
 )
@@ -53,12 +52,12 @@ func Workers(cfg *config.Config) error {
 	// collect workers
 	workers, err := cfg.Workers()
 	if err != nil {
-		return errors.Wrap(err, "collecting models")
+		return fae.Wrap(err, "collecting models")
 	}
 	// collect queues
 	queues, err := cfg.Queues()
 	if err != nil {
-		return errors.Wrap(err, "collecting models")
+		return fae.Wrap(err, "collecting models")
 	}
 
 	data := struct {

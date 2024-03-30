@@ -3,8 +3,9 @@ package tasks
 import (
 	"os"
 
-	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
+
+	"github.com/dashotv/fae"
 )
 
 // ReadYaml reads a yaml file into a structure
@@ -25,12 +26,12 @@ func ReadYaml(path string, object interface{}) error {
 func WriteYaml(path string, data interface{}) error {
 	bytes, err := yaml.Marshal(data)
 	if err != nil {
-		return errors.Wrap(err, "marshal yaml")
+		return fae.Wrap(err, "marshal yaml")
 	}
 
 	err = os.WriteFile(path, bytes, 0644)
 	if err != nil {
-		return errors.Wrap(err, "writing yaml")
+		return fae.Wrap(err, "writing yaml")
 	}
 
 	return nil

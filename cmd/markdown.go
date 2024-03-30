@@ -3,8 +3,7 @@ package cmd
 import (
 	"embed"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/output"
 )
 
@@ -17,7 +16,7 @@ func markdown(path string) error {
 	}
 	data, err := docs.ReadFile(path + ".md")
 	if err != nil {
-		return errors.Wrap(err, "reading file")
+		return fae.Wrap(err, "reading file")
 	}
 	return output.Markdown(string(data))
 }

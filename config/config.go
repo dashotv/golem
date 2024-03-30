@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"github.com/pkg/errors"
 
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/tasks"
 )
 
@@ -57,16 +57,31 @@ func (c *Config) Enable(name string) error {
 	switch name {
 	case "models", "Models":
 		c.Plugins.Models = true
+		if c.Definitions.Models == "" {
+			c.Definitions.Models = "models"
+		}
 	case "routes", "Routes":
 		c.Plugins.Routes = true
+		if c.Definitions.Routes == "" {
+			c.Definitions.Routes = "routes"
+		}
 	case "cache", "Cache":
 		c.Plugins.Cache = true
 	case "events", "Events":
 		c.Plugins.Events = true
+		if c.Definitions.Events == "" {
+			c.Definitions.Events = "events"
+		}
 	case "workers", "Workers":
 		c.Plugins.Workers = true
+		if c.Definitions.Workers == "" {
+			c.Definitions.Workers = "workers"
+		}
 	case "clients", "Clients":
 		c.Plugins.Clients = true
+		if c.Definitions.Clients == "" {
+			c.Definitions.Clients = "clients"
+		}
 	default:
 		return fmt.Errorf("unknown plugin: %s", name)
 	}
@@ -117,7 +132,7 @@ func (c *Config) Disable(name string) error {
 func (c *Config) walk(dir string, fn func(yaml string) error) error {
 	walk := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("walking %s: %s", dir, path))
+			return fae.Wrap(err, fmt.Sprintf("walking %s: %s", dir, path))
 		}
 		if info.IsDir() {
 			return nil
@@ -142,7 +157,7 @@ func (c *Config) Models() (map[string]*Model, error) {
 		model := &Model{}
 		err := tasks.ReadYaml(path, model)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("reading model: %s", path))
+			return fae.Wrap(err, fmt.Sprintf("reading model: %s", path))
 		}
 
 		models[model.Name] = model
@@ -158,7 +173,7 @@ func (c *Config) Groups() (map[string]*Group, error) {
 		group := &Group{}
 		err := tasks.ReadYaml(path, group)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("reading group: %s", path))
+			return fae.Wrap(err, fmt.Sprintf("reading group: %s", path))
 		}
 
 		groups[group.Name] = group
@@ -174,7 +189,7 @@ func (c *Config) Clients() (map[string]*Client, error) {
 		client := &Client{}
 		err := tasks.ReadYaml(path, client)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("reading client: %s", path))
+			return fae.Wrap(err, fmt.Sprintf("reading client: %s", path))
 		}
 
 		clients[client.Language] = client
@@ -190,7 +205,7 @@ func (c *Config) Workers() (map[string]*Worker, error) {
 		worker := &Worker{}
 		err := tasks.ReadYaml(path, worker)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("reading worker: %s", path))
+			return fae.Wrap(err, fmt.Sprintf("reading worker: %s", path))
 		}
 
 		workers[worker.Name] = worker
@@ -206,7 +221,7 @@ func (c *Config) Queues() (map[string]*Queue, error) {
 		queue := &Queue{}
 		err := tasks.ReadYaml(path, queue)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("reading queue: %s", path))
+			return fae.Wrap(err, fmt.Sprintf("reading queue: %s", path))
 		}
 
 		queues[queue.Name] = queue
@@ -223,7 +238,7 @@ func (c *Config) Events() (map[string]*Event, bool, error) {
 		event := &Event{}
 		err := tasks.ReadYaml(path, event)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("reading event: %s", path))
+			return fae.Wrap(err, fmt.Sprintf("reading event: %s", path))
 		}
 
 		if !hasReceiver && event.Receiver {

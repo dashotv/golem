@@ -6,8 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
 )
@@ -31,7 +30,7 @@ func NewRoute(cfg *config.Config, group string, route *config.Route) error {
 	g := &config.Group{}
 	err := tasks.ReadYaml(filepath.Join(cfg.Root(), cfg.Definitions.Routes, group+".yaml"), g)
 	if err != nil {
-		return errors.Wrap(err, "reading group")
+		return fae.Wrap(err, "reading group")
 	}
 
 	g.AddRoute(route)
@@ -55,7 +54,7 @@ func Routes(cfg *config.Config) error {
 	runner.Add("header", func() error {
 		header, err := tasks.Buffer(filepath.Join("app", "app_routes"), data)
 		if err != nil {
-			return errors.Wrap(err, "routes header")
+			return fae.Wrap(err, "routes header")
 		}
 		output = append(output, header)
 		return nil
@@ -64,7 +63,7 @@ func Routes(cfg *config.Config) error {
 	// collect groups for route registration
 	groups, err := cfg.Groups()
 	if err != nil {
-		return errors.Wrap(err, "collecting groups")
+		return fae.Wrap(err, "collecting groups")
 	}
 
 	routes := struct {
@@ -78,7 +77,7 @@ func Routes(cfg *config.Config) error {
 	runner.Add("registration", func() error {
 		buf, err := tasks.Buffer(filepath.Join("app", "partial_routes"), routes)
 		if err != nil {
-			return errors.Wrap(err, "routes registration buffer")
+			return fae.Wrap(err, "routes registration buffer")
 		}
 		output = append(output, buf)
 		return nil
@@ -96,7 +95,7 @@ func Routes(cfg *config.Config) error {
 		runner.Add("group:"+k, func() error {
 			buf, err := tasks.Buffer(filepath.Join("app", "partial_route"), v)
 			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("routes buffer: %s", k))
+				return fae.Wrap(err, fmt.Sprintf("routes buffer: %s", k))
 			}
 			output = append(output, buf)
 			return nil

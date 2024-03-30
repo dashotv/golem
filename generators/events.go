@@ -6,8 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
 )
@@ -47,7 +46,7 @@ func Events(cfg *config.Config) error {
 	runner.Add("header", func() error {
 		header, err := tasks.Buffer(filepath.Join("app", "app_events"), data)
 		if err != nil {
-			return errors.Wrap(err, "events header")
+			return fae.Wrap(err, "events header")
 		}
 		output = append(output, header)
 		return nil
@@ -55,7 +54,7 @@ func Events(cfg *config.Config) error {
 
 	events, hasReceiver, err := cfg.Events()
 	if err != nil {
-		return errors.Wrap(err, "walking events")
+		return fae.Wrap(err, "walking events")
 	}
 
 	runner.Add("registration", func() error {
@@ -70,7 +69,7 @@ func Events(cfg *config.Config) error {
 		}
 		buf, err := tasks.Buffer(filepath.Join("app", "partial_events"), combined)
 		if err != nil {
-			return errors.Wrap(err, "events registration")
+			return fae.Wrap(err, "events registration")
 		}
 		output = append(output, buf)
 		return nil
@@ -88,7 +87,7 @@ func Events(cfg *config.Config) error {
 		runner.Add("event:"+k, func() error {
 			buf, err := tasks.Buffer(filepath.Join("app", "partial_event"), v)
 			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("events buffer: %s", k))
+				return fae.Wrap(err, fmt.Sprintf("events buffer: %s", k))
 			}
 			output = append(output, buf)
 			return nil

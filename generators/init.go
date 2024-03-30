@@ -4,8 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
 )
@@ -41,7 +40,7 @@ func Init(name, repo string) error {
 
 		err = os.Chdir(cfg.Root())
 		if err != nil {
-			return errors.Wrap(err, "changing directory")
+			return fae.Wrap(err, "changing directory")
 		}
 
 		return nil

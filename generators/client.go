@@ -6,22 +6,21 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
 )
 
 func NewClient(cfg *config.Config, client *config.Client) error {
 	runner := tasks.NewRunner("client")
+	runner.Add("plugin:enable", func() error {
+		return pluginEnable(cfg, "clients")
+	})
 	runner.Add("directory", func() error {
 		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Clients))
 	})
 	runner.Add("file", func() error {
 		return tasks.WriteYaml(filepath.Join(cfg.Root(), cfg.Definitions.Clients, client.Language+".yaml"), client)
-	})
-	runner.Add("plugin:enable", func() error {
-		return pluginEnable(cfg, "clients")
 	})
 
 	return runner.Run()
@@ -32,12 +31,12 @@ func Clients(cfg *config.Config) error {
 
 	clients, err := cfg.Clients()
 	if err != nil {
-		return errors.Wrap(err, "collecting clients")
+		return fae.Wrap(err, "collecting clients")
 	}
 
 	groups, err := cfg.Groups()
 	if err != nil {
-		return errors.Wrap(err, "collecting groups")
+		return fae.Wrap(err, "collecting groups")
 	}
 
 	data := struct {
@@ -51,7 +50,7 @@ func Clients(cfg *config.Config) error {
 	// collect models for connector registration
 	models, err := cfg.Models()
 	if err != nil {
-		return errors.Wrap(err, "collecting models")
+		return fae.Wrap(err, "collecting models")
 	}
 
 	keys := make([]string, 0, len(models))
@@ -68,7 +67,7 @@ func Clients(cfg *config.Config) error {
 	runner.Add("header", func() error {
 		header, err := tasks.Buffer(filepath.Join("client", "models"), data)
 		if err != nil {
-			return errors.Wrap(err, "models header")
+			return fae.Wrap(err, "models header")
 		}
 		modelsOutput = append(modelsOutput, header)
 		return nil
@@ -76,7 +75,7 @@ func Clients(cfg *config.Config) error {
 
 	for _, c := range clients {
 		c := c
-		runner.Add("file", func() error {
+		runner.Add("wut", func() error {
 			return tasks.File(filepath.Join("client", "client"), filepath.Join(cfg.Root(), c.Filename()), data)
 		})
 		for _, g := range groups {
@@ -88,7 +87,7 @@ func Clients(cfg *config.Config) error {
 				Config: cfg.Data(),
 				Group:  g,
 			}
-			runner.Add("file", func() error {
+			runner.Add("route:"+g.Name, func() error {
 				return tasks.File(filepath.Join("client", "group"), filepath.Join(cfg.Root(), "client", g.Name+".gen.go"), groupData)
 			})
 		}
@@ -103,7 +102,7 @@ func Clients(cfg *config.Config) error {
 				}
 				buf, err := tasks.Buffer(t, v)
 				if err != nil {
-					return errors.Wrap(err, fmt.Sprintf("model buffer: %s", k))
+					return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
 				}
 				modelsOutput = append(modelsOutput, buf)
 				return nil

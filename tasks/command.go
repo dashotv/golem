@@ -3,15 +3,14 @@ package tasks
 import (
 	"os/exec"
 
-	"github.com/pkg/errors"
-
+	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/output"
 )
 
 func Command(name, cmd string, args ...string) error {
 	path, err := exec.LookPath(cmd)
 	if err != nil {
-		return errors.Wrap(err, "finding binary")
+		return fae.Wrap(err, "finding binary")
 	}
 
 	c := exec.Command(path, args...)
@@ -20,7 +19,7 @@ func Command(name, cmd string, args ...string) error {
 	if err != nil {
 		output.Errorf("Error running command: %s", name)
 		output.Errorf(string(out))
-		return errors.Wrap(err, "running command")
+		return fae.Wrap(err, "running command")
 	}
 
 	return nil

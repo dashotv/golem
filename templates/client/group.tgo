@@ -35,10 +35,13 @@ type {{$group.Camel}}{{$route.Camel}}Request struct {
 type {{$group.Camel}}{{$route.Camel}}Response struct {
 	*Response
 	Result {{$route.Result}} `json:"result"`
+	{{ if $route.Index -}}
+	Total int64 `json:"total"`
+	{{ end }}
 }
 {{end}}
 func (s *{{$group.Camel}}Service) {{$route.Camel}}(ctx context.Context{{if $route.HasParams }}, req *{{$group.Camel}}{{$route.Camel}}Request{{end}}) (*{{ if ne $route.Result "" }}{{$group.Camel}}{{$route.Camel}}Response{{else}}Response{{end}}, error) {
-  result := &{{ if ne $route.Result "" }}{{$group.Camel}}{{$route.Camel}}Response{{else}}Response{{end}}{}
+  result := &{{ if ne $route.Result "" }}{{$group.Camel}}{{$route.Camel}}Response{Response:&Response{}}{{else}}Response{}{{end}}
   resp, err := s.client.Resty.R().
     SetContext(ctx).
 {{if $route.HasParams }}
@@ -53,13 +56,13 @@ func (s *{{$group.Camel}}Service) {{$route.Camel}}(ctx context.Context{{if $rout
 	{{end}}
     {{$route.ClientMethod}}("{{$group.Path}}{{$route.ClientPath}}")
   if err != nil {
-    return nil, errors.Wrap(err, "failed to make request")
+    return nil, fae.Wrap(err, "failed to make request")
   }
   if !resp.IsSuccess() {
-    return nil, errors.Errorf("%d: %v", resp.StatusCode(), resp.String())
+    return nil, fae.Errorf("%d: %v", resp.StatusCode(), resp.String())
   }
   if result.Error {
-		return nil, errors.New(result.Message)
+		return nil, fae.New(result.Message)
 	}
 
   return result, nil

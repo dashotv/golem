@@ -30,7 +30,7 @@ type Application struct {
 
 func Setup() error {
 	if app != nil {
-		return errors.New("application already setup")
+		return fae.New("application already setup")
 	}
 
 	app = &Application{}

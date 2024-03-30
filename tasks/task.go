@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/pkg/errors"
+	"github.com/dashotv/fae"
 )
 
 // TaskFunction defines the function for tasks
@@ -43,7 +43,7 @@ func NewMakeDirectoryTask(dir string) func() error {
 	return func() error {
 		err := os.Mkdir(dir, 0755)
 		if err != nil {
-			return errors.Wrap(err, "mkdir")
+			return fae.Wrap(err, "mkdir")
 		}
 		return nil
 	}

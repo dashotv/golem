@@ -41,7 +41,7 @@ func setupWorkers(app *Application) error {
 
 	m, err := minion.New("{{.Config.Name}}", mcfg)
 	if err != nil {
-		return errors.Wrap(err, "creating minion")
+		return fae.Wrap(err, "creating minion")
 	}
 
 	// add something like the below line in app.Start() (before the workers are
@@ -56,13 +56,13 @@ func setupWorkers(app *Application) error {
 
 	{{ range .Workers -}}{{ if .Queue }}
 	if err := minion.RegisterWithQueue[*{{.Camel}}](m, &{{.Camel}}{}, "{{.Queue}}"); err != nil {
-		return errors.Wrap(err, "registering worker: {{.Name}} ({{.Camel}})")
+		return fae.Wrap(err, "registering worker: {{.Name}} ({{.Camel}})")
 	}{{ else }}
 	if err := minion.Register[*{{.Camel}}](m, &{{.Camel}}{}); err != nil {
-		return errors.Wrap(err, "registering worker: {{.Name}} ({{.Camel}})")
+		return fae.Wrap(err, "registering worker: {{.Name}} ({{.Camel}})")
 	}{{end}}{{ if .Schedule }}
 	if _, err := m.Schedule("{{.Schedule}}", &{{.Camel}}{}); err != nil {
-		return errors.Wrap(err, "scheduling worker: {{.Name}} ({{.Camel}})")
+		return fae.Wrap(err, "scheduling worker: {{.Name}} ({{.Camel}})")
 	}{{ end }}
 	{{ end }}
 

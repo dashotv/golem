@@ -42,6 +42,6 @@ func checkEvents(app *Application) error {
 	case nats.CONNECTED:
 		return nil
 	default:
-		return errors.Errorf("nats status: %s", app.Events.Merc.Status())
+		return fae.Errorf("nats status: %s", app.Events.Merc.Status())
 	}
 }

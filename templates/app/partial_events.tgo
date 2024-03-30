@@ -70,7 +70,7 @@ func (e *Events) Send(topic EventsTopic, data any) error {
 	}
 	if err != nil {
 		e.Log.Errorf("sending: %s", err)
-		return errors.Wrap(err.(error), "events.send")
+		return fae.Wrap(err.(error), "events.send")
 	}
 	return nil
 }
@@ -81,7 +81,7 @@ func (e *Events) doSend(topic EventsTopic, data any) error {
     case "{{$e.Channel}}":
 		m, ok := data.(*{{ $e.Payload }})
 		if !ok {
-			return errors.Errorf("events.send: wrong data type: %t", data)
+			return fae.Errorf("events.send: wrong data type: %t", data)
 		}
 		e.{{.Camel}} <- m
     {{ end }}{{ end -}}

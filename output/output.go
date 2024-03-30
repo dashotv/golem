@@ -5,12 +5,9 @@ import (
 	"os"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/pkg/errors"
-)
 
-type stackTracer interface {
-	StackTrace() errors.StackTrace
-}
+	"github.com/dashotv/fae"
+)
 
 var (
 	info = lipgloss.NewStyle().
@@ -73,14 +70,10 @@ func Fatalf(format string, a ...interface{}) {
 func FatalTrace(fmt string, err error) {
 	Errorf(fmt, err)
 
-	e, ok := errors.Cause(err).(stackTracer)
-	if ok {
-		st := e.StackTrace()
-		for _, l := range st {
-			Errorf("   %s", l)
-		}
+	frames := fae.StackTrace(err)
+	for _, frame := range frames {
+		Errorf("  %s", frame)
 	}
-
 	os.Exit(1)
 }
 
