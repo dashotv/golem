@@ -23,7 +23,7 @@ import (
     "github.com/spf13/cobra"
     "github.com/spf13/viper"
 
-    "{{.Repo}}/app"
+    "{{.Repo}}/{{.Output}}"
 )
 
 var cfgFile string
@@ -67,7 +67,7 @@ func init() {
 }
 
 // initConfig reads in config file and ENV variables if set.
-// Golem manages config in the app/app_config.go file
+// Golem manages config in the {{.Output}}/config.go file
 func initConfig() {
     // see setupConfig in the app package
 }

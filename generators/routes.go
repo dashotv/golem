@@ -109,12 +109,12 @@ func Routes(cfg *config.Config) error {
 				Package: cfg.Package,
 				Group:   v,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "routes"), filepath.Join("app", "routes_"+k+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "routes"), cfg.Join("routes_"+k+".go"), d)
 		})
 	}
 
 	runner.Add("save", func() error {
-		return tasks.RawFile(filepath.Join("app", "routes.gen.go"), strings.Join(output, "\n"))
+		return tasks.RawFile(cfg.Join("routes.gen.go"), strings.Join(output, "\n"))
 	})
 
 	return runner.Run()

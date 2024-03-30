@@ -12,6 +12,7 @@ if [[ -z "$path" || -z "$binary" ]]; then
 fi
 
 # init
+mkdir -p "$path"
 cd "$path" || exit 1
 "$binary" --silent init "$name" "github.com/test/$name"
 

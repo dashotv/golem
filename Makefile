@@ -1,4 +1,4 @@
-DEST := /tmp
+DEST := /tmp/golem
 NAME := blarg
 BINARY := $(PWD)/golem
 
@@ -17,7 +17,7 @@ init: clean build
 
 clean:
 	@echo "Cleaning... $(DEST)/$(NAME)"
-	@find $(DEST)/$(NAME) -delete
+	@-find $(DEST)/$(NAME) -delete
 	@rm -rf $(BINARY)
 
 install: build

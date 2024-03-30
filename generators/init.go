@@ -66,7 +66,7 @@ func Init(name, repo string) error {
 		return tasks.File("license", "LICENSE", g)
 	})
 	main.Add("app", func() error {
-		return tasks.Directory("app")
+		return tasks.Directory(cfg.Output)
 	})
 	main.Add("makefile", func() error {
 		return tasks.File("makefile", "Makefile", g)
@@ -104,16 +104,16 @@ func Init(name, repo string) error {
 
 	app := runner.Group("app")
 	app.Add("app", func() error {
-		return tasks.File(filepath.Join("app", "app"), filepath.Join("app", "app.go"), g)
+		return tasks.File(filepath.Join("app", "app"), filepath.Join(cfg.Output, "app.go"), g)
 	})
 	app.Add("config", func() error {
-		return tasks.File(filepath.Join("app", "app_config"), filepath.Join("app", "config.go"), g)
+		return tasks.File(filepath.Join("app", "app_config"), filepath.Join(cfg.Output, "config.go"), g)
 	})
 	app.Add("logger", func() error {
-		return tasks.File(filepath.Join("app", "app_logger"), filepath.Join("app", "logger.go"), g)
+		return tasks.File(filepath.Join("app", "app_logger"), filepath.Join(cfg.Output, "logger.go"), g)
 	})
 	runner.Add("utils", func() error {
-		return tasks.File(filepath.Join("app", "app_utils"), filepath.Join("app", "utils.go"), g)
+		return tasks.File(filepath.Join("app", "app_utils"), filepath.Join(cfg.Output, "utils.go"), g)
 	})
 
 	commands := runner.Group("commands")
@@ -129,5 +129,6 @@ func Init(name, repo string) error {
 		return err
 	}
 
+	cfg.File = ".golem/config.yaml"
 	return App(cfg)
 }

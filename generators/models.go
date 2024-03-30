@@ -32,7 +32,7 @@ func NewModel(cfg *config.Config, m *config.Model) error {
 				Package: cfg.Package,
 				Model:   m,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "models"), filepath.Join("app", "models_"+m.Name+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "models"), cfg.Join("models_"+m.Name+".go"), d)
 		})
 	}
 
@@ -108,12 +108,12 @@ func Models(cfg *config.Config) error {
 				Package: cfg.Package,
 				Model:   v,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "models"), filepath.Join("app", "models_"+k+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "models"), cfg.Join("models_"+k+".go"), d)
 		})
 	}
 
 	runner.Add("save", func() error {
-		return tasks.RawFile(filepath.Join("app", "models.gen.go"), strings.Join(output, "\n"))
+		return tasks.RawFile(cfg.Join("models.gen.go"), strings.Join(output, "\n"))
 	})
 
 	return runner.Run()

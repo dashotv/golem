@@ -32,7 +32,7 @@ func NewEvent(cfg *config.Config, event *config.Event) error {
 				Package: cfg.Package,
 				Event:   event,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "events"), filepath.Join("app", "events_"+event.Name+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "events"), cfg.Join("events_"+event.Name+".go"), d)
 		})
 	}
 
@@ -99,7 +99,7 @@ func Events(cfg *config.Config) error {
 	}
 
 	runner.Add("save", func() error {
-		return tasks.RawFile(filepath.Join("app", "events.gen.go"), strings.Join(output, "\n"))
+		return tasks.RawFile(cfg.Join("events.gen.go"), strings.Join(output, "\n"))
 	})
 
 	return runner.Run()

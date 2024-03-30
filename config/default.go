@@ -1,12 +1,14 @@
 package config
 
+import "path/filepath"
+
 func DefaultConfig() *Config {
 	cfg := &Config{}
 	cfg.Version = "2.0"
 	cfg.Name = "test"
 	cfg.Repo = "github.com/dashotv/test"
 	cfg.Package = "app"
-	cfg.Output = "app"
+	cfg.Output = filepath.Join("internal", "app")
 
 	cfg.Plugins.Models = false
 	cfg.Plugins.Routes = false

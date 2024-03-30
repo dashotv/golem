@@ -244,6 +244,12 @@ func (c *Config) Root() string {
 	return strings.Replace(abs, "/.golem/config.yaml", "", 1)
 }
 
+func (c *Config) Join(names ...string) string {
+	list := []string{c.Root(), c.Output}
+	list = append(list, names...)
+	return filepath.Join(list...)
+}
+
 func (c *Config) Path(arg ...string) string {
 	list := []string{c.Root()}
 	list = append(list, arg...)
