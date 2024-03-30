@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.infratographer.com/x/echox/echozap"
+	"github.com/dashotv/golem/plugins/router"
 )
 
 func init() {
@@ -35,10 +36,7 @@ func startRoutes(ctx context.Context, app *Application) error {
 
 func setupRoutes(app *Application) error {
 	logger := app.Log.Named("routes").Desugar()
-	e := echo.New()
-	e.HideBanner = true
-	e.Use(middleware.Recover())
-	e.Use(echozap.Middleware(logger))
+	e := router.New(logger)
 
 	app.Engine = e
 	// unauthenticated routes
@@ -47,19 +45,18 @@ func setupRoutes(app *Application) error {
 	app.Router = app.Engine.Group("")
 
   // TODO: fix auth
-	// if app.Config.Auth {
-	// 	clerkSecret := app.Config.ClerkSecretKey
-	// 	if clerkSecret == "" {
-	// 		app.Log.Fatal("CLERK_SECRET_KEY is not set")
-	// 	}
-	//
-	// 	clerkClient, err := clerk.NewClient(clerkSecret)
-	// 	if err != nil {
-	// 		app.Log.Fatalf("clerk: %s", err)
-	// 	}
-	//
-	// 	app.Router.Use(requireSession(clerkClient))
-	// }
+	if app.Config.Auth {
+		clerkSecret := app.Config.ClerkSecretKey
+		if clerkSecret == "" {
+			app.Log.Fatal("CLERK_SECRET_KEY is not set")
+		}
+		clerkToken := app.Config.ClerkToken
+		if clerkToken == "" {
+			app.Log.Fatal("CLERK_TOKEN is not set")
+		}
+
+		app.Router.Use(router.ClerkAuth(clerkSecret, clerkToken))
+	}
 
 	return nil
 }

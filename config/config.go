@@ -1,6 +1,8 @@
 package config
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -39,17 +41,18 @@ type Config struct {
 
 func (c *Config) Data() map[string]string {
 	return map[string]string{
-		"Name":    c.Name,
-		"Camel":   strcase.ToCamel(c.Name),
-		"Repo":    c.Repo,
-		"Package": c.Package,
-		"Output":  c.Output,
-		"Models":  fmt.Sprintf("%t", c.Plugins.Models),
-		"Routes":  fmt.Sprintf("%t", c.Plugins.Routes),
-		"Cache":   fmt.Sprintf("%t", c.Plugins.Cache),
-		"Events":  fmt.Sprintf("%t", c.Plugins.Events),
-		"Workers": fmt.Sprintf("%t", c.Plugins.Workers),
-		"Clients": fmt.Sprintf("%t", c.Plugins.Clients),
+		"Name":     c.Name,
+		"Camel":    strcase.ToCamel(c.Name),
+		"Repo":     c.Repo,
+		"Package":  c.Package,
+		"Output":   c.Output,
+		"Models":   fmt.Sprintf("%t", c.Plugins.Models),
+		"Routes":   fmt.Sprintf("%t", c.Plugins.Routes),
+		"Cache":    fmt.Sprintf("%t", c.Plugins.Cache),
+		"Events":   fmt.Sprintf("%t", c.Plugins.Events),
+		"Workers":  fmt.Sprintf("%t", c.Plugins.Workers),
+		"Clients":  fmt.Sprintf("%t", c.Plugins.Clients),
+		"NameHash": c.NameHash(),
 	}
 }
 
@@ -148,6 +151,12 @@ func (c *Config) walk(dir string, fn func(yaml string) error) error {
 		return err
 	}
 	return nil
+}
+
+func (c *Config) NameHash() string {
+	sum := md5.Sum([]byte(c.Name))
+	hash := hex.EncodeToString(sum[:])
+	return c.Name + "-" + hash
 }
 
 func (c *Config) Models() (map[string]*Model, error) {
