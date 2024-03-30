@@ -1,6 +1,10 @@
 package config
 
-import "github.com/iancoleman/strcase"
+import (
+	"regexp"
+
+	"github.com/iancoleman/strcase"
+)
 
 func restRoutes(model string) []*Route {
 	modelList := ""
@@ -169,6 +173,36 @@ func (r *Route) Delete() bool {
 
 func (r *Route) HasParams() bool {
 	return len(r.Params) > 0
+}
+func (r *Route) QueryParams() []*Param {
+	list := []*Param{}
+	for _, p := range r.Params {
+		if p.Query {
+			list = append(list, p)
+		}
+	}
+	return list
+}
+func (r *Route) PathParams() []*Param {
+	list := []*Param{}
+	for _, p := range r.Params {
+		if !p.Query && !p.Bind {
+			list = append(list, p)
+		}
+	}
+	return list
+}
+func (r *Route) ClientMethod() string {
+	return strcase.ToCamel(r.Method)
+}
+func (r *Route) ClientPath() string {
+	return convertPathParams(r.Path)
+}
+
+var pathParam = regexp.MustCompile(`:(\w+)`)
+
+func convertPathParams(path string) string {
+	return pathParam.ReplaceAllString(path, "{$1}")
 }
 
 type Param struct {

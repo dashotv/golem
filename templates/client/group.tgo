@@ -45,7 +45,13 @@ func (s *{{$group.Camel}}Service) {{$route.Camel}}(ctx context.Context{{if $rout
     SetBody(req).
 {{ end }}
     SetResult(result).
-    Post(fmt.Sprintf("{{$group.Path}}{{$route.Path}}"))
+	{{range $p, $param := $route.QueryParams -}}
+		SetQueryParam("{{$param.Name}}", fmt.Sprintf("%v", req.{{$param.Camel}})).
+	{{end}}
+	{{range $p, $param := $route.PathParams -}}
+		SetPathParam("{{$param.Name}}", fmt.Sprintf("%v", req.{{$param.Camel}})).
+	{{end}}
+    {{$route.ClientMethod}}("{{$group.Path}}{{$route.ClientPath}}")
   if err != nil {
     return nil, errors.Wrap(err, "failed to make request")
   }
