@@ -76,6 +76,10 @@ func App(cfg *config.Config) error {
 	commands.Add("goimports", func() error {
 		return tasks.GoImports()
 	})
+	// HACK: to fix above
+	commands.Add("hack", func() error {
+		return tasks.Command("hack", "sed", "-i", "-e", "s/\"github.com\\/labstack\\/echo\"/\"github.com\\/labstack\\/echo\\/v4\"/g", cfg.Join("app.go"))
+	})
 
 	return runner.Run()
 }
