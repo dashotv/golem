@@ -5,7 +5,26 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
+
+	"github.com/dashotv/fae"
+	"github.com/dashotv/golem/tasks"
 )
+
+func (c *Config) Models() (map[string]*Model, error) {
+	dir := c.Path(c.Definitions.Models)
+	models := make(map[string]*Model)
+	err := c.walk(dir, func(path string) error {
+		model := &Model{}
+		err := tasks.ReadYaml(path, model)
+		if err != nil {
+			return fae.Wrap(err, fmt.Sprintf("reading model: %s", path))
+		}
+
+		models[model.Name] = model
+		return nil
+	})
+	return models, err
+}
 
 type Model struct {
 	Name          string                 `yaml:"name,omitempty"`

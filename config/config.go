@@ -11,7 +11,6 @@ import (
 	"github.com/iancoleman/strcase"
 
 	"github.com/dashotv/fae"
-	"github.com/dashotv/golem/tasks"
 )
 
 type Config struct {
@@ -157,107 +156,6 @@ func (c *Config) NameHash() string {
 	sum := md5.Sum([]byte(c.Name))
 	hash := hex.EncodeToString(sum[:])
 	return c.Name + "-" + hash
-}
-
-func (c *Config) Models() (map[string]*Model, error) {
-	dir := c.Path(c.Definitions.Models)
-	models := make(map[string]*Model)
-	err := c.walk(dir, func(path string) error {
-		model := &Model{}
-		err := tasks.ReadYaml(path, model)
-		if err != nil {
-			return fae.Wrap(err, fmt.Sprintf("reading model: %s", path))
-		}
-
-		models[model.Name] = model
-		return nil
-	})
-	return models, err
-}
-
-func (c *Config) Groups() (map[string]*Group, error) {
-	dir := c.Path(c.Definitions.Routes)
-	groups := make(map[string]*Group)
-	err := c.walk(dir, func(path string) error {
-		group := &Group{}
-		err := tasks.ReadYaml(path, group)
-		if err != nil {
-			return fae.Wrap(err, fmt.Sprintf("reading group: %s", path))
-		}
-
-		groups[group.Name] = group
-		return nil
-	})
-	return groups, err
-}
-
-func (c *Config) Clients() (map[string]*Client, error) {
-	dir := c.Path(c.Definitions.Clients)
-	clients := make(map[string]*Client)
-	err := c.walk(dir, func(path string) error {
-		client := &Client{}
-		err := tasks.ReadYaml(path, client)
-		if err != nil {
-			return fae.Wrap(err, fmt.Sprintf("reading client: %s", path))
-		}
-
-		clients[client.Language] = client
-		return nil
-	})
-	return clients, err
-}
-
-func (c *Config) Workers() (map[string]*Worker, error) {
-	dir := c.Path(c.Definitions.Workers)
-	workers := make(map[string]*Worker)
-	err := c.walk(dir, func(path string) error {
-		worker := &Worker{}
-		err := tasks.ReadYaml(path, worker)
-		if err != nil {
-			return fae.Wrap(err, fmt.Sprintf("reading worker: %s", path))
-		}
-
-		workers[worker.Name] = worker
-		return nil
-	})
-	return workers, err
-}
-
-func (c *Config) Queues() (map[string]*Queue, error) {
-	dir := c.Path(c.Definitions.Queues)
-	queues := make(map[string]*Queue)
-	err := c.walk(dir, func(path string) error {
-		queue := &Queue{}
-		err := tasks.ReadYaml(path, queue)
-		if err != nil {
-			return fae.Wrap(err, fmt.Sprintf("reading queue: %s", path))
-		}
-
-		queues[queue.Name] = queue
-		return nil
-	})
-	return queues, err
-}
-
-func (c *Config) Events() (map[string]*Event, bool, error) {
-	dir := c.Path(c.Definitions.Events)
-	events := make(map[string]*Event)
-	var hasReceiver bool
-	err := c.walk(dir, func(path string) error {
-		event := &Event{}
-		err := tasks.ReadYaml(path, event)
-		if err != nil {
-			return fae.Wrap(err, fmt.Sprintf("reading event: %s", path))
-		}
-
-		if !hasReceiver && event.Receiver {
-			hasReceiver = true
-		}
-
-		events[event.Name] = event
-		return nil
-	})
-	return events, hasReceiver, err
 }
 
 func (c *Config) Root() string {

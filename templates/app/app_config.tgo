@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/caarlos0/env/v10"
-	"github.com/pkg/errors"
+	"github.com/dashotv/fae"
 )
 
 func setupConfig(app *Application) error {

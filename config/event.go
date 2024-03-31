@@ -1,6 +1,34 @@
 package config
 
-import "github.com/iancoleman/strcase"
+import (
+	"fmt"
+
+	"github.com/iancoleman/strcase"
+
+	"github.com/dashotv/fae"
+	"github.com/dashotv/golem/tasks"
+)
+
+func (c *Config) Events() (map[string]*Event, bool, error) {
+	dir := c.Path(c.Definitions.Events)
+	events := make(map[string]*Event)
+	var hasReceiver bool
+	err := c.walk(dir, func(path string) error {
+		event := &Event{}
+		err := tasks.ReadYaml(path, event)
+		if err != nil {
+			return fae.Wrap(err, fmt.Sprintf("reading event: %s", path))
+		}
+
+		if !hasReceiver && event.Receiver {
+			hasReceiver = true
+		}
+
+		events[event.Name] = event
+		return nil
+	})
+	return events, hasReceiver, err
+}
 
 type Event struct {
 	Name            string   `yaml:"name,omitempty"`

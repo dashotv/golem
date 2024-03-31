@@ -1,11 +1,30 @@
 package config
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/iancoleman/strcase"
+
+	"github.com/dashotv/fae"
+	"github.com/dashotv/golem/tasks"
 )
 
+func (c *Config) Groups() (map[string]*Group, error) {
+	dir := c.Path(c.Definitions.Routes)
+	groups := make(map[string]*Group)
+	err := c.walk(dir, func(path string) error {
+		group := &Group{}
+		err := tasks.ReadYaml(path, group)
+		if err != nil {
+			return fae.Wrap(err, fmt.Sprintf("reading group: %s", path))
+		}
+
+		groups[group.Name] = group
+		return nil
+	})
+	return groups, err
+}
 func restRoutes(model string) []*Route {
 	modelList := ""
 	if model != "" {

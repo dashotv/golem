@@ -6,10 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"go.infratographer.com/x/echox/echozap"
 	"github.com/dashotv/golem/plugins/router"
+	"github.com/labstack/echo/v4"
 )
 
 func init() {
@@ -36,8 +34,10 @@ func startRoutes(ctx context.Context, app *Application) error {
 
 func setupRoutes(app *Application) error {
 	logger := app.Log.Named("routes").Desugar()
-	e := router.New(logger)
-
+	e, err := router.New(logger)
+	if err != nil {
+		return fae.Wrap(err, "router plugin")
+	}
 	app.Engine = e
 	// unauthenticated routes
 	app.Default = app.Engine.Group("")

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+if [[ -n $AUTO_TAG ]]; then
+  exit 0
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$branch" != "main" ]]; then
+  exit 0
+fi
+
+export AUTO_TAG=true
+# AUTO TAG
+lasttag=$(git describe --tags --abbrev=0)
+count=$(git rev-list --count $lasttag..HEAD)
+
+version="$lasttag"
+if [ $count -gt 0 ]; then
+  version="$version-$count"
+fi
+
+cat >config/version.go <<EOF
+package config
+
+// VERSION is the version of the application
+// automatically managed by pre-commit githook
+const VERSION = "$version"
+EOF
+git add config/version.go
+git commit --amend --no-edit

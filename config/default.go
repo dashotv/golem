@@ -4,7 +4,7 @@ import "path/filepath"
 
 func DefaultConfig() *Config {
 	cfg := &Config{}
-	cfg.Version = "2.0"
+	cfg.Version = VERSION
 	cfg.Name = "test"
 	cfg.Repo = "github.com/dashotv/test"
 	cfg.Package = "app"

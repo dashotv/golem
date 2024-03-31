@@ -33,9 +33,10 @@ var silent bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "golem [options] [command]",
-	Short: "generate mongo database models based on MDM library",
-	Long:  "generate mongo database models based on MDM library",
+	Use:     "golem [options] [command]",
+	Version: config.VERSION,
+	Short:   "generate services using (hopefully) idiomatic Go code.",
+	Long:    "generate services using (hopefully) idiomatic Go code.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

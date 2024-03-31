@@ -4,8 +4,8 @@ package {{.Config.Package}}
 import (
 	"context"
 
+	"github.com/dashotv/fae"
 	"github.com/dashotv/minion"
-	"github.com/pkg/errors"
 )
 
 func init() {

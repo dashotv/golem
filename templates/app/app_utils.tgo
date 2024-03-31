@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"strconv"
-  "time"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
