@@ -40,3 +40,6 @@ func GoModTidy() error {
 func GitInit() error {
 	return Command("git init", "git", "init", ".")
 }
+func Prettier(dir string) error {
+	return Command("prettier", "npx", "prettier", "--write", dir)
+}

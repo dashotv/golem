@@ -147,7 +147,7 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 		Groups: groups,
 	}
 
-	runner := tasks.NewRunner("golang")
+	runner := tasks.NewRunner("typescript")
 	runner.Add("directory", func() error {
 		return tasks.Directory(filepath.Join(cfg.Root(), filepath.Dir(client.Output())))
 	})
@@ -193,6 +193,10 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 
 	runner.Add("models", func() error {
 		return tasks.File(filepath.Join("client", "typescript", "models"), filepath.Join(cfg.Root(), client.Output(), "models.gen.ts"), modelData)
+	})
+
+	runner.Add("prettier", func() error {
+		return tasks.Prettier(filepath.Join(cfg.Root(), client.Output()))
 	})
 
 	return runner.Run()

@@ -31,6 +31,7 @@ var pathRegex = `(:[a-zA-Z0-9_]+)`
 var method string
 var methods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"}
 var routePath string
+var routeResult string
 var routeDesc = `... route GROUP NAME [PARAM...]
 
   GROUP		route group, group must exist
@@ -90,6 +91,7 @@ var routeCmd = &cobra.Command{
 			Path:   path,
 			Method: method,
 			Params: params,
+			Result: routeResult,
 		}
 
 		if err := generators.NewRoute(cfg, group, r); err != nil {
@@ -115,4 +117,5 @@ func init() {
 	// is called directly, e.g.:
 	routeCmd.Flags().StringVarP(&method, "method", "m", "GET", "set method for route (GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD, TRACE, CONNECT)")
 	routeCmd.Flags().StringVarP(&routePath, "path", "p", "", "custom path for route")
+	routeCmd.Flags().StringVarP(&routeResult, "result", "r", "", "route result (return type for clients)")
 }

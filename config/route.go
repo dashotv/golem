@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
+	"github.com/samber/lo"
 
 	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/tasks"
@@ -161,6 +162,21 @@ func (g *Group) TypescriptType() string {
 
 	return t
 }
+func (g *Group) TypescriptImports() []string {
+	list := []string{}
+	if g.Rest {
+		list = append(list, "Setting")
+	}
+	if g.HasResponse() {
+		list = append(list, g.GetModels())
+	}
+	list = append(list, g.GetModels())
+	list = lo.Uniq(list)
+	list = lo.Filter(list, func(s string, i int) bool {
+		return s != "" && s != "any"
+	})
+	return list
+}
 func (g *Group) GetModels() string {
 	list := []string{g.TypescriptType()}
 	for _, r := range g.Routes {
@@ -172,7 +188,19 @@ func (g *Group) GetModels() string {
 			list = append(list, t)
 		}
 	}
+	list = lo.Uniq(list)
+	list = lo.Filter(list, func(s string, i int) bool {
+		return s != "" && s != "any"
+	})
 	return strings.Join(list, ", ")
+}
+func (g *Group) HasResponse() bool {
+	for _, r := range g.Routes {
+		if r.Result != "" {
+			return true
+		}
+	}
+	return false
 }
 
 type Route struct {
@@ -310,7 +338,7 @@ func TypescriptType(t string) string {
 		return "any"
 	}
 
-	if t == "time.Time" || t == "primitive.ObjectID" {
+	if t == "time.Time" || t == "*time.Time" || t == "primitive.ObjectID" || t == "primitive.Symbol" {
 		return "string"
 	}
 

@@ -25,7 +25,8 @@ func (c *Config) Clients() (map[string]*Client, error) {
 }
 
 type Client struct {
-	Language string
+	Language    string
+	Destination string
 }
 
 func SupportedClients() []string {
@@ -33,6 +34,9 @@ func SupportedClients() []string {
 }
 
 func (c *Client) Output() string {
+	if c.Destination != "" {
+		return c.Destination
+	}
 	switch c.Language {
 	case "go":
 		return filepath.Join("client")
