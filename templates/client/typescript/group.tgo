@@ -2,9 +2,7 @@
 {{- $group := .Group }}
 import { {{ if $group.Rest }}Setting, {{end}}{{.Config.Name}}Client } from './client.gen';
 {{ $name := .Config.Name -}}
-{{ if ne $group.TypescriptType "" -}}
-import { {{ $group.TypescriptType }} } from './models.gen';
-{{ end -}}
+import { {{ $group.GetModels }} } from './models.gen';
 
 {{ range $r, $route := $group.CombinedRoutes -}}
 {{ if $route.HasParams }}

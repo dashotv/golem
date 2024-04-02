@@ -161,6 +161,19 @@ func (g *Group) TypescriptType() string {
 
 	return t
 }
+func (g *Group) GetModels() string {
+	list := []string{g.TypescriptType()}
+	for _, r := range g.Routes {
+		t := r.TypescriptResult()
+		if t != "" {
+			if t[len(t)-2:] == "[]" {
+				t = t[:len(t)-2]
+			}
+			list = append(list, t)
+		}
+	}
+	return strings.Join(list, ", ")
+}
 
 type Route struct {
 	Name   string   `json:"name,omitempty" yaml:"name,omitempty"`
