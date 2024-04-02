@@ -68,9 +68,6 @@ func App(cfg *config.Config) error {
 	}
 
 	commands := runner.Group("commands")
-	commands.Add("go mod tidy", func() error {
-		return tasks.GoModTidy()
-	})
 	// TODO: this breaks the echo import in app/app.go on first run
 	// and I don't know why
 	commands.Add("goimports", func() error {
@@ -79,6 +76,9 @@ func App(cfg *config.Config) error {
 	// HACK: to fix above
 	commands.Add("hack", func() error {
 		return tasks.Command("hack", "sed", "-i", "-e", "s/\"github.com\\/labstack\\/echo\"/\"github.com\\/labstack\\/echo\\/v4\"/g", cfg.Join("app.go"))
+	})
+	commands.Add("go mod tidy", func() error {
+		return tasks.GoModTidy()
 	})
 
 	return runner.Run()
