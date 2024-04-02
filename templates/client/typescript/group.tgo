@@ -25,7 +25,7 @@ export interface {{$group.Camel}}{{$route.Camel}}Response extends Response {
 
 {{ range $r, $route := $group.CombinedRoutes -}}
 export const {{ $group.Camel }}{{ $route.Camel }} = async ({{if $route.HasParams }}params: {{$group.Camel}}{{$route.Camel}}Request{{end}}) => {
-  const response = await {{$name}}Client.{{$route.TypescriptMethod}}(`/api/{{$name}}{{$group.Path}}{{$route.TypescriptPath}}?{{$route.QueryString}}`{{ if $route.HasModel }}, params.{{ $route.GetModel.Name }}{{end}});
+  const response = await {{$name}}Client.{{$route.TypescriptMethod}}(`{{$group.Path}}{{$route.TypescriptPath}}?{{$route.QueryString}}`{{ if $route.HasModel }}, params.{{ $route.GetModel.Name }}{{end}});
   return response.data as {{ if ne $route.Result "" }}{{$group.Camel}}{{$route.Camel}}Response{{else}}Response{{end}};
 };
 {{ end -}}

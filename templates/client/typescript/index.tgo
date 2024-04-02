@@ -1,0 +1,5 @@
+export * from './client.gen';
+export * from './models.gen';
+{{- range $i, $group := .Groups }}
+export * from './{{ $group.Name }}.gen';
+{{- end }}

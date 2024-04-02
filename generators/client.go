@@ -154,6 +154,9 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 	runner.Add("client", func() error {
 		return tasks.File(filepath.Join("client", "typescript", "client"), filepath.Join(cfg.Root(), client.Output(), "client.gen.ts"), groupData)
 	})
+	runner.Add("index", func() error {
+		return tasks.File(filepath.Join("client", "typescript", "index"), filepath.Join(cfg.Root(), client.Output(), "index.ts"), groupData)
+	})
 	for _, g := range groups {
 		g := g
 		groupData := struct {
@@ -191,30 +194,6 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 	runner.Add("models", func() error {
 		return tasks.File(filepath.Join("client", "typescript", "models"), filepath.Join(cfg.Root(), client.Output(), "models.gen.ts"), modelData)
 	})
-	//
-	// 	for _, k := range keys {
-	// 		k := k
-	// 		v := models[k]
-	// 		runner.Add("model:"+k, func() error {
-	// 			t := "app/partial_model"
-	// 			if v.Type == "struct" {
-	// 				t = "app/partial_struct"
-	// 			}
-	// 			buf, err := tasks.Buffer(t, v)
-	// 			if err != nil {
-	// 				return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
-	// 			}
-	// 			modelsOutput = append(modelsOutput, buf)
-	// 			return nil
-	// 		})
-	// 		if v.Type == "struct" {
-	// 			continue
-	// 		}
-	// 	}
-	//
-	// 	runner.Add("save", func() error {
-	// 		return tasks.RawFile(filepath.Join("client", "models.gen.go"), strings.Join(modelsOutput, "\n"))
-	// 	})
 
 	return runner.Run()
 }

@@ -3,8 +3,13 @@
 {{ range $m, $model := .Models -}}
 
 export interface {{ $model.Camel }} {
-	{{ range $f, $field := .Fields -}}
-	{{$field.Name}}: {{ $field.TypescriptType }};
+	{{- if $model.Model }}
+	id: string;
+	created_at: string;
+	updated_at: string;
 	{{ end }}
+	{{- range $f, $field := .Fields }}
+	{{$field.Name}}: {{ $field.TypescriptType }};
+	{{- end }}
 }
 {{ end }}
