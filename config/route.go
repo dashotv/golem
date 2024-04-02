@@ -27,6 +27,7 @@ func (c *Config) Groups() (map[string]*Group, error) {
 	})
 	return groups, err
 }
+
 func restRoutes(model string) []*Route {
 	modelList := ""
 	if model != "" {
@@ -125,7 +126,7 @@ func restRoutes(model string) []*Route {
 	}
 }
 
-// RouteFile corresponds to a Group of routes
+// Group corresponds to a Group of routes
 type Group struct {
 	Name   string   `json:"name,omitempty" yaml:"name,omitempty"`
 	Path   string   `json:"path,omitempty" yaml:"path,omitempty"`
@@ -167,17 +168,18 @@ func (g *Group) TypescriptImports() []string {
 	if g.Rest {
 		list = append(list, "Setting")
 	}
-	if g.HasResponse() {
-		list = append(list, g.GetModels())
+	if g.Model != "" {
+		list = append(list, TypescriptType(g.Model))
 	}
-	list = append(list, g.GetModels())
+	list = append(list, "Response")
+	list = append(list, g.GetModels()...)
 	list = lo.Uniq(list)
 	list = lo.Filter(list, func(s string, i int) bool {
 		return s != "" && s != "any"
 	})
 	return list
 }
-func (g *Group) GetModels() string {
+func (g *Group) GetModels() []string {
 	list := []string{g.TypescriptType()}
 	for _, r := range g.Routes {
 		t := r.TypescriptResult()
@@ -192,7 +194,7 @@ func (g *Group) GetModels() string {
 	list = lo.Filter(list, func(s string, i int) bool {
 		return s != "" && s != "any"
 	})
-	return strings.Join(list, ", ")
+	return list
 }
 func (g *Group) HasResponse() bool {
 	for _, r := range g.Routes {

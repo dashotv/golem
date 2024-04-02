@@ -4,12 +4,12 @@
 
 export interface {{ $model.Camel }} {
 	{{- if $model.Model }}
-	id: string;
-	created_at: string;
-	updated_at: string;
+	id?: string;
+	created_at?: string;
+	updated_at?: string;
 	{{ end }}
 	{{- range $f, $field := .Fields }}
-	{{$field.Name}}: {{ $field.TypescriptType }};
+	{{$field.Name}}?: {{ $field.TypescriptType }};
 	{{- end }}
 }
 {{ end }}

@@ -7,13 +7,16 @@ import (
 	"github.com/dashotv/golem/output"
 )
 
-func Command(name, cmd string, args ...string) error {
+func CommandWithCwd(name, cwd, cmd string, args ...string) error {
 	path, err := exec.LookPath(cmd)
 	if err != nil {
 		return fae.Wrap(err, "finding binary")
 	}
 
 	c := exec.Command(path, args...)
+	if cwd != "" {
+		c.Dir = cwd
+	}
 
 	out, err := c.CombinedOutput()
 	if err != nil {
@@ -23,6 +26,9 @@ func Command(name, cmd string, args ...string) error {
 	}
 
 	return nil
+}
+func Command(name string, cmd string, args ...string) error {
+	return CommandWithCwd(name, "", cmd, args...)
 }
 
 func GoFmt() error {
@@ -41,5 +47,5 @@ func GitInit() error {
 	return Command("git init", "git", "init", ".")
 }
 func Prettier(dir string) error {
-	return Command("prettier", "npx", "prettier", "--write", dir)
+	return CommandWithCwd("prettier", dir, "npx", "prettier", "--write", ".")
 }
