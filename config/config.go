@@ -60,29 +60,29 @@ func (c *Config) Enable(name string) error {
 	case "models", "Models":
 		c.Plugins.Models = true
 		if c.Definitions.Models == "" {
-			c.Definitions.Models = "models"
+			c.Definitions.Models = ".golem/models"
 		}
 	case "routes", "Routes":
 		c.Plugins.Routes = true
 		if c.Definitions.Routes == "" {
-			c.Definitions.Routes = "routes"
+			c.Definitions.Routes = ".golem/routes"
 		}
 	case "cache", "Cache":
 		c.Plugins.Cache = true
 	case "events", "Events":
 		c.Plugins.Events = true
 		if c.Definitions.Events == "" {
-			c.Definitions.Events = "events"
+			c.Definitions.Events = ".golem/events"
 		}
 	case "workers", "Workers":
 		c.Plugins.Workers = true
 		if c.Definitions.Workers == "" {
-			c.Definitions.Workers = "workers"
+			c.Definitions.Workers = ".golem/workers"
 		}
 	case "clients", "Clients":
 		c.Plugins.Clients = true
 		if c.Definitions.Clients == "" {
-			c.Definitions.Clients = "clients"
+			c.Definitions.Clients = ".golem/clients"
 		}
 	default:
 		return fmt.Errorf("unknown plugin: %s", name)

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/iancoleman/strcase"
 
@@ -148,6 +149,19 @@ func (g *Group) AddRoute(r *Route) {
 	g.Routes = append(g.Routes, r)
 }
 
+func (g *Group) TypescriptType() string {
+	if g.Model == "" {
+		return ""
+	}
+
+	t := TypescriptType(g.Model)
+	if t == "any" {
+		return ""
+	}
+
+	return t
+}
+
 type Route struct {
 	Name   string   `json:"name,omitempty" yaml:"name,omitempty"`
 	Path   string   `json:"path,omitempty" yaml:"path,omitempty"`
@@ -189,7 +203,22 @@ func (r *Route) Settings() bool {
 func (r *Route) Delete() bool {
 	return r.Name == "delete"
 }
-
+func (r *Route) HasModel() bool {
+	for _, p := range r.Params {
+		if p.Bind {
+			return true
+		}
+	}
+	return false
+}
+func (r *Route) GetModel() *Param {
+	for _, p := range r.Params {
+		if p.Bind {
+			return p
+		}
+	}
+	return nil
+}
 func (r *Route) HasParams() bool {
 	return len(r.Params) > 0
 }
@@ -217,11 +246,31 @@ func (r *Route) ClientMethod() string {
 func (r *Route) ClientPath() string {
 	return convertPathParams(r.Path)
 }
+func (r *Route) TypescriptResult() string {
+	return TypescriptType(r.Result)
+}
+func (r *Route) TypescriptMethod() string {
+	return strings.ToLower(r.Method)
+}
+func (r *Route) TypescriptPath() string {
+	return convertPathParamsTypescript(r.Path)
+}
+func (r *Route) QueryString() string {
+	list := []string{}
+	for _, p := range r.QueryParams() {
+		list = append(list, fmt.Sprintf("%s=${params.%s}", p.Name, p.Name))
+	}
+	return strings.Join(list, "&")
+}
 
 var pathParam = regexp.MustCompile(`:(\w+)`)
 
 func convertPathParams(path string) string {
 	return pathParam.ReplaceAllString(path, "{$1}")
+}
+
+func convertPathParamsTypescript(path string) string {
+	return pathParam.ReplaceAllString(path, "${params.$1}")
 }
 
 type Param struct {
@@ -237,4 +286,37 @@ func (p *Param) Camel() string {
 
 func (p *Param) TypeCamel() string {
 	return strcase.ToCamel(p.Type)
+}
+
+func (p *Param) TypescriptType() string {
+	return TypescriptType(p.Type)
+}
+
+func TypescriptType(t string) string {
+	if t == "" {
+		return "any"
+	}
+
+	if t == "time.Time" || t == "primitive.ObjectID" {
+		return "string"
+	}
+
+	if t[0] == '*' {
+		t = t[1:]
+	}
+
+	if strings.HasPrefix(t, "[]") {
+		return TypescriptType(t[2:]) + "[]"
+	}
+
+	switch t {
+	case "string":
+		return "string"
+	case "int", "int64", "int32", "int16", "int8", "uint", "uint64", "uint32", "uint16", "uint8", "float32", "float64":
+		return "number"
+	case "bool":
+		return "boolean"
+	}
+
+	return t
 }

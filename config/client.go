@@ -29,17 +29,17 @@ type Client struct {
 }
 
 func SupportedClients() []string {
-	return []string{"go"}
+	return []string{"go", "typescript"}
 }
 
-func (c *Client) Filename() string {
+func (c *Client) Output() string {
 	switch c.Language {
 	case "go":
-		return filepath.Join("client", "client.gen.go")
-		// case "js":
-		// 	return filepath.Join("javascript", "src", "client.js")
-		// case "ts":
-		// 	return filepath.Join("typescript", "src", "client.ts")
+		return filepath.Join("client")
+	// case "js":
+	// 	return filepath.Join("javascript", "src", "client.js")
+	case "typescript":
+		return filepath.Join("ui", "src", "client")
 	}
 	return ""
 }

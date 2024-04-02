@@ -36,6 +36,7 @@ cd "$name" || exit 1
 "$binary" --silent add queue downloads -c 3
 "$binary" --silent add worker process_download id -s '0 0 11 * * *' -q downloads
 "$binary" --silent add client go
+"$binary" --silent add client typescript
 "$binary" --silent generate
 # "$binary" readme
 # "$binary" routes

@@ -86,3 +86,7 @@ func (f *Field) BsonTag() string {
 	}
 	return f.Name
 }
+
+func (f *Field) TypescriptType() string {
+	return TypescriptType(f.Type)
+}

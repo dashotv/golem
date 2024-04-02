@@ -27,12 +27,30 @@ func NewClient(cfg *config.Config, client *config.Client) error {
 }
 
 func Clients(cfg *config.Config) error {
-	var modelsOutput []string
-
 	clients, err := cfg.Clients()
 	if err != nil {
 		return fae.Wrap(err, "collecting clients")
 	}
+
+	runner := tasks.NewRunner("app:clients")
+	for lang, c := range clients {
+		switch lang {
+		case "go":
+			runner.Add("client:"+lang, func() error {
+				return clientGolang(cfg, c)
+			})
+		case "typescript":
+			runner.Add("client:"+lang, func() error {
+				return clientTypescript(cfg, c)
+			})
+		}
+	}
+
+	return runner.Run()
+}
+
+func clientGolang(cfg *config.Config, client *config.Client) error {
+	var modelsOutput []string
 
 	groups, err := cfg.Groups()
 	if err != nil {
@@ -58,14 +76,29 @@ func Clients(cfg *config.Config) error {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-
-	runner := tasks.NewRunner("app:clients")
+	runner := tasks.NewRunner("client:golang")
 	runner.Add("directory", func() error {
-		return tasks.Directory(filepath.Join(cfg.Root(), "client")) // TODO: handle this for other languages
+		return tasks.Directory(filepath.Join(cfg.Root(), filepath.Dir(client.Output())))
 	})
+	runner.Add("client", func() error {
+		return tasks.File(filepath.Join("client", "go", "client"), filepath.Join(cfg.Root(), client.Output(), "client.gen.go"), data)
+	})
+	for _, g := range groups {
+		g := g
+		groupData := struct {
+			Config map[string]string
+			Group  *config.Group
+		}{
+			Config: cfg.Data(),
+			Group:  g,
+		}
+		runner.Add("route:"+g.Name, func() error {
+			return tasks.File(filepath.Join("client", "go", "group"), filepath.Join(cfg.Root(), client.Output(), g.Name+".gen.go"), groupData)
+		})
+	}
 
 	runner.Add("header", func() error {
-		header, err := tasks.Buffer(filepath.Join("client", "models"), data)
+		header, err := tasks.Buffer(filepath.Join("client", "go", "models"), data)
 		if err != nil {
 			return fae.Wrap(err, "models header")
 		}
@@ -73,49 +106,115 @@ func Clients(cfg *config.Config) error {
 		return nil
 	})
 
-	for _, c := range clients {
-		c := c
-		runner.Add("wut", func() error {
-			return tasks.File(filepath.Join("client", "client"), filepath.Join(cfg.Root(), c.Filename()), data)
-		})
-		for _, g := range groups {
-			g := g
-			groupData := struct {
-				Config map[string]string
-				Group  *config.Group
-			}{
-				Config: cfg.Data(),
-				Group:  g,
-			}
-			runner.Add("route:"+g.Name, func() error {
-				return tasks.File(filepath.Join("client", "group"), filepath.Join(cfg.Root(), "client", g.Name+".gen.go"), groupData)
-			})
-		}
-
-		for _, k := range keys {
-			k := k
-			v := models[k]
-			runner.Add("model:"+k, func() error {
-				t := "app/partial_model"
-				if v.Type == "struct" {
-					t = "app/partial_struct"
-				}
-				buf, err := tasks.Buffer(t, v)
-				if err != nil {
-					return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
-				}
-				modelsOutput = append(modelsOutput, buf)
-				return nil
-			})
+	for _, k := range keys {
+		k := k
+		v := models[k]
+		runner.Add("model:"+k, func() error {
+			t := "app/partial_model"
 			if v.Type == "struct" {
-				continue
+				t = "app/partial_struct"
 			}
+			buf, err := tasks.Buffer(t, v)
+			if err != nil {
+				return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
+			}
+			modelsOutput = append(modelsOutput, buf)
+			return nil
+		})
+		if v.Type == "struct" {
+			continue
 		}
+	}
 
-		runner.Add("save", func() error {
-			return tasks.RawFile(filepath.Join("client", "models.gen.go"), strings.Join(modelsOutput, "\n"))
+	runner.Add("save", func() error {
+		return tasks.RawFile(filepath.Join("client", "models.gen.go"), strings.Join(modelsOutput, "\n"))
+	})
+
+	return runner.Run()
+}
+
+func clientTypescript(cfg *config.Config, client *config.Client) error {
+	groups, err := cfg.Groups()
+	if err != nil {
+		return fae.Wrap(err, "collecting groups")
+	}
+
+	groupData := struct {
+		Config map[string]string
+		Groups map[string]*config.Group
+	}{
+		Config: cfg.Data(),
+		Groups: groups,
+	}
+
+	runner := tasks.NewRunner("golang")
+	runner.Add("directory", func() error {
+		return tasks.Directory(filepath.Join(cfg.Root(), filepath.Dir(client.Output())))
+	})
+	runner.Add("client", func() error {
+		return tasks.File(filepath.Join("client", "typescript", "client"), filepath.Join(cfg.Root(), client.Output(), "client.gen.ts"), groupData)
+	})
+	for _, g := range groups {
+		g := g
+		groupData := struct {
+			Config map[string]string
+			Group  *config.Group
+		}{
+			Config: cfg.Data(),
+			Group:  g,
+		}
+		runner.Add("route:"+g.Name, func() error {
+			return tasks.File(filepath.Join("client", "typescript", "group"), filepath.Join(cfg.Root(), client.Output(), g.Name+".gen.ts"), groupData)
 		})
 	}
+
+	// collect models for connector registration
+	models, err := cfg.Models()
+	if err != nil {
+		return fae.Wrap(err, "collecting models")
+	}
+
+	keys := make([]string, 0, len(models))
+	for k := range models {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	modelData := struct {
+		Config map[string]string
+		Models map[string]*config.Model
+	}{
+		Config: cfg.Data(),
+		Models: models,
+	}
+
+	runner.Add("models", func() error {
+		return tasks.File(filepath.Join("client", "typescript", "models"), filepath.Join(cfg.Root(), client.Output(), "models.gen.ts"), modelData)
+	})
+	//
+	// 	for _, k := range keys {
+	// 		k := k
+	// 		v := models[k]
+	// 		runner.Add("model:"+k, func() error {
+	// 			t := "app/partial_model"
+	// 			if v.Type == "struct" {
+	// 				t = "app/partial_struct"
+	// 			}
+	// 			buf, err := tasks.Buffer(t, v)
+	// 			if err != nil {
+	// 				return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
+	// 			}
+	// 			modelsOutput = append(modelsOutput, buf)
+	// 			return nil
+	// 		})
+	// 		if v.Type == "struct" {
+	// 			continue
+	// 		}
+	// 	}
+	//
+	// 	runner.Add("save", func() error {
+	// 		return tasks.RawFile(filepath.Join("client", "models.gen.go"), strings.Join(modelsOutput, "\n"))
+	// 	})
 
 	return runner.Run()
 }
