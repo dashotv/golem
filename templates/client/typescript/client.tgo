@@ -12,6 +12,7 @@ export const {{.Config.Name}}Client = axios.create({
 export interface Response {
     error: boolean;
     message: string;
+    total: number;
 }
 
 export interface Setting {
