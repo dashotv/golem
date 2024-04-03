@@ -65,3 +65,10 @@ type Setting struct {
 	Name string `json:"name"`
 	Value bool `json:"value"`
 }
+
+type Response struct {
+	Error bool `json:"error"`
+	Message string `json:"message,omitempty"`
+	Result interface{} `json:"result,omitempty"`
+	Total int64 `json:"total,omitempty"`
+}

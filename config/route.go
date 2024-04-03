@@ -189,6 +189,9 @@ func (g *Group) GetModels() []string {
 			}
 			list = append(list, t)
 		}
+		if r.HasModel() {
+			list = append(list, r.GetModel().TypescriptType())
+		}
 	}
 	list = lo.Uniq(list)
 	list = lo.Filter(list, func(s string, i int) bool {

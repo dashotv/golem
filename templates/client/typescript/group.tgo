@@ -21,11 +21,20 @@ export interface {{$group.Camel}}{{$route.Camel}}Response extends Response {
   {{- end }}
 }
 {{- end }}
-{{- end }}
-
-{{ range $r, $route := $group.CombinedRoutes -}}
 export const {{ $group.Camel }}{{ $route.Camel }} = async ({{if $route.HasParams }}params: {{$group.Camel}}{{$route.Camel}}Request{{end}}) => {
   const response = await {{$name}}Client.{{$route.TypescriptMethod}}(`{{$group.Path}}{{$route.TypescriptPath}}?{{$route.QueryString}}`{{ if $route.HasModel }}, params.{{ $route.GetModel.Name }}{{end}});
+  
+  if (!response.data) {
+    throw new Error("response empty?");
+  }
+  
+  if (response.data.error) {
+    if (response.data.Message) {
+      throw new Error(response.data.Message);
+    }
+    throw new Error("unknown error");
+  }
+
   return response.data as {{ if ne $route.Result "" }}{{$group.Camel}}{{$route.Camel}}Response{{else}}Response{{end}};
 };
 {{ end -}}
