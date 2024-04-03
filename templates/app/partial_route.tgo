@@ -6,7 +6,7 @@ func (a *Application) {{$group}}{{$route.Camel}}Handler(c echo.Context) error {
         {{if .Query -}}
         {{.Name}} := Query{{.TypeCamel}}(c, "{{.Name}}")
         {{else if .Bind -}}
-        var {{.Name}} {{.Type}}
+        {{.Name}} := {{.TypeNew}}
         if err := c.Bind({{.Name}}); err != nil {
             return err
         }

@@ -330,6 +330,15 @@ func (p *Param) Camel() string {
 func (p *Param) TypeCamel() string {
 	return strcase.ToCamel(p.Type)
 }
+func (p *Param) TypeNew() string {
+	if !p.Bind {
+		return p.Type
+	}
+	if p.Type[0] == '*' {
+		return "&" + p.Type[1:] + "{}"
+	}
+	return p.Type + "{}"
+}
 
 func (p *Param) TypescriptType() string {
 	return TypescriptType(p.Type)
