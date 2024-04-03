@@ -21,41 +21,41 @@ func (a *Application) {{$group}}{{$route.Camel}}(c echo.Context, {{range .Params
     skip := (page - 1) * limit
     list, err := a.DB.{{$group}}List(limit, skip)
     if err != nil {
-        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error loading {{$group}}"})
+        return c.JSON(http.StatusInternalServerError, &Response{Error: true, Message: "error loading {{$group}}"})
     }
-    return c.JSON(http.StatusOK, H{"error": false, "result": list})
+    return c.JSON(http.StatusOK, &Response{Error: false, Result: list})
     {{- else if .Create }}
     // TODO: process the subject
     if err := a.DB.{{$group}}.Save(subject); err != nil {
-        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error saving {{$group}}"})
+        return c.JSON(http.StatusInternalServerError, &Response{Error: true, Message: "error saving {{$group}}"})
     }
-    return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+    return c.JSON(http.StatusOK, &Response{Error: false, Result: subject})
     {{- else if .Update }}
     // TODO: process the subject
 
     // if you need to copy or compare to existing object...
     // data, err := a.DB.{{$group}}Get(id)
     // if err != nil {
-    //     return c.JSON(http.StatusNotFound, H{"error": true, "message": "not found"})
+    //     return c.JSON(http.StatusNotFound, &Response{Error: true, Message: "not found"})
     // }
     // data.Name = subject.Name ...
     if err := a.DB.{{$group}}.Save(subject); err != nil {
-        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error saving {{$group}}"})
+        return c.JSON(http.StatusInternalServerError, &Response{Error: true, Message: "error saving {{$group}}"})
     }
-    return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+    return c.JSON(http.StatusOK, &Response{Error: false, Result: subject})
     {{- else if .Delete }}
     subject, err := a.DB.{{$group}}Get(id)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, H{"error": true, "message": "not found"})
+		return c.JSON(http.StatusNotFound, &Response{Error: true, Message: "not found"})
 	}
     if err := a.DB.{{$group}}.Delete(subject); err != nil {
-        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error deleting {{$group}}"})
+        return c.JSON(http.StatusInternalServerError, &Response{Error: true, Message: "error deleting {{$group}}"})
     }
-	return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+	return c.JSON(http.StatusOK, &Response{Error: false, Result: subject})
     {{- else if .Settings }}
     subject, err := a.DB.{{$group}}Get(id)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, H{"error": true, "message": "not found"})
+		return c.JSON(http.StatusNotFound, &Response{Error: true, Message: "not found"})
 	}
 
     // switch Setting.Name {
@@ -64,12 +64,18 @@ func (a *Application) {{$group}}{{$route.Camel}}(c echo.Context, {{range .Params
     // }
 
     if err := a.DB.{{$group}}.Save(subject); err != nil {
-        return c.JSON(http.StatusInternalServerError, H{"error": true, "message": "error saving {{$group}}"})
+        return c.JSON(http.StatusInternalServerError, &Response{Error: true, Message: "error saving {{$group}}"})
     }
-	return c.JSON(http.StatusOK, H{"error": false, "result": subject})
+	return c.JSON(http.StatusOK, &Response{Error: false, Result: subject})
+    {{- else if .Show }}
+    subject, err := a.DB.{{$group}}Get(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, &Response{Error: true, Message: "not found"})
+	}
+	return c.JSON(http.StatusOK, &Response{Error: false, Result: subject})
     {{ else }}
     // TODO: implement the route
-    return c.JSON(http.StatusNotImplemented, H{"error": "not implmented"})
+    return c.JSON(http.StatusNotImplemented, &Response{Error: true, Message: "not implmented"})
     {{ end -}}
 }
 

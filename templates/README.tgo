@@ -133,3 +133,67 @@ The wrapper provides a `Fetch` method that works similarly to the `Rails.cache.f
 method. It allows you to fetch a value from the cache and if it doesn't exist, it will
 call a function to generate the value and store it in the cache.
 
+## Appendix
+
+### Routes
+
+Rest routes are not normally included in the routes configuration file 
+(`.golem/routes/<group name>.yaml`). Below, this is what the yaml configuration
+for the rest routes would be:
+
+```yaml
+name: releases
+path: /releases
+model: "*Release"
+routes:
+  - name: index
+    path: /
+    method: GET
+    result: "[]*Release"
+    params:
+      - name: page
+        type: int
+        query: true
+      - name: per_page
+        type: int
+        query: true
+  - name: create
+    path: /
+    method: POST
+    result: "*Release"
+    params:
+      - name: subject
+        type: "*Release"
+        bind: true
+  - name: show
+    path: /:id
+    method: GET
+    result: "*Release"
+    params:
+      - name: id
+        type: string
+  - name: update
+    path: /:id
+    method: PUT
+    result: "*Release"
+    params:
+      - name: subject
+        type: "*Release"
+        bind: true
+  - name: settings
+    path: /:id
+    method: PATCH
+    params:
+      - name: id
+        type: string
+      - name: setting
+        type: "*Setting"
+        bind: true
+  - name: delete
+    path: /:id
+    method: DELETE
+    result: "*Release"
+    params:
+      - name: id
+        type: string
+```
