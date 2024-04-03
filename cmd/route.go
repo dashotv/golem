@@ -37,8 +37,9 @@ var routeDesc = `... route GROUP NAME [PARAM...]
   GROUP		route group, group must exist
   NAME		route name, must be unique, path defaults to "/NAME"
 			custom routes can contain params, e.g. "/:id" or "/something/:name"
-  PARAM		parameters: NAME[:TYPE], can be repeated
-    TYPE 	name of param, required, must be of base types (string, int, float, bool)
+  PARAM		parameters: NAME[[:TYPE]:DEFAULT], can be repeated
+  TYPE 	  type, defaults to "string"
+	DEFAULT default value for query params
 `
 
 // routeCmd represents the route command
@@ -81,6 +82,9 @@ var routeCmd = &cobra.Command{
 				p.Name = s[0]
 				if len(s) > 1 {
 					p.Type = s[1]
+				}
+				if len(s) > 2 {
+					p.Default = s[2]
 				}
 				params = append(params, p)
 			}

@@ -40,14 +40,16 @@ func restRoutes(model string) []*Route {
 			Method: "GET",
 			Params: []*Param{
 				{
-					Name:  "page",
-					Type:  "int",
-					Query: true,
+					Name:    "page",
+					Type:    "int",
+					Query:   true,
+					Default: "1",
 				},
 				{
-					Name:  "limit",
-					Type:  "int",
-					Query: true,
+					Name:    "limit",
+					Type:    "int",
+					Query:   true,
+					Default: "25",
 				},
 			},
 			Result: modelList,
@@ -320,10 +322,11 @@ func convertPathParamsTypescript(path string) string {
 }
 
 type Param struct {
-	Name  string `json:"name,omitempty" yaml:"name,omitempty"`
-	Type  string `json:"type,omitempty" yaml:"type,omitempty"`
-	Query bool   `json:"query,omitempty" yaml:"query,omitempty"`
-	Bind  bool   `json:"bind,omitempty" yaml:"bind,omitempty"`
+	Name    string `json:"name" yaml:"name"`
+	Type    string `json:"type,omitempty" yaml:"type,omitempty"`
+	Default string `json:"default,omitempty" yaml:"default,omitempty"`
+	Query   bool   `json:"query,omitempty" yaml:"query,omitempty"`
+	Bind    bool   `json:"bind,omitempty" yaml:"bind,omitempty"`
 }
 
 func (p *Param) Camel() string {
@@ -341,6 +344,15 @@ func (p *Param) TypeNew() string {
 		return "&" + p.Type[1:] + "{}"
 	}
 	return p.Type + "{}"
+}
+func (p *Param) HasSupportedDefault() bool {
+	if !p.IsSupported() {
+		return false
+	}
+	return p.Default != ""
+}
+func (p *Param) IsSupported() bool {
+	return lo.Contains([]string{"string", "int", "bool"}, p.Type)
 }
 
 func (p *Param) TypescriptType() string {

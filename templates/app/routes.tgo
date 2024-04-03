@@ -12,14 +12,7 @@ import (
 // {{.Method}} {{$path}}{{$route.Path}}
 func (a *Application) {{$group}}{{$route.Camel}}(c echo.Context, {{range .Params -}}{{.Name}} {{.Type}},{{- end}}) error {
     {{- if .Index }}
-    if page < 1 {
-        page = 1
-    }
-    if limit < 1 {
-        limit = 25
-    }
-    skip := (page - 1) * limit
-    list, err := a.DB.{{$group}}List(limit, skip)
+    list, err := a.DB.{{$group}}List(page, limit)
     if err != nil {
         return c.JSON(http.StatusInternalServerError, &Response{Error: true, Message: "error loading {{$group}}"})
     }
