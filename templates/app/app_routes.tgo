@@ -66,6 +66,12 @@ type Setting struct {
 	Value bool `json:"value"`
 }
 
+type SettingsBatch struct {
+	ids []string `json:"ids"`
+	Name string `json:"name"`
+	Value bool `json:"value"`
+}
+
 type Response struct {
 	Error bool `json:"error"`
 	Message string `json:"message,omitempty"`
