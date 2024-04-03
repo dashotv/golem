@@ -175,7 +175,7 @@ func (g *Group) TypescriptImports() []string {
 	list = append(list, g.GetModels()...)
 	list = lo.Uniq(list)
 	list = lo.Filter(list, func(s string, i int) bool {
-		return s != "" && s != "any"
+		return !lo.Contains([]string{"", "any", "string", "number", "boolean"}, s)
 	})
 	return list
 }
