@@ -67,7 +67,7 @@ type Setting struct {
 }
 
 type SettingsBatch struct {
-	ids []string `json:"ids"`
+	IDs []string `json:"ids"`
 	Name string `json:"name"`
 	Value bool `json:"value"`
 }

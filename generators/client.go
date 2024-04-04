@@ -195,6 +195,21 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 		return tasks.File(filepath.Join("client", "typescript", "models"), filepath.Join(cfg.Root(), client.Output(), "models.gen.ts"), modelData)
 	})
 
+	list := []string{}
+	for _, g := range groups {
+		list = append(list, g.TypescriptPackages()...)
+	}
+
+	for _, p := range list {
+		p := p
+		runner.Add("package:index", func() error {
+			return tasks.RawFile(filepath.Join(cfg.Root(), client.Output(), p, "index.ts"), "export * from './"+p+"'")
+		})
+		runner.Add("package:"+p, func() error {
+			return tasks.FileDoesntExist(filepath.Join("client", "typescript", "package"), filepath.Join(cfg.Root(), client.Output(), p, p+".ts"), map[string]string{"Package": p})
+		})
+	}
+
 	runner.Add("prettier", func() error {
 		return tasks.Prettier(filepath.Join(cfg.Root(), client.Output()))
 	})

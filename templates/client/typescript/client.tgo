@@ -19,3 +19,9 @@ export interface Setting {
     name: string;
     value: boolean;
 }
+
+export interface SettingsBatch {
+  ids: string[];
+  name: string;
+  value: boolean;
+}

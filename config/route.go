@@ -165,7 +165,7 @@ func (g *Group) TypescriptType() string {
 
 	return t
 }
-func (g *Group) TypescriptImports() []string {
+func (g *Group) AllModels() []string {
 	list := []string{}
 	if g.Rest {
 		list = append(list, "Setting")
@@ -176,9 +176,28 @@ func (g *Group) TypescriptImports() []string {
 	list = append(list, "Response")
 	list = append(list, g.GetModels()...)
 	list = lo.Uniq(list)
+	return list
+}
+func (g *Group) TypescriptImports() []string {
+	list := g.AllModels()
 	list = lo.Filter(list, func(s string, i int) bool {
 		return !lo.Contains([]string{"", "any", "string", "number", "boolean"}, s)
 	})
+	list = lo.Filter(list, func(s string, i int) bool {
+		return !strings.Contains(s, ".") // skip imports with dots, implies a separate package
+	})
+	return list
+}
+func (g *Group) TypescriptPackages() []string {
+	list := g.AllModels()
+	list = lo.Filter(list, func(s string, i int) bool {
+		return strings.Contains(s, ".")
+	})
+	list = lo.Map(list, func(s string, i int) string {
+		parts := strings.Split(s, ".")
+		return parts[0]
+	})
+	list = lo.Uniq(list)
 	return list
 }
 func (g *Group) GetModels() []string {

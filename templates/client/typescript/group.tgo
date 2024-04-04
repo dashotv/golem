@@ -4,6 +4,9 @@ import {
   {{.Config.Name}}Client,
   {{- range $i, $import := $group.TypescriptImports }}{{ $import }}, {{ end }}
 } from '.';
+{{- range $i, $package := $group.TypescriptPackages }}
+import * as {{$package}} from './{{$package}}';
+{{- end }}
 {{ $name := .Config.Name -}}
 
 {{ range $r, $route := $group.CombinedRoutes -}}
@@ -29,8 +32,8 @@ export const {{ $group.Camel }}{{ $route.Camel }} = async ({{if $route.HasParams
   }
   
   if (response.data.error) {
-    if (response.data.Message) {
-      throw new Error(response.data.Message);
+    if (response.data.message) {
+      throw new Error(response.data.message);
     }
     throw new Error("unknown error");
   }

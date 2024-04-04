@@ -51,3 +51,9 @@ type Setting struct {
 	Name string `json:"name"`
 	Value bool `json:"value"`
 }
+
+type SettingsBatch struct {
+	IDs 	[]string `json:"ids"`
+	Name string    `json:"name"`
+	Value bool     `json:"value"`
+}
