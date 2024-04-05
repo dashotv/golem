@@ -25,8 +25,8 @@ func (c *Config) Clients() (map[string]*Client, error) {
 }
 
 type Client struct {
-	Language    string
-	Destination string
+	Language    string `yaml:"language"`
+	Destination string `yaml:"destination,omitempty"`
 }
 
 func SupportedClients() []string {

@@ -1,1 +1,4 @@
 // TODO: implement interfaces/types for {{.Package}}
+export interface {{.Package}} {
+  // fields
+}

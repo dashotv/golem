@@ -38,6 +38,11 @@ func FileDoesntExist(template, output string, data interface{}) error {
 }
 
 func RawFile(output string, data string) error {
+	dir := filepath.Dir(output)
+	if err := Directory(dir); err != nil {
+		return fae.Wrap(err, "creating directory")
+	}
+
 	err := os.WriteFile(output, []byte(data), 0644)
 	if err != nil {
 		return fae.Wrap(err, "writing raw output")

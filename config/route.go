@@ -188,6 +188,9 @@ func (g *Group) TypescriptImports() []string {
 	})
 	return list
 }
+
+// TODO: maybe make this capture all the types (map[string][]string) and
+// then we can stub the types in the generated typescript package
 func (g *Group) TypescriptPackages() []string {
 	list := g.AllModels()
 	list = lo.Filter(list, func(s string, i int) bool {
@@ -356,6 +359,9 @@ func (p *Param) TypeCamel() string {
 	return strcase.ToCamel(p.Type)
 }
 func (p *Param) TypeNew() string {
+	if p.Type == "" {
+		return "any"
+	}
 	if !p.Bind {
 		return p.Type
 	}
