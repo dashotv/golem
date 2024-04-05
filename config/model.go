@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
+	"github.com/samber/lo"
 
 	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/tasks"
@@ -60,6 +61,21 @@ func (m *Model) QueryDefaultsString() string {
 		}
 	}
 	return "[]bson.M{" + strings.Join(out, ",") + "}"
+}
+
+func (m *Model) TypescriptImports() []string {
+	list := []string{}
+	for _, i := range m.Fields {
+		list = append(list, TypescriptType(i.Type))
+	}
+	list = lo.Filter(list, func(s string, i int) bool {
+		return strings.Contains(s, ".")
+	})
+	list = lo.Map(list, func(s string, i int) string {
+		parts := strings.Split(s, ".")
+		return parts[0]
+	})
+	return list
 }
 
 type Field struct {

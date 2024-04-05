@@ -199,14 +199,18 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 	for _, g := range groups {
 		list = append(list, g.TypescriptPackages()...)
 	}
+	for _, m := range models {
+		list = append(list, m.TypescriptImports()...)
+	}
 
 	for _, p := range list {
 		p := p
+		packageData := map[string]string{"Package": p}
 		runner.Add("package:index", func() error {
-			return tasks.RawFile(filepath.Join(cfg.Root(), client.Output(), p, "index.ts"), "export * from './"+p+"'")
+			return tasks.FileDoesntExist(filepath.Join("client", "typescript", "package_index"), filepath.Join(cfg.Root(), client.Output(), p, "index.ts"), packageData)
 		})
 		runner.Add("package:"+p, func() error {
-			return tasks.FileDoesntExist(filepath.Join("client", "typescript", "package"), filepath.Join(cfg.Root(), client.Output(), p, p+".ts"), map[string]string{"Package": p})
+			return tasks.FileDoesntExist(filepath.Join("client", "typescript", "package"), filepath.Join(cfg.Root(), client.Output(), p, p+".ts"), packageData)
 		})
 	}
 
