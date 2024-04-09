@@ -4,6 +4,6 @@ type {{.Camel}} struct { // {{.Type}}
     //CreatedAt time.Time          `bson:"created_at" json:"created_at"`
     //UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
 {{ range $fn, $field := .Fields -}}
-    {{.Camel}} {{.Type}} `bson:"{{.BsonTag}}" json:"{{.JsonTag}}"`
+    {{.Camel}} {{.Type}} `bson:"{{.BsonTag}}" json:"{{.JsonTag}}"{{if .Index}} grimoire:"index{{if .IndexDesc}}:desc{{end}}"{{end}}`
 {{end -}}
 }

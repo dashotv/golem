@@ -22,6 +22,7 @@ func NewConnector(app *Application) (*Connector, error) {
         return nil, err
     }
     {{ if .QueryDefaults }}{{.Name}}.SetQueryDefaults({{.QueryDefaultsString}}){{ end }}
+    grimoire.Indexes[*{{.Camel}}]({{.Name}}, &{{.Camel}}{})
     {{ end }}
     {{end -}}
     c := &Connector{

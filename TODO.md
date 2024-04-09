@@ -9,6 +9,7 @@
 
 ## Done
 
+- [x] support for grimoire index on models
 - [x] switch to fae?
 - [x] move app to internal? properly support output config
 - [x] name files .gen.go?

@@ -79,10 +79,12 @@ func (m *Model) TypescriptImports() []string {
 }
 
 type Field struct {
-	Name string `yaml:"name,omitempty"`
-	Type string `yaml:"type,omitempty"`
-	Json string `yaml:"json,omitempty"`
-	Bson string `yaml:"bson,omitempty"`
+	Name      string `yaml:"name,omitempty"`
+	Type      string `yaml:"type,omitempty"`
+	Json      string `yaml:"json,omitempty"`
+	Bson      string `yaml:"bson,omitempty"`
+	Index     bool   `yaml:"index,omitempty"`
+	IndexDesc bool   `yaml:"index_desc,omitempty"`
 }
 
 func (f *Field) Camel() string {
