@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/danielgtaylor/casing"
 	"github.com/iancoleman/strcase"
 
 	"github.com/dashotv/fae"
@@ -181,4 +182,8 @@ func (c *Config) Path(arg ...string) string {
 func (c *Config) Validate() error {
 	// TODO: add validations?
 	return nil
+}
+
+func toCamel(v string) string {
+	return casing.Camel(v, casing.Initialism)
 }

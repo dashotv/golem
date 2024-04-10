@@ -88,7 +88,7 @@ type Field struct {
 }
 
 func (f *Field) Camel() string {
-	return strcase.ToCamel(f.Name)
+	return toCamel(f.Name)
 }
 
 func (f *Field) JsonTag() string {

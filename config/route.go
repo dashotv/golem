@@ -352,7 +352,7 @@ type Param struct {
 }
 
 func (p *Param) Camel() string {
-	return strcase.ToCamel(p.Name)
+	return toCamel(p.Name)
 }
 
 func (p *Param) TypeCamel() string {
