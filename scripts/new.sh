@@ -22,7 +22,7 @@ cd "$name" || exit 1
 "$binary" --silent add group release --rest -m '*Release'
 "$binary" --silent add route release additional -m POST
 "$binary" --silent add group hello
-"$binary" --silent add route hello world -p funky/world id count:int
+"$binary" --silent add route hello world -p funky/world id count:int type:int
 "$binary" --silent add route hello new -m POST
 "$binary" --silent add model hello world:string count:int
 "$binary" --silent add model --struct metric time:time.Time key value job:*Job

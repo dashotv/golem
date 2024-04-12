@@ -10,7 +10,7 @@ import (
 {{$path := .Group.Path -}}
 {{range $rn, $route := .Group.CombinedRoutes -}}
 // {{.Method}} {{$path}}{{$route.Path}}
-func (a *Application) {{$group}}{{$route.Camel}}(c echo.Context, {{range .Params -}}{{.Name}} {{.Type}},{{- end}}) error {
+func (a *Application) {{$group}}{{$route.Camel}}(c echo.Context, {{range .Params -}}{{.SafeName}} {{.Type}},{{- end}}) error {
     {{- if .Index }}
     list, err := a.DB.{{$group}}List(page, limit)
     if err != nil {

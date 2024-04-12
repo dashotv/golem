@@ -4,16 +4,16 @@
 func (a *Application) {{$group}}{{$route.Camel}}Handler(c echo.Context) error {
     {{range .Params -}}
         {{if .Query -}}
-        {{.Name}} := router.QueryParam{{.TypeCamel}}{{if .HasSupportedDefault}}Default{{end}}(c, "{{.Name}}"{{if .HasSupportedDefault}}, "{{.Default}}"{{end}})
+        {{.SafeName}} := router.QueryParam{{.TypeCamel}}{{if .HasSupportedDefault}}Default{{end}}(c, "{{.Name}}"{{if .HasSupportedDefault}}, "{{.Default}}"{{end}})
         {{else if .Bind -}}
-        {{.Name}} := {{.TypeNew}}
-        if err := c.Bind({{.Name}}); err != nil {
+        {{.SafeName}} := {{.TypeNew}}
+        if err := c.Bind({{.SafeName}}); err != nil {
             return err
         }
         {{else -}}
-        {{.Name}} := c.Param("{{.Name}}")
+        {{.SafeName}} := c.Param("{{.Name}}")
         {{end -}}
     {{end -}}
-    return a.{{$group}}{{$route.Camel}}(c, {{range .Params -}}{{.Name}},{{- end}})
+    return a.{{$group}}{{$route.Camel}}(c, {{range .Params -}}{{.SafeName}},{{- end}})
 }
 {{end}}

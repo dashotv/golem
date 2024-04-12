@@ -343,12 +343,47 @@ func convertPathParamsTypescript(path string) string {
 	return pathParam.ReplaceAllString(path, "${params.$1}")
 }
 
+var reserved = []string{
+	"break",
+	"case",
+	"chan",
+	"const",
+	"continue",
+	"default",
+	"defer",
+	"else",
+	"fallthrough",
+	"for",
+	"func",
+	"go",
+	"goto",
+	"if",
+	"import",
+	"interface",
+	"map",
+	"package",
+	"range",
+	"return",
+	"select",
+	"struct",
+	"switch",
+	"type",
+	"var",
+}
+
 type Param struct {
 	Name    string `json:"name" yaml:"name"`
 	Type    string `json:"type,omitempty" yaml:"type,omitempty"`
 	Default string `json:"default,omitempty" yaml:"default,omitempty"`
 	Query   bool   `json:"query,omitempty" yaml:"query,omitempty"`
 	Bind    bool   `json:"bind,omitempty" yaml:"bind,omitempty"`
+}
+
+func (p *Param) SafeName() string {
+	if lo.Contains(reserved, p.Name) {
+		return p.Name + "_"
+	}
+	return p.Name
 }
 
 func (p *Param) Camel() string {
