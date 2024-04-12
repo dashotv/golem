@@ -65,17 +65,6 @@ func clientGolang(cfg *config.Config, client *config.Client) error {
 		Groups: groups,
 	}
 
-	// collect models for connector registration
-	models, err := cfg.Models()
-	if err != nil {
-		return fae.Wrap(err, "collecting models")
-	}
-
-	keys := make([]string, 0, len(models))
-	for k := range models {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
 	runner := tasks.NewRunner("client:golang")
 	runner.Add("directory", func() error {
 		return tasks.Directory(filepath.Join(cfg.Root(), filepath.Dir(client.Output())))
@@ -97,38 +86,52 @@ func clientGolang(cfg *config.Config, client *config.Client) error {
 		})
 	}
 
-	runner.Add("header", func() error {
-		header, err := tasks.Buffer(filepath.Join("client", "go", "models"), data)
+	if cfg.Plugins.Models {
+		// collect models for connector registration
+		models, err := cfg.Models()
 		if err != nil {
-			return fae.Wrap(err, "models header")
+			return fae.Wrap(err, "collecting models")
 		}
-		modelsOutput = append(modelsOutput, header)
-		return nil
-	})
 
-	for _, k := range keys {
-		k := k
-		v := models[k]
-		runner.Add("model:"+k, func() error {
-			t := "app/partial_model"
-			if v.Type == "struct" {
-				t = "app/partial_struct"
-			}
-			buf, err := tasks.Buffer(t, v)
+		keys := make([]string, 0, len(models))
+		for k := range models {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+
+		runner.Add("header", func() error {
+			header, err := tasks.Buffer(filepath.Join("client", "go", "models"), data)
 			if err != nil {
-				return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
+				return fae.Wrap(err, "models header")
 			}
-			modelsOutput = append(modelsOutput, buf)
+			modelsOutput = append(modelsOutput, header)
 			return nil
 		})
-		if v.Type == "struct" {
-			continue
-		}
-	}
 
-	runner.Add("save", func() error {
-		return tasks.RawFile(filepath.Join("client", "models.gen.go"), strings.Join(modelsOutput, "\n"))
-	})
+		for _, k := range keys {
+			k := k
+			v := models[k]
+			runner.Add("model:"+k, func() error {
+				t := "app/partial_model"
+				if v.Type == "struct" {
+					t = "app/partial_struct"
+				}
+				buf, err := tasks.Buffer(t, v)
+				if err != nil {
+					return fae.Wrap(err, fmt.Sprintf("model buffer: %s", k))
+				}
+				modelsOutput = append(modelsOutput, buf)
+				return nil
+			})
+			if v.Type == "struct" {
+				continue
+			}
+		}
+
+		runner.Add("save", func() error {
+			return tasks.RawFile(filepath.Join("client", "models.gen.go"), strings.Join(modelsOutput, "\n"))
+		})
+	}
 
 	return runner.Run()
 }
@@ -171,36 +174,38 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 		})
 	}
 
-	// collect models for connector registration
-	models, err := cfg.Models()
-	if err != nil {
-		return fae.Wrap(err, "collecting models")
-	}
-
-	keys := make([]string, 0, len(models))
-	for k := range models {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	modelData := struct {
-		Config map[string]string
-		Models map[string]*config.Model
-	}{
-		Config: cfg.Data(),
-		Models: models,
-	}
-
-	runner.Add("models", func() error {
-		return tasks.File(filepath.Join("client", "typescript", "models"), filepath.Join(cfg.Root(), client.Output(), "models.gen.ts"), modelData)
-	})
-
 	list := []string{}
 	for _, g := range groups {
 		list = append(list, g.TypescriptPackages()...)
 	}
-	for _, m := range models {
-		list = append(list, m.TypescriptImports()...)
+
+	if cfg.Plugins.Models {
+		// collect models for connector registration
+		models, err := cfg.Models()
+		if err != nil {
+			return fae.Wrap(err, "collecting models")
+		}
+
+		keys := make([]string, 0, len(models))
+		for k := range models {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+
+		modelData := struct {
+			Config map[string]string
+			Models map[string]*config.Model
+		}{
+			Config: cfg.Data(),
+			Models: models,
+		}
+
+		runner.Add("models", func() error {
+			return tasks.File(filepath.Join("client", "typescript", "models"), filepath.Join(cfg.Root(), client.Output(), "models.gen.ts"), modelData)
+		})
+		for _, m := range models {
+			list = append(list, m.TypescriptImports()...)
+		}
 	}
 
 	for _, p := range list {

@@ -7,20 +7,21 @@ type Connector struct {
     {{end}}
 }
 
-func NewConnector(app *Application) (*Connector, error) {
-    var s *Connection
-    var err error
+func connection[T mgm.Model](name string) (*grimoire.Store[T], error) {
+	s, err := app.Config.ConnectionFor(name)
+	if err != nil {
+		return nil, err
+	}
+	c, err := grimoire.New[T](s.URI, s.Database, s.Collection)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+}
 
-    {{range .Models -}}
-        {{ if .Model -}}
-    s, err = app.Config.ConnectionFor("{{.Name}}")
-    if err != nil {
-        return nil, err
-    }
-    {{.Name}}, err := grimoire.New[*{{.Camel}}](s.URI, s.Database, s.Collection)
-    if err != nil {
-        return nil, err
-    }
+func NewConnector(app *Application) (*Connector, error) {
+    {{range .Models -}}{{ if .Model -}}
+    {{.Name}}, err := connection[*{{.Camel}}]("{{.Name}}")
     {{ if .QueryDefaults }}{{.Name}}.SetQueryDefaults({{.QueryDefaultsString}}){{ end }}
     grimoire.Indexes[*{{.Camel}}]({{.Name}}, &{{.Camel}}{})
     {{ end }}
