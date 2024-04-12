@@ -31,7 +31,7 @@ func NewModel(cfg *config.Config, m *config.Model) error {
 				Package: cfg.Package,
 				Model:   m,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "models"), cfg.Join("models_"+m.Name+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "models_hook"), cfg.Join("models_"+m.Name+".go"), d)
 		})
 	}
 
@@ -44,7 +44,7 @@ func Models(cfg *config.Config) error {
 
 	runner := tasks.NewRunner("app:models")
 	runner.Add("header", func() error {
-		header, err := tasks.Buffer(filepath.Join("app", "app_models"), data)
+		header, err := tasks.Buffer(filepath.Join("app", "models"), data)
 		if err != nil {
 			return fae.Wrap(err, "models header")
 		}
@@ -67,7 +67,7 @@ func Models(cfg *config.Config) error {
 	}
 
 	runner.Add("connector", func() error {
-		buf, err := tasks.Buffer(filepath.Join("app", "partial_connector"), modelData)
+		buf, err := tasks.Buffer(filepath.Join("app", "models_partial_connector"), modelData)
 		if err != nil {
 			return fae.Wrap(err, "models connector buffer")
 		}
@@ -85,9 +85,9 @@ func Models(cfg *config.Config) error {
 		k := k
 		v := models[k]
 		runner.Add("model:"+k, func() error {
-			t := "app/partial_model"
+			t := filepath.Join("app", "models_partial_model")
 			if v.Type == "struct" {
-				t = "app/partial_struct"
+				t = filepath.Join("app", "models_partial_struct")
 			}
 			buf, err := tasks.Buffer(t, v)
 			if err != nil {
@@ -107,7 +107,7 @@ func Models(cfg *config.Config) error {
 				Package: cfg.Package,
 				Model:   v,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "models"), cfg.Join("models_"+k+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "models_hook"), cfg.Join("models_"+k+".go"), d)
 		})
 	}
 

@@ -52,7 +52,7 @@ func Routes(cfg *config.Config) error {
 
 	runner := tasks.NewRunner("app:routes")
 	runner.Add("header", func() error {
-		header, err := tasks.Buffer(filepath.Join("app", "app_routes"), data)
+		header, err := tasks.Buffer(filepath.Join("app", "routes"), data)
 		if err != nil {
 			return fae.Wrap(err, "routes header")
 		}
@@ -75,7 +75,7 @@ func Routes(cfg *config.Config) error {
 	}
 
 	runner.Add("registration", func() error {
-		buf, err := tasks.Buffer(filepath.Join("app", "partial_routes"), routes)
+		buf, err := tasks.Buffer(filepath.Join("app", "routes_partial_routes"), routes)
 		if err != nil {
 			return fae.Wrap(err, "routes registration buffer")
 		}
@@ -93,7 +93,7 @@ func Routes(cfg *config.Config) error {
 		k := k
 		v := groups[k]
 		runner.Add("group:"+k, func() error {
-			buf, err := tasks.Buffer(filepath.Join("app", "partial_route"), v)
+			buf, err := tasks.Buffer(filepath.Join("app", "routes_partial_group"), v)
 			if err != nil {
 				return fae.Wrap(err, fmt.Sprintf("routes buffer: %s", k))
 			}
@@ -108,7 +108,7 @@ func Routes(cfg *config.Config) error {
 				Package: cfg.Package,
 				Group:   v,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "routes"), cfg.Join("routes_"+k+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "routes_hook"), cfg.Join("routes_"+k+".go"), d)
 		})
 	}
 

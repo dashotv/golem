@@ -27,7 +27,7 @@ func NewWorker(cfg *config.Config, worker *config.Worker) error {
 			Package: cfg.Package,
 			Worker:  worker,
 		}
-		return tasks.FileDoesntExist(filepath.Join("app", "workers"), cfg.Join("workers_"+worker.Name+".go"), d)
+		return tasks.FileDoesntExist(filepath.Join("app", "workers_hook"), cfg.Join("workers_"+worker.Name+".go"), d)
 	})
 
 	return runner.Run()
@@ -72,7 +72,7 @@ func Workers(cfg *config.Config) error {
 
 	runner := tasks.NewRunner("workers")
 	runner.Add("file", func() error {
-		return tasks.File(filepath.Join("app", "app_workers"), cfg.Join("workers.gen.go"), data)
+		return tasks.File(filepath.Join("app", "workers"), cfg.Join("workers.gen.go"), data)
 	})
 
 	return runner.Run()

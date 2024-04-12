@@ -16,7 +16,7 @@ func App(cfg *config.Config) error {
 
 	if cfg.Plugins.Cache {
 		runner.Add("cache", func() error {
-			return tasks.File(filepath.Join("app", "app_cache"), cfg.Join("cache.gen.go"), g)
+			return tasks.File(filepath.Join("app", "cache"), cfg.Join("cache.gen.go"), g)
 		})
 	}
 	if cfg.Plugins.Routes {

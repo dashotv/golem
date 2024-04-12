@@ -1,10 +1,9 @@
-package app
+package router
 
 import (
 	"encoding/xml"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -14,20 +13,20 @@ func QueryParamString(c echo.Context, name string) string {
 	return c.QueryParam(name)
 }
 
-//QueryParamInt retrieves an integer param from the gin request querystring
+// QueryParamInt retrieves an integer param from the gin request querystring
 func QueryParamInt(c echo.Context, name string) int {
 	v := c.QueryParam(name)
 	i, _ := strconv.Atoi(v)
 	return i
 }
 
-//QueryBool retrieves a boolean param from the gin request querystring
+// QueryBool retrieves a boolean param from the gin request querystring
 func QueryParamBool(c echo.Context, name string) bool {
 	return c.QueryParam(name) == "true"
 }
 
-//QueryDefaultInt retrieves an integer param from the gin request querystring
-//defaults to def argument if not found
+// QueryDefaultInt retrieves an integer param from the gin request querystring
+// defaults to def argument if not found
 func QueryDefaultInt(c echo.Context, name string, def int) (int, error) {
 	v := c.QueryParam(name)
 	if v == "" {
@@ -47,9 +46,9 @@ func QueryDefaultInt(c echo.Context, name string, def int) (int, error) {
 }
 
 func QueryParamIntDefault(c echo.Context, name string, def string) int {
-  param := c.QueryParam(name)
-  result, err := strconv.Atoi(param)
-  if err == nil && result > 0 {
+	param := c.QueryParam(name)
+	result, err := strconv.Atoi(param)
+	if err == nil && result > 0 {
 		return result
 	}
 
@@ -58,13 +57,13 @@ func QueryParamIntDefault(c echo.Context, name string, def string) int {
 		return d
 	}
 
-  return 0
+	return 0
 }
 
 func QueryParamFloatDefault(c echo.Context, name string, def string) float64 {
-  param := c.QueryParam(name)
-  result, err := strconv.ParseFloat(param, 64)
-  if err == nil && result > 0 {
+	param := c.QueryParam(name)
+	result, err := strconv.ParseFloat(param, 64)
+	if err == nil && result > 0 {
 		return result
 	}
 
@@ -75,20 +74,20 @@ func QueryParamFloatDefault(c echo.Context, name string, def string) float64 {
 		}
 	}
 
-  return 0
+	return 0
 }
 
 func QueryParamBoolDefault(c echo.Context, name string, def string) bool {
-  param := c.QueryParam(name)
-  if param != "" {
+	param := c.QueryParam(name)
+	if param != "" {
 		return param == "true"
 	}
 
 	if def != "" {
 		return def == "true"
 	}
-	
-  return false
+
+	return false
 }
 
 func QueryParamStringDefault(c echo.Context, name string, def string) string {
@@ -123,31 +122,4 @@ func (h H) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
-}
-
-// WithTimeout runs a delegate function with a timeout,
-//
-// Example: Wait for a channel
-//
-//	if value, ok := WithTimeout(func()interface{}{return <- inbox}, time.Second); ok {
-//	    // returned
-//	} else {
-//	    // didn't return
-//	}
-//
-// Example: To send to a channel
-//
-//	_, ok := WithTimeout(func()interface{}{outbox <- myValue; return nil}, time.Second)
-//	if !ok {
-//	    // didn't send
-//	}
-func WithTimeout(delegate func() interface{}, timeout time.Duration) (ret interface{}, ok bool) {
-	ch := make(chan interface{}, 1) // buffered
-	go func() { ch <- delegate() }()
-	select {
-	case ret = <-ch:
-		return ret, true
-	case <-time.After(timeout):
-	}
-	return nil, false
 }

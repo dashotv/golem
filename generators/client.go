@@ -112,9 +112,9 @@ func clientGolang(cfg *config.Config, client *config.Client) error {
 			k := k
 			v := models[k]
 			runner.Add("model:"+k, func() error {
-				t := "app/partial_model"
+				t := filepath.Join("app", "models_partial_model")
 				if v.Type == "struct" {
-					t = "app/partial_struct"
+					t = filepath.Join("app", "models_partial_struct")
 				}
 				buf, err := tasks.Buffer(t, v)
 				if err != nil {

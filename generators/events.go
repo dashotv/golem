@@ -31,7 +31,7 @@ func NewEvent(cfg *config.Config, event *config.Event) error {
 				Package: cfg.Package,
 				Event:   event,
 			}
-			return tasks.FileDoesntExist(filepath.Join("app", "events"), cfg.Join("events_"+event.Name+".go"), d)
+			return tasks.FileDoesntExist(filepath.Join("app", "events_hook"), cfg.Join("events_"+event.Name+".go"), d)
 		})
 	}
 
@@ -44,7 +44,7 @@ func Events(cfg *config.Config) error {
 
 	runner := tasks.NewRunner("app:events")
 	runner.Add("header", func() error {
-		header, err := tasks.Buffer(filepath.Join("app", "app_events"), data)
+		header, err := tasks.Buffer(filepath.Join("app", "events"), data)
 		if err != nil {
 			return fae.Wrap(err, "events header")
 		}
@@ -67,7 +67,7 @@ func Events(cfg *config.Config) error {
 			Events:      events,
 			HasReceiver: hasReceiver,
 		}
-		buf, err := tasks.Buffer(filepath.Join("app", "partial_events"), combined)
+		buf, err := tasks.Buffer(filepath.Join("app", "events_partial_events"), combined)
 		if err != nil {
 			return fae.Wrap(err, "events registration")
 		}
@@ -85,7 +85,7 @@ func Events(cfg *config.Config) error {
 		k := k
 		v := events[k]
 		runner.Add("event:"+k, func() error {
-			buf, err := tasks.Buffer(filepath.Join("app", "partial_event"), v)
+			buf, err := tasks.Buffer(filepath.Join("app", "events_partial_struct"), v)
 			if err != nil {
 				return fae.Wrap(err, fmt.Sprintf("events buffer: %s", k))
 			}

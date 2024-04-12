@@ -4,7 +4,7 @@
 func (a *Application) {{$group}}{{$route.Camel}}Handler(c echo.Context) error {
     {{range .Params -}}
         {{if .Query -}}
-        {{.Name}} := QueryParam{{.TypeCamel}}{{if .HasSupportedDefault}}Default{{end}}(c, "{{.Name}}"{{if .HasSupportedDefault}}, "{{.Default}}"{{end}})
+        {{.Name}} := router.QueryParam{{.TypeCamel}}{{if .HasSupportedDefault}}Default{{end}}(c, "{{.Name}}"{{if .HasSupportedDefault}}, "{{.Default}}"{{end}})
         {{else if .Bind -}}
         {{.Name}} := {{.TypeNew}}
         if err := c.Bind({{.Name}}); err != nil {

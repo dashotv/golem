@@ -106,13 +106,13 @@ func Init(name, repo string) error {
 		return tasks.File(filepath.Join("app", "app"), filepath.Join(cfg.Output, "app.go"), g)
 	})
 	app.Add("config", func() error {
-		return tasks.File(filepath.Join("app", "app_config"), filepath.Join(cfg.Output, "config.go"), g)
+		return tasks.File(filepath.Join("app", "config"), filepath.Join(cfg.Output, "config.go"), g)
 	})
 	app.Add("logger", func() error {
-		return tasks.File(filepath.Join("app", "app_logger"), filepath.Join(cfg.Output, "logger.go"), g)
+		return tasks.File(filepath.Join("app", "logger"), filepath.Join(cfg.Output, "logger.go"), g)
 	})
 	runner.Add("utils", func() error {
-		return tasks.File(filepath.Join("app", "app_utils"), filepath.Join(cfg.Output, "utils.go"), g)
+		return tasks.File(filepath.Join("app", "utils"), filepath.Join(cfg.Output, "utils.go"), g)
 	})
 
 	commands := runner.Group("commands")

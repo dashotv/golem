@@ -22,6 +22,9 @@ func connection[T mgm.Model](name string) (*grimoire.Store[T], error) {
 func NewConnector(app *Application) (*Connector, error) {
     {{range .Models -}}{{ if .Model -}}
     {{.Name}}, err := connection[*{{.Camel}}]("{{.Name}}")
+    if err != nil {
+        return nil, err
+    }
     {{ if .QueryDefaults }}{{.Name}}.SetQueryDefaults({{.QueryDefaultsString}}){{ end }}
     grimoire.Indexes[*{{.Camel}}]({{.Name}}, &{{.Camel}}{})
     {{ end }}
