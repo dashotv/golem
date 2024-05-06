@@ -6,6 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/samber/lo"
+
 	"github.com/dashotv/fae"
 	"github.com/dashotv/golem/config"
 	"github.com/dashotv/golem/tasks"
@@ -186,18 +188,20 @@ func clientTypescript(cfg *config.Config, client *config.Client) error {
 			return fae.Wrap(err, "collecting models")
 		}
 
-		keys := make([]string, 0, len(models))
-		for k := range models {
-			keys = append(keys, k)
+		imports := []string{}
+		for _, m := range models {
+			imports = append(imports, m.TypescriptImports()...)
 		}
-		sort.Strings(keys)
+		imports = lo.Uniq(imports)
 
 		modelData := struct {
-			Config map[string]string
-			Models map[string]*config.Model
+			Config  map[string]string
+			Models  map[string]*config.Model
+			Imports []string
 		}{
-			Config: cfg.Data(),
-			Models: models,
+			Config:  cfg.Data(),
+			Models:  models,
+			Imports: imports,
 		}
 
 		runner.Add("models", func() error {
