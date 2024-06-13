@@ -7,7 +7,7 @@
 	{{- if eq .Cache "true" }}
 	// Cache
 	RedisAddress  string `env:"REDIS_ADDRESS,required"`
-	ReidsDatabase	int    `env:"REDIS_DATABASE" envDefault:"0"`
+	RedisDatabase	int    `env:"REDIS_DATABASE" envDefault:"0"`
 	{{ end -}}
 	{{- if eq .Routes "true" }}
 	// Router Auth

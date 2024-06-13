@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
+	"github.com/dashotv/golem/plugins/cache"
 	"github.com/dashotv/minion"
 )
 
@@ -53,7 +54,7 @@ func Start() error {
 			return err
 		}
 	}
-	
+
 	ctx = ContextSet(ctx, "app", app)
 
 	for _, f := range starters {

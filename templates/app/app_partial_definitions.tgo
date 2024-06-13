@@ -20,7 +20,7 @@
 	{{ end -}}
 	{{- if eq .Cache "true" }}
 	//Cache
-	Cache *Cache
+	Cache *cache.Cache
 	{{ end }}
 
 	//golem:template:app/app_partial_definitions

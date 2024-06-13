@@ -20,7 +20,7 @@ func init() {
 }
 
 func setupCache(app *Application) error {
-	opts := &kv.Options{Address: app.Config.RedisAddress, Database: app.Config.RedisDatabase}
+	opts := &kv.Options{Address: app.Config.RedisAddress, DB: app.Config.RedisDatabase}
 	c, err := cache.New(app.Log.Named("cache"), opts)
 	if err != nil {
 		return fae.Wrap(err, "failed to create cache")
