@@ -13,6 +13,9 @@ func NewWorker(cfg *config.Config, worker *config.Worker) error {
 	runner.Add("directory", func() error {
 		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Workers))
 	})
+	runner.Add("directory", func() error {
+		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Queues))
+	})
 	runner.Add("file", func() error {
 		return tasks.WriteYaml(filepath.Join(cfg.Root(), cfg.Definitions.Workers, worker.Name+".yaml"), worker)
 	})
@@ -71,6 +74,12 @@ func Workers(cfg *config.Config) error {
 	}
 
 	runner := tasks.NewRunner("workers")
+	runner.Add("directory", func() error {
+		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Workers))
+	})
+	runner.Add("directory", func() error {
+		return tasks.Directory(filepath.Join(cfg.Root(), cfg.Definitions.Queues))
+	})
 	runner.Add("file", func() error {
 		return tasks.File(filepath.Join("app", "workers"), cfg.Join("workers.gen.go"), data)
 	})
