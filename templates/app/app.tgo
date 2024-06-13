@@ -53,6 +53,8 @@ func Start() error {
 			return err
 		}
 	}
+	
+	ctx = ContextSet(ctx, "app", app)
 
 	for _, f := range starters {
 		if err := f(ctx, app); err != nil {
@@ -79,4 +81,12 @@ func (a *Application) Health() (map[string]bool, error) {
 	}
 
 	return resp, nil
+}
+
+func ContextSet(ctx context.Context, key string, value interface{}) context.Context {
+	return context.WithValue(ctx, key, value)
+}
+
+func ContextApp(ctx context.Context) *Application {
+	return ctx.Value("app").(*Application)
 }

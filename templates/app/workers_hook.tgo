@@ -8,11 +8,17 @@ import (
 
 type {{.Worker.Camel}} struct {
     minion.WorkerDefaults[*{{.Worker.Camel}}]
-    {{range .Worker.Fields}}{{.Camel}} {{.Type}} `bson:"{{.BsonTag}}" json:"{{.JsonTag}}"`{{end}}
+    {{- range .Worker.Fields}}
+    {{.Camel}} {{.Type}} `bson:"{{.BsonTag}}" json:"{{.JsonTag}}"`
+    {{end -}}
 }
 
 func (j *{{.Worker.Camel}}) Kind() string { return "{{.Worker.Name}}" }
 func (j *{{.Worker.Camel}}) Work(ctx context.Context, job *minion.Job[*{{.Worker.Camel}}]) error {
-    //args := job.Args
+    //a := ContextApp(ctx)
+    //l := a.Workers.Log.Named("{{.Worker.Name}}")
+    {{- range .Worker.Fields}}
+    //{{.Camel}} := job.Args.{{.Camel}}
+    {{end -}}
     return nil
 }
