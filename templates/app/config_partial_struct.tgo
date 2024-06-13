@@ -2,30 +2,31 @@
 	// DO NOT EDIT. This section is managed by github.com/dashotv/golem.
 	{{- if eq .Models "true" }}
 	// Models (Database)
-	Connections ConnectionSet `env:"CONNECTIONS"`
+	Connections ConnectionSet `env:"CONNECTIONS,required"`
 	{{ end -}}
 	{{- if eq .Cache "true" }}
 	// Cache
-	RedisAddress         string        `env:"REDIS_ADDRESS"`
+	RedisAddress  string `env:"REDIS_ADDRESS,required"`
+	ReidsDatabase	int    `env:"REDIS_DATABASE" envDefault:"0"`
 	{{ end -}}
 	{{- if eq .Routes "true" }}
 	// Router Auth
-	Auth      bool          `env:"AUTH" envDefault:"false"`
-	ClerkSecretKey       string        `env:"CLERK_SECRET_KEY"`
-	ClerkToken string 			`env:"CLERK_TOKEN"`
+	Auth      		 bool   `env:"AUTH" envDefault:"false"`
+	ClerkSecretKey string `env:"CLERK_SECRET_KEY"`
+	ClerkToken 		 string `env:"CLERK_TOKEN"`
 	{{ end -}}
-    {{- if eq .Events "true" }}
+  {{- if eq .Events "true" }}
 	// Events
-	NatsURL   string        `env:"NATS_URL"`
+	NatsURL   string        `env:"NATS_URL,required"`
 	{{ end -}}
 	{{- if eq .Workers "true" }}
 	// Workers
 	MinionConcurrency    int           `env:"MINION_CONCURRENCY" envDefault:"10"`
 	MinionDebug          bool          `env:"MINION_DEBUG" envDefault:"false"`
 	MinionBufferSize     int           `env:"MINION_BUFFER_SIZE" envDefault:"100"`
-	MinionURI            string        `env:"MINION_URI"`
-	MinionDatabase       string        `env:"MINION_DATABASE"`
-	MinionCollection     string        `env:"MINION_COLLECTION"`
+	MinionURI            string        `env:"MINION_URI,required"`
+	MinionDatabase       string        `env:"MINION_DATABASE,required"`
+	MinionCollection     string        `env:"MINION_COLLECTION,required"`
 	{{ end }}
 
 	//golem:template:app/config_partial_struct
