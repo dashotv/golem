@@ -19,6 +19,6 @@ func (j *{{.Worker.Camel}}) Work(ctx context.Context, job *minion.Job[*{{.Worker
     //l := a.Workers.Log.Named("{{.Worker.Name}}")
     {{- range .Worker.Fields}}
     //{{.Camel}} := job.Args.{{.Camel}}
-    {{end -}}
+    {{ end }}
     return nil
 }
