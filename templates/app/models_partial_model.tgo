@@ -1,8 +1,8 @@
 type {{.Camel}} struct { // {{.Type}}
     grimoire.Document `bson:",inline"` // includes default model settings
     //ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-    //CreatedAt time.Time          `bson:"created_at" json:"created_at"`
-    //UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
+    CreatedAt time.Time          `bson:"created_at" json:"created_at" grimoire:"index"`
+    UpdatedAt time.Time          `bson:"updated_at" json:"updated_at" grimoire:"index"`
 {{ range $fn, $field := .Fields -}}
     {{.Camel}} {{.Type}} `bson:"{{.BsonTag}}" json:"{{.JsonTag}}"{{if .Index}} grimoire:"index{{if .IndexDesc}}:desc{{end}}"{{end}}`
 {{end -}}
