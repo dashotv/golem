@@ -43,8 +43,9 @@ var modelCmd = &cobra.Command{
 		fields := args[1:]
 
 		m := &config.Model{
-			Name: name,
-			Type: "model",
+			Name:    name,
+			Type:    "model",
+			Indexes: []string{"created_at", "updated_at"},
 		}
 		if modelStruct {
 			m.Type = "struct"

@@ -31,6 +31,7 @@ type Model struct {
 	Name          string                 `yaml:"name,omitempty"`
 	Type          string                 `yaml:"type,omitempty"`
 	QueryDefaults map[string]interface{} `yaml:"query_defaults,omitempty"`
+	Indexes       []string               `yaml:"indexes,omitempty"`
 	Imports       []string               `yaml:"imports,omitempty"`
 	Fields        []*Field               `yaml:"fields,omitempty"`
 }
@@ -45,6 +46,10 @@ func (m *Model) Struct() bool {
 
 func (m *Model) Camel() string {
 	return strcase.ToCamel(m.Name)
+}
+
+func (m *Model) IndexesDescriptor() string {
+	return strings.Join(m.Indexes, ";")
 }
 
 func (m *Model) QueryDefaultsString() string {

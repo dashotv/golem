@@ -11,6 +11,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/iancoleman/strcase v0.3.0
 	github.com/labstack/echo/v4 v4.11.4
+	github.com/philippgille/gokv/redis v0.7.0
 	github.com/samber/lo v1.39.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
@@ -26,8 +27,10 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bytedance/sonic v1.11.2 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -65,6 +68,9 @@ require (
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.0 // indirect
+	github.com/philippgille/gokv/encoding v0.7.0 // indirect
+	github.com/philippgille/gokv/util v0.7.0 // indirect
+	github.com/redis/go-redis/v9 v9.4.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
@@ -86,10 +92,10 @@ require (
 	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/crypto v0.24.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
