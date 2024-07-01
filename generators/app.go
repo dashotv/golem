@@ -84,12 +84,12 @@ func App(cfg *config.Config) error {
 			return tasks.GoGet("github.com/labstack/echo/v4")
 		})
 		commands.Add("go get router", func() error {
-			return tasks.GoGet("github.com/dashotv/golem/plugins/router")
+			return tasks.GoGet("github.com/dashotv/golem/plugins/golemrouter")
 		})
 	}
 	if cfg.Plugins.Cache {
 		commands.Add("go get cache", func() error {
-			return tasks.GoGet("github.com/dashotv/golem/plugins/cache")
+			return tasks.GoGet("github.com/dashotv/golem/plugins/golemcache")
 		})
 	}
 	commands.Add("goimports", func() error {

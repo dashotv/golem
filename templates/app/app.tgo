@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
-	"github.com/dashotv/golem/plugins/cache"
+	"github.com/dashotv/golem/plugins/golemcache"
 	"github.com/dashotv/minion"
 )
 

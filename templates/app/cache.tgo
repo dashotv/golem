@@ -4,7 +4,7 @@ package {{.Package}}
 import (
 	"context"
 
-	"github.com/dashotv/golem/plugins/cache"
+	"github.com/dashotv/golem/plugins/golemcache"
 	"github.com/dashotv/fae"
 	kv "github.com/philippgille/gokv/redis"
 	"github.com/redis/go-redis/v9"
@@ -21,7 +21,7 @@ func init() {
 
 func setupCache(app *Application) error {
 	opts := &kv.Options{Address: app.Config.RedisAddress, DB: app.Config.RedisDatabase}
-	c, err := cache.New(app.Log.Named("cache"), opts)
+	c, err := golemcache.New(app.Log.Named("cache"), opts)
 	if err != nil {
 		return fae.Wrap(err, "failed to create cache")
 	}
