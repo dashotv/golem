@@ -1,4 +1,4 @@
-package cache
+package golemcache
 
 import (
 	kv "github.com/philippgille/gokv/redis"

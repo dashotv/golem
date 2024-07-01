@@ -1,4 +1,4 @@
-package router
+package golemrouter
 
 import (
 	"encoding/xml"
