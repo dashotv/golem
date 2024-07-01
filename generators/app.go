@@ -92,12 +92,12 @@ func App(cfg *config.Config) error {
 			return tasks.GoGet("github.com/dashotv/golem/plugins/cache")
 		})
 	}
-	// commands.Add("goimports", func() error {
-	// 	return tasks.GoImports()
-	// })
-	// commands.Add("go mod tidy", func() error {
-	// 	return tasks.GoModTidy()
-	// })
+	commands.Add("goimports", func() error {
+		return tasks.GoImports()
+	})
+	commands.Add("go mod tidy", func() error {
+		return tasks.GoModTidy()
+	})
 
 	return runner.Run()
 }
