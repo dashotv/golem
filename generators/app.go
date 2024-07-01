@@ -1,6 +1,7 @@
 package generators
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -44,6 +45,14 @@ func App(cfg *config.Config) error {
 			return Clients(cfg)
 		})
 	}
+	if cfg.Plugins.APM {
+		if !cfg.Plugins.Routes {
+			return fmt.Errorf("APM requires routes plugin")
+		}
+		runner.Add("apm", func() error {
+			return tasks.File(filepath.Join("app", "apm"), cfg.Join("apm.gen.go"), g)
+		})
+	}
 
 	runner.Group("app").Add("modify", func() error {
 		return tasks.Modify(cfg.Join("app.go"), g)
@@ -70,16 +79,25 @@ func App(cfg *config.Config) error {
 	commands := runner.Group("commands")
 	// TODO: this breaks the echo import in app/app.go on first run
 	// and I don't know why
-	commands.Add("goimports", func() error {
-		return tasks.GoImports()
-	})
-	// HACK: to fix above
-	commands.Add("hack", func() error {
-		return tasks.Command("hack", "sed", "-i", "-e", "s/\"github.com\\/labstack\\/echo\"/\"github.com\\/labstack\\/echo\\/v4\"/g", cfg.Join("app.go"))
-	})
-	commands.Add("go mod tidy", func() error {
-		return tasks.GoModTidy()
-	})
+	if cfg.Plugins.Routes {
+		commands.Add("go get echo", func() error {
+			return tasks.GoGet("github.com/labstack/echo/v4")
+		})
+		commands.Add("go get router", func() error {
+			return tasks.GoGet("github.com/dashotv/golem/plugins/router")
+		})
+	}
+	if cfg.Plugins.Cache {
+		commands.Add("go get cache", func() error {
+			return tasks.GoGet("github.com/dashotv/golem/plugins/cache")
+		})
+	}
+	// commands.Add("goimports", func() error {
+	// 	return tasks.GoImports()
+	// })
+	// commands.Add("go mod tidy", func() error {
+	// 	return tasks.GoModTidy()
+	// })
 
 	return runner.Run()
 }

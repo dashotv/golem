@@ -34,6 +34,9 @@ func Command(name string, cmd string, args ...string) error {
 func GoFmt() error {
 	return Command("go fmt ./...", "go", "fmt", "./...")
 }
+func GoGet(pkg string) error {
+	return Command("go get", "go", "get", "-u", pkg)
+}
 func GoImports() error {
 	return Command("goimports", "go", "run", "--", "golang.org/x/tools/cmd/goimports@latest", "-w", ".")
 }

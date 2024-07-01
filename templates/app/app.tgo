@@ -57,6 +57,8 @@ func Start() error {
 
 	ctx = ContextSet(ctx, "app", app)
 
+	app.Engine.HTTPErrorHandler = customHTTPErrorHandler
+
 	for _, f := range starters {
 		if err := f(ctx, app); err != nil {
 			return err
@@ -90,4 +92,14 @@ func ContextSet(ctx context.Context, key string, value interface{}) context.Cont
 
 func ContextApp(ctx context.Context) *Application {
 	return ctx.Value("app").(*Application)
+}
+
+func customHTTPErrorHandler(err error, c echo.Context) {
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	if !c.Response().Committed {
+		c.JSON(code, &Response{Error: true, Message: err.Error()})
+	}
 }

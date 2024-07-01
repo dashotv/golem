@@ -28,6 +28,7 @@ type Config struct {
 		Cache   bool `yaml:"cache"`
 		Events  bool `yaml:"events"`
 		Clients bool `yaml:"clients"`
+		APM     bool `yaml:"apm"`
 	} `yaml:"plugins"`
 	Definitions struct {
 		Models  string `yaml:"models,omitempty"`
@@ -52,12 +53,17 @@ func (c *Config) Data() map[string]string {
 		"Events":   fmt.Sprintf("%t", c.Plugins.Events),
 		"Workers":  fmt.Sprintf("%t", c.Plugins.Workers),
 		"Clients":  fmt.Sprintf("%t", c.Plugins.Clients),
+		"APM":      fmt.Sprintf("%t", c.Plugins.APM),
 		"NameHash": c.NameHash(),
 	}
 }
 
 func (c *Config) Enable(name string) error {
 	switch name {
+	case "cache", "Cache":
+		c.Plugins.Cache = true
+	case "apm", "APM":
+		c.Plugins.APM = true
 	case "models", "Models":
 		c.Plugins.Models = true
 		if c.Definitions.Models == "" {
@@ -68,8 +74,6 @@ func (c *Config) Enable(name string) error {
 		if c.Definitions.Routes == "" {
 			c.Definitions.Routes = ".golem/routes"
 		}
-	case "cache", "Cache":
-		c.Plugins.Cache = true
 	case "events", "Events":
 		c.Plugins.Events = true
 		if c.Definitions.Events == "" {

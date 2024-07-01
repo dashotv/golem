@@ -9,6 +9,12 @@
 	RedisAddress  string `env:"REDIS_ADDRESS,required"`
 	RedisDatabase	int    `env:"REDIS_DATABASE" envDefault:"0"`
 	{{ end -}}
+	{{- if eq .APM "true" }}
+	// APM
+	APMServiceName  string `env:"ELASTIC_APM_SERVICE_NAME,required"`
+	APMServerURL    string `env:"ELASTIC_APM_SERVER_URL,required"`
+	APMSecretToken	string `env:"ELASTIC_APM_SECRET_TOKEN" envDefault:"0"`
+	{{ end -}}
 	{{- if eq .Routes "true" }}
 	// Router Auth
 	Auth      		 bool   `env:"AUTH" envDefault:"false"`

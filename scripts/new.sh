@@ -32,6 +32,7 @@ cd "$name" || exit 1
 "$binary" --silent add event metrics time:time.Time key value -c 'metrics.report' --receiver -p Metric -t 'reporter'
 "$binary" --silent add event flame -r time:time.Time download:float64 upload:float64
 "$binary" --silent plugin enable cache
+"$binary" --silent plugin enable apm
 "$binary" --silent add worker ProcessRelease id
 "$binary" --silent add queue downloads -c 3
 "$binary" --silent add worker process_download id -s '0 0 11 * * *' -q downloads
