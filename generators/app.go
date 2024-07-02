@@ -77,21 +77,6 @@ func App(cfg *config.Config) error {
 	}
 
 	commands := runner.Group("commands")
-	// TODO: this breaks the echo import in app/app.go on first run
-	// and I don't know why
-	if cfg.Plugins.Routes {
-		commands.Add("go get echo", func() error {
-			return tasks.GoGet("github.com/labstack/echo/v4")
-		})
-		commands.Add("go get router", func() error {
-			return tasks.GoGet("github.com/dashotv/golem/plugins/router")
-		})
-	}
-	if cfg.Plugins.Cache {
-		commands.Add("go get cache", func() error {
-			return tasks.GoGet("github.com/dashotv/golem/plugins/cache")
-		})
-	}
 	commands.Add("goimports", func() error {
 		return tasks.GoImports()
 	})
