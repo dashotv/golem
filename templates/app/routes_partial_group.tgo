@@ -4,7 +4,7 @@
 func (a *Application) {{$group}}{{$route.Camel}}Handler(c echo.Context) error {
     {{range .Params -}}
         {{if .Query -}}
-        {{.SafeName}} := router.QueryParam{{.TypeCamel}}{{if .HasSupportedDefault}}Default{{end}}(c, "{{.Name}}"{{if .HasSupportedDefault}}, "{{.Default}}"{{end}})
+        {{.SafeName}} := golemrouter.QueryParam{{.TypeCamel}}{{if .HasSupportedDefault}}Default{{end}}(c, "{{.Name}}"{{if .HasSupportedDefault}}, "{{.Default}}"{{end}})
         {{else if .Bind -}}
         {{.SafeName}} := {{.TypeNew}}
         if err := c.Bind({{.SafeName}}); err != nil {
