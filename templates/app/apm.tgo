@@ -4,7 +4,7 @@ package app
 import (
 	"context"
 
-	"go.elastic.co/apm/module/apmechov4"
+	"go.elastic.co/apm/module/apmechov4/v2"
 )
 
 func init() {
