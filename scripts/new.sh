@@ -30,7 +30,7 @@ cd "$name" || exit 1
 "$binary" --silent add event jobs event id job:*Job
 "$binary" --silent add event reporter metric:*Metric -c '$(NAME).summary.report'
 "$binary" --silent add event metrics time:time.Time key value -c 'metrics.report' --receiver -p Metric -t 'reporter'
-"$binary" --silent add event flame -r time:time.Time download:float64 upload:float64
+"$binary" --silent add event flame -r -n 3 time:time.Time download:float64 upload:float64
 "$binary" --silent plugin enable cache
 "$binary" --silent plugin enable apm
 "$binary" --silent add worker ProcessRelease id

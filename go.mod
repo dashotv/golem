@@ -2,6 +2,8 @@ module github.com/dashotv/golem
 
 go 1.22.0
 
+exclude github.com/dashotv/golem v0.15.0
+
 require (
 	github.com/charmbracelet/glamour v0.7.0
 	github.com/charmbracelet/lipgloss v0.10.0

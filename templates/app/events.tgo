@@ -33,7 +33,7 @@ func setupEvents(app *Application) error {
 }
 
 func startEvents(ctx context.Context, app *Application) error {
-	go app.Events.Start()
+	go app.Events.Start(ctx)
 	return nil
 }
 

@@ -34,6 +34,7 @@ type Event struct {
 	Name            string   `yaml:"name,omitempty"`
 	Channel         string   `yaml:"channel,omitempty"`
 	Receiver        bool     `yaml:"receiver"`
+	Concurrency     int      `yaml:"concurrency,omitempty"`
 	ExistingPayload string   `yaml:"existing_payload,omitempty"`
 	ProxyTo         string   `yaml:"proxy_to,omitempty"`
 	ProxyType       string   `yaml:"proxy_type,omitempty"`

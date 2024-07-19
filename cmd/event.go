@@ -18,6 +18,7 @@ var eventChannel string
 var eventProxy string
 var eventPayload string
 var eventReceiver bool
+var eventConcurrency int
 var eventDesc = `Generate a new event and channel definition
 
   NAME 		name, must be unique
@@ -37,6 +38,7 @@ var eventCmd = &cobra.Command{
 			Name:            name,
 			Channel:         cfg.Name + "." + name,
 			Receiver:        eventReceiver || eventProxy != "",
+			Concurrency:     eventConcurrency,
 			ExistingPayload: eventPayload,
 			ProxyTo:         eventProxy,
 		}
@@ -95,6 +97,7 @@ func init() {
 	// is called directly, e.g.:
 	// eventCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	eventCmd.Flags().BoolVarP(&eventReceiver, "receiver", "r", false, "channel is a receiver")
+	eventCmd.Flags().IntVarP(&eventConcurrency, "concurrency", "n", 1, "[RECEIVER ONLY] how many concurrent receivers to run")
 	eventCmd.Flags().StringVarP(&eventPayload, "payload", "p", "", "channel will use this payload instead of creating one")
 	eventCmd.Flags().StringVarP(&eventProxy, "proxy", "t", "", "proxy channel to another event (should match existing event name), implies receiver")
 	eventCmd.Flags().StringVarP(&eventChannel, "channel", "c", "", "override channel default")

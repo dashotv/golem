@@ -35,29 +35,35 @@ func NewEvents(app *Application) (*Events, error) {
 	return e, nil
 }
 
-func (e *Events) Start() error {
+func (e *Events) Start(ctx context.Context) error {
 	e.Log.Debugf("starting events...")
 
-    {{- if $hasReceiver}}
-    go func() {
-        // wire up receivers
-        for {
-            select {
-            {{- range $i, $e := .Events }}{{ if $e.Receiver }}
-            case m := <-e.{{ $e.Camel }}:{{ if $e.ProxyTo }}
-				v, err := on{{$e.Camel}}(e.App, m)
-				if err != nil {
-					e.Log.Errorf("proxy failed: on{{ $e.Camel }}: %s", err)
-					continue
+	{{- if $hasReceiver}}
+	{{- range $i, $e := .Events }}{{ if $e.Receiver }}
+	for i := 0; i < {{$e.Concurrency}}; i++ {
+		go func() {
+				// wire up receivers
+				for {
+						select {
+						case <-ctx.Done():
+							return
+						case m := <-e.{{ $e.Camel }}:{{ if $e.ProxyTo }}
+							v, err := on{{$e.Camel}}(e.App, m)
+							if err != nil {
+								e.Log.Errorf("proxy failed: on{{ $e.Camel }}: %s", err)
+								continue
+							}
+							e.Send("{{ $e.ProxyTo }}", v){{ else }}
+							on{{ $e.Camel }}(e.App, m)
+							{{ end -}}
+						}
 				}
-                e.Send("{{ $e.ProxyTo }}", v){{ else }}
-                on{{ $e.Camel }}(e.App, m)
-            {{ end }}{{ end }}{{ end -}}
-            }
-        }
-    }(){{ else }}
-    // no receivers{{ end }}
-    return nil
+		}()
+	}
+	{{ end }}{{ end -}}
+	{{ else }}
+	// no receivers{{ end }}
+	return nil
 }
 
 func (e *Events) Send(topic EventsTopic, data any) error {
