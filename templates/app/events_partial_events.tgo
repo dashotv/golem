@@ -40,9 +40,9 @@ func (e *Events) Start(ctx context.Context) error {
 
 	{{- if $hasReceiver}}
 	{{- range $i, $e := .Events }}{{ if $e.Receiver }}
-	for i := 0; i < {{$e.Concurrency}}; i++ {
+	// receiver: {{$e.Camel}}
+	for i := 0; i < {{if eq $e.Concurrency 0}}1{{else}}{{$e.Concurrency}}{{end}}; i++ {
 		go func() {
-				// wire up receivers
 				for {
 						select {
 						case <-ctx.Done():
