@@ -19,6 +19,10 @@ cd "$path" || exit 1
 # add
 cd "$name" || exit 1
 "$binary" --silent add model release name version
+cat <<EOF >>.golem/models/release.yaml
+search:
+  - name
+EOF
 "$binary" --silent add group release --rest -m '*Release'
 "$binary" --silent add route release additional -m POST
 "$binary" --silent add group hello

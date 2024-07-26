@@ -32,6 +32,7 @@ type Model struct {
 	Type          string                 `yaml:"type,omitempty"`
 	QueryDefaults map[string]interface{} `yaml:"query_defaults,omitempty"`
 	Indexes       []string               `yaml:"indexes,omitempty"`
+	Search        []string               `yaml:"search,omitempty"`
 	Imports       []string               `yaml:"imports,omitempty"`
 	Fields        []*Field               `yaml:"fields,omitempty"`
 }
@@ -46,6 +47,16 @@ func (m *Model) Struct() bool {
 
 func (m *Model) Camel() string {
 	return strcase.ToCamel(m.Name)
+}
+
+func (m *Model) SearchDescriptor() string {
+	if len(m.Search) == 0 {
+		return ""
+	}
+	list := lo.Map(m.Search, func(s string, i int) string {
+		return fmt.Sprintf("%s:text", s)
+	})
+	return strings.Join(list, ",")
 }
 
 func (m *Model) IndexesDescriptor() string {
