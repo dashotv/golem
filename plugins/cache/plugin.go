@@ -39,17 +39,21 @@ func (c *Cache) Fetch(k string, v interface{}, f func() (interface{}, error)) (b
 	}
 	// the item was found
 	if ok {
-		//c.log.Infof("cache: hit: %s", k)
 		return ok, nil
 	}
 
 	// get the value and set it
-	v, err = f()
+	val, err := f()
 	if err != nil {
 		return false, err
 	}
-	//c.log.Infof("cache: miss: %s", k)
-	return false, c.client.Set(k, v)
+	if err := c.client.Set(k, &val); err != nil {
+		return false, err
+	}
+	if _, err := c.client.Get(k, v); err != nil {
+		return false, err
+	}
+	return false, nil
 }
 
 func (c *Cache) Close() error {
