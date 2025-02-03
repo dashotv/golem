@@ -3,6 +3,7 @@ module github.com/dashotv/golem
 go 1.22.0
 
 retract v0.14.32 // bad go.mod file
+
 retract v0.15.0 // failed experiment
 
 require (
@@ -18,6 +19,7 @@ require (
 	github.com/samber/lo v1.39.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
+	github.com/stretchr/testify v1.9.0
 	go.infratographer.com/x v0.3.9
 	go.uber.org/zap v1.25.0
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
@@ -33,6 +35,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
@@ -73,6 +76,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.0 // indirect
 	github.com/philippgille/gokv/encoding v0.7.0 // indirect
 	github.com/philippgille/gokv/util v0.7.0 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/redis/go-redis/v9 v9.4.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
