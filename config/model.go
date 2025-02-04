@@ -99,6 +99,7 @@ type Field struct {
 	Type      string `yaml:"type,omitempty"`
 	Json      string `yaml:"json,omitempty"`
 	Bson      string `yaml:"bson,omitempty"`
+	Xml       string `yaml:"xml,omitempty"`
 	Index     bool   `yaml:"index,omitempty"`
 	IndexDesc bool   `yaml:"index_desc,omitempty"`
 }
@@ -117,6 +118,13 @@ func (f *Field) JsonTag() string {
 func (f *Field) BsonTag() string {
 	if f.Bson != "" {
 		return f.Bson
+	}
+	return f.Name
+}
+
+func (f *Field) XmlTag() string {
+	if f.Xml != "" {
+		return f.Xml
 	}
 	return f.Name
 }

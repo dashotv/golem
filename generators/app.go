@@ -60,6 +60,7 @@ func App(cfg *config.Config) error {
 	runner.Group("config").Add("modify", func() error {
 		return tasks.Modify(cfg.Join("config.go"), g)
 	})
+
 	hooks := runner.Group("hooks")
 	hooks.Add("directory", func() error {
 		return tasks.Directory("hooks")
@@ -77,8 +78,11 @@ func App(cfg *config.Config) error {
 	}
 
 	commands := runner.Group("commands")
-	commands.Add("goimports", func() error {
-		return tasks.GoImports()
+	// commands.Add("goimports", func() error {
+	// 	return tasks.GoImports()
+	// })
+	commands.Add("gofmt", func() error {
+		return tasks.GoFmt()
 	})
 	commands.Add("go mod tidy", func() error {
 		return tasks.GoModTidy()

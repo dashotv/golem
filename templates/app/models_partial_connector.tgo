@@ -1,38 +1,38 @@
 type Connector struct {
 	Log *zap.SugaredLogger
+    client *mongo.Client
     {{range .Models -}}
         {{ if .Model -}}
-    {{.Camel}} *grimoire.Store[*{{.Camel}}]
+    {{.Camel}} *grimoire.Store[{{.Camel}}]
         {{ end -}}
     {{end}}
 }
 
-func connection[T mgm.Model](name string) (*grimoire.Store[T], error) {
-	s, err := app.Config.ConnectionFor(name)
-	if err != nil {
-		return nil, err
-	}
-	c, err := grimoire.New[T](s.URI, s.Database, s.Collection)
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
-}
-
 func NewConnector(app *Application) (*Connector, error) {
+    data, err := app.Config.ConnectionFor("default")
+    if err != nil {
+        return nil, err
+    }
+
+    client, err := mongo.Connect(options.Client().ApplyURI(data.URI))
+    if err != nil {
+        return nil, err
+    }
+
     {{range .Models -}}{{ if .Model -}}
-    {{.Name}}, err := connection[*{{.Camel}}]("{{.Name}}")
+    {{.Name}}, err := connection[{{.Camel}}](app, client, "{{.Name}}")
     if err != nil {
         return nil, err
     }
     {{ if .QueryDefaults }}{{.Name}}.SetQueryDefaults({{.QueryDefaultsString}}){{ end }}
-    {{ if ne .IndexesDescriptor "" }}grimoire.CreateIndexes[*{{.Camel}}]({{.Name}}, &{{.Camel}}{}, "{{.IndexesDescriptor}}"){{ end }}
-    {{ if ne .SearchDescriptor "" }}grimoire.CreateIndexes[*{{.Camel}}]({{.Name}}, &{{.Camel}}{}, "{{.SearchDescriptor}}"){{ end }}
-    grimoire.CreateIndexesFromTags[*{{.Camel}}]({{.Name}}, &{{.Camel}}{})
+    {{ if ne .IndexesDescriptor "" }}grimoire.CreateIndexes[{{.Camel}}]({{.Name}}, "{{.IndexesDescriptor}}"){{ end }}
+    {{ if ne .SearchDescriptor "" }}grimoire.CreateIndexes[{{.Camel}}]({{.Name}}, "{{.SearchDescriptor}}"){{ end }}
+    grimoire.CreateIndexesFromTags[{{.Camel}}]({{.Name}}, &{{.Camel}}{})
     {{ end }}
     {{end -}}
     c := &Connector{
         Log: app.Log.Named("db"),
+        client: client,
         {{range .Models -}}
             {{ if .Model -}}
         {{.Camel}}: {{.Name}},
@@ -41,4 +41,16 @@ func NewConnector(app *Application) (*Connector, error) {
     }
 
     return c, nil
+}
+
+func connection[T grimoire.Model](app *Application, client *mongo.Client, name string) (*grimoire.Store[T], error) {
+	s, err := app.Config.ConnectionFor(name)
+	if err != nil {
+		return nil, err
+	}
+	c, err := grimoire.NewWithClient[T](client, s.Database, s.Collection)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
 }

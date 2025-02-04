@@ -1,15 +1,7 @@
 package {{.Package}}
 
 func (c *Connector) {{.Model.Camel}}Get(id string) (*{{.Model.Camel}}, error) {
-    m := &{{.Model.Camel}}{}
-    err := c.{{.Model.Camel}}.Find(id, m)
-    if err != nil {
-        return nil, err
-    }
-
-    // post process here
-
-    return m, nil
+    return c.{{.Model.Camel}}.Get(id)
 }
 
 func (c *Connector) {{.Model.Camel}}List(page, limit int) ([]*{{.Model.Camel}}, error) {

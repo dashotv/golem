@@ -1,12 +1,7 @@
 package app
 
 import (
-	"encoding/xml"
-	"fmt"
-	"strconv"
 	"time"
-
-	"github.com/labstack/echo/v4"
 )
 
 // WithTimeout runs a delegate function with a timeout,

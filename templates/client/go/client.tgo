@@ -2,8 +2,6 @@
 package client
 
 import (
-	"regexp"
-
 	"github.com/go-resty/resty/v2"
 )
 

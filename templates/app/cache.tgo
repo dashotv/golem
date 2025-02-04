@@ -4,11 +4,10 @@ package {{.Package}}
 import (
 	"context"
 
-	"github.com/dashotv/golem/plugins/cache"
 	"github.com/dashotv/fae"
+	"github.com/dashotv/golem/plugins/cache"
 	kv "github.com/philippgille/gokv/redis"
 	"github.com/redis/go-redis/v9"
-	"go.uber.org/zap"
 )
 
 // Cache is a basic wrapper of a redis cache

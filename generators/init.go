@@ -114,10 +114,13 @@ func Init(name, repo string) error {
 	runner.Add("utils", func() error {
 		return tasks.File(filepath.Join("app", "utils"), filepath.Join(cfg.Output, "utils.go"), g)
 	})
+	runner.Add("go.mod", func() error {
+		return tasks.File("go.mod", "go.mod", cfg)
+	})
 
 	commands := runner.Group("commands")
-	commands.Add("go mod init", func() error {
-		return tasks.GoModInit(cfg.Repo)
+	commands.Add("go mod tidy", func() error {
+		return tasks.GoModTidy()
 	})
 	commands.Add("git init", func() error {
 		return tasks.GitInit()

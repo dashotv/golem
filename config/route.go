@@ -424,7 +424,7 @@ func TypescriptType(t string) string {
 		return "any"
 	}
 
-	if t == "time.Time" || t == "*time.Time" || t == "primitive.ObjectID" || t == "primitive.Symbol" {
+	if t == "time.Time" || t == "*time.Time" || t == "bson.ObjectID" || t == "bson.Symbol" {
 		return "string"
 	}
 
